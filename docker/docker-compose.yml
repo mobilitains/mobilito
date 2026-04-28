@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgis/postgis:15-3.4
+    environment:
+      POSTGRES_DB: mobilito
+      POSTGRES_USER: mobilito
+      POSTGRES_PASSWORD: mobilito
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mobilito"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ..:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      POSTGRES_DB: mobilito
+      POSTGRES_USER: mobilito
+      POSTGRES_PASSWORD: mobilito
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+
+  # Long-lived container for interactive development shells.
+  # Start with: ./docker/docker-manage.sh sh
+  dev-sh:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: sleep infinity
+    volumes:
+      - ..:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      POSTGRES_DB: mobilito
+      POSTGRES_USER: mobilito
+      POSTGRES_PASSWORD: mobilito
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+
+volumes:
+  postgres_data:

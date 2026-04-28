@@ -1,0 +1,130 @@
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Override in settings_local.py or via DJANGO_SECRET_KEY env var.
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-placeholder-not-for-production",
+)
+
+DEBUG = True
+ALLOWED_HOSTS = []
+
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.gis",
+    # Third-party
+    "django_htmx",
+    "sesame",
+    # Local
+    "authentication",
+    "core",
+    "mobilito_app",
+]
+
+AUTH_USER_MODEL = "authentication.MobilitoUser"
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "sesame.backends.ModelBackend",
+]
+
+# Magic-link tokens expire after 30 minutes.
+SESAME_MAX_AGE = 1800
+
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+ROOT_URLCONF = "web_infra.urls"
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = "web_infra.wsgi.application"
+
+# PostGIS database. Connection details come from environment variables so that
+# Docker, CI, and local dev can all override without touching committed files.
+DATABASES = {
+    "default": {
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": os.environ.get("POSTGRES_DB", "mobilito"),
+        "USER": os.environ.get("POSTGRES_USER", "mobilito"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "mobilito"),
+        "HOST": os.environ.get("POSTGRES_HOST", "db"),
+        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+    }
+}
+
+_pw = "django.contrib.auth.password_validation."
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": f"{_pw}UserAttributeSimilarityValidator"},
+    {"NAME": f"{_pw}MinimumLengthValidator"},
+    {"NAME": f"{_pw}CommonPasswordValidator"},
+    {"NAME": f"{_pw}NumericPasswordValidator"},
+]
+
+# Internationalisation
+LANGUAGE_CODE = "fr-fr"
+LANGUAGES = [
+    ("fr", "Français"),
+    ("en", "English"),
+]
+LOCALE_PATHS = [BASE_DIR / "locale"]
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
+
+# Static and media files
+STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+}
+
+# Load environment-specific overrides (never committed).
+try:
+    from .settings_local import *  # noqa: F401, F403
+except ImportError:
+    pass

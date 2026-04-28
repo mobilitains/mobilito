@@ -1,0 +1,26 @@
+name: Lint
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install linters
+        run: |
+          pip install --upgrade pip
+          pip install black==24.4.2 flake8==6.1.0 flake8-django==1.4
+
+      - name: Run linters
+        run: |
+          black --check --line-length 79 --extend-exclude '(migrations)' .
+          flake8 --exclude=__pycache__,migrations

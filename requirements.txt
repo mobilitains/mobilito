@@ -1,0 +1,26 @@
+# Core
+Django==5.2
+
+# Database (PostGIS)
+psycopg2-binary==2.9.9
+# GDAL Python bindings must match the installed system GDAL version.
+# Docker and CI install it explicitly: pip install "GDAL==$(gdal-config --version)"
+# Local dev (non-Docker): sudo apt-get install gdal-bin libgdal-dev, then the same pip command.
+
+# Magic-link authentication
+django-sesame==3.2.2
+
+# HTMX integration
+django-htmx==1.21.0
+
+# Media storage (S3-compatible for photo uploads)
+django-storages[s3]==1.14.3
+
+# Image processing
+Pillow==10.4.0
+
+# Dev / CI
+black==24.4.2
+flake8==6.1.0
+flake8-django==1.4
+coverage==7.5.3

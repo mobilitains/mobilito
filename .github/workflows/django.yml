@@ -1,0 +1,64 @@
+name: Django CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    strategy:
+      max-parallel: 4
+      matrix:
+        # Ubuntu 22.04 LTS (production target) uses Python 3.10.
+        python-version: ["3.10", "3.12"]
+
+    services:
+      postgres:
+        image: postgis/postgis:15-3.4
+        env:
+          POSTGRES_DB: mobilito_test
+          POSTGRES_USER: mobilito
+          POSTGRES_PASSWORD: mobilito
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install system dependencies (GeoDjango)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential binutils libproj-dev gdal-bin libgdal-dev
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install "GDAL==$(gdal-config --version)"
+
+      - name: Run tests
+        env:
+          DJANGO_SECRET_KEY: "ci-test-key-not-used-in-production"
+          POSTGRES_DB: mobilito_test
+          POSTGRES_USER: mobilito
+          POSTGRES_PASSWORD: mobilito
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: "5432"
+        run: |
+          python manage.py makemigrations --check
+          python manage.py migrate
+          coverage run --source='.' manage.py test
+          coverage report

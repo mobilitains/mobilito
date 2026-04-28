@@ -1,0 +1,19 @@
+{
+  "name": "mobilito",
+  "scripts": {
+    "test-js": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "jest-environment-jsdom": "^29.0.0"
+  },
+  "jest": {
+    "setupFiles": [
+      "./js/jest.setup.js"
+    ],
+    "testEnvironment": "jsdom",
+    "testMatch": [
+      "**/static/tests/js/**/*.test.js"
+    ]
+  }
+}

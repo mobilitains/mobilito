@@ -1,0 +1,21 @@
+name: JavaScript Tests
+
+on: [push]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm run test-js
