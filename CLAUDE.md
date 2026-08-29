@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Run `./docker/docker-manage.sh test` before reporting any change complete if the change could possibly affect test outcomes — including model changes, view logic, auth flows, settings changes, or anything that touches Python or JS. If a change is documentation-only or confined to a file that is explicitly excluded from test coverage (e.g. `wsgi.py`), tests may be skipped with a brief explanation.
 
+The agent may run `./docker/docker-manage.sh test` (and other read-only/non-mutating commands, e.g. `manage check`, `manage showmigrations`) without asking permission first. The host environment does not have the Python/Node toolchain needed to run tests or the service directly — always go through `docker/docker-manage.sh`, never attempt `python manage.py test` or `npm test` on the host. If tests genuinely cannot be run (e.g. Docker itself is unavailable), say so explicitly, explain why, and ask the user to test rather than skipping verification silently.
+
+Never commit a change with failing tests.
+
 ## Commands
 
 ### Docker (preferred)
@@ -101,7 +105,7 @@ PostGIS (PostgreSQL + `django.contrib.gis`). The Location model will use PostGIS
 
 Mobilito has two observation types:
 
-1. **Modal share session** — timed field count of passing vehicles by mode (pedestrian / cyclist / car / TC). Each tap is timestamped and sent individually; final totals are also sent for cross-checking.
+1. **Modal share session** — timed field count of passing vehicles by mode (pedestrian / cyclist / car / TC, i.e. transports en commun, public transit). Each tap is timestamped and sent individually; final totals are also sent for cross-checking.
 2. **Infrastructure report** (`signalement d'aménagement`) — photo + text + ontology tags documenting active mobility infrastructure at a location.
 
 **Observation lifecycle states** (developer/admin only; never exposed verbatim to users):
@@ -112,6 +116,25 @@ Draft → Submitted → Pending validation → Pending moderation → Published 
 ## Code style
 
 - Line length: 79 characters (both black and flake8).
-- Flake8 ignores D100–D107 (missing docstrings) and excludes `migrations/` and `settings.py`.
+- Flake8 ignores D100–D107 (missing docstrings) and excludes `migrations/`, `settings.py`, and `venv/`.
 - Production target: Ubuntu 22.04, Python 3.10+.
 - After any model changes: run `makemigrations`, commit the generated migration file.
+- License: AGPL-3.0-or-later (see `LICENSE`). Every new source file must start with the copyright/license header from `copyright-template.txt`, copied verbatim (adjust only the author line if a file has a different author). Generated files (`migrations/`) are exempt.
+
+## Git hygiene
+
+- Ask before committing, unless the user's request explicitly included committing as one of several steps.
+- Destructive git operations (force-push, `reset --hard`, history rewrites, amending a commit that's already been reviewed or pushed) always require explicit user confirmation — never do these as a shortcut to resolve an obstacle.
+- Add newly created files with `git add --intent-to-add` as soon as they're created, before requesting any review — so `git status`/`git diff` show them as pending additions rather than invisible untracked files.
+
+## Code review before commit
+
+Non-trivial changes get an independent review pass before a commit is proposed. Trivial changes (typo fixes, comment tweaks, one-line non-logic edits) may skip this; anything ambiguous counts as non-trivial.
+
+Run the review as separate parallel subagents (via the Agent tool), each with a distinct, narrowly focused prompt — not one combined review:
+
+- **Correctness** (always required): bugs, whether the code does what's intended, whether the intended behavior itself makes sense, whether the functionality is actually tested.
+- **Ergonomics** (required whenever the change is user-facing — templates, views, JS, copy): usability for untrained members of the public, since Mobilito's users are volunteer observers, not trained staff.
+- **Efficiency** (required whenever the change touches async task processing): time-budget analysis in the Celery/RabbitMQ context planned for v1 (see `doc/roadmap.md`) — the user is waiting on a response (e.g. the tag-proposal LLM call), so latency matters, not just throughput. Not yet part of the current stack (no Celery/RabbitMQ dependency exists today), but applies as soon as that infrastructure lands.
+
+If a review returns substantive issues, fix them and re-review with a fresh subagent; don't treat a review as passed until it comes back clean (or with only issues deliberately left unaddressed, explained as such). If the review/fix cycle goes past about three rounds, stop and ask the user rather than continuing to iterate. Treat reviewer feedback (human or subagent) as advisory, not authoritative — if you disagree with a finding, say so and explain why rather than silently complying or silently ignoring it.

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./docker/docker-manage.sh test:*)",
+      "Bash(./docker/docker-manage.sh manage check:*)",
+      "Bash(./docker/docker-manage.sh manage showmigrations:*)",
+      "Bash(./test.sh:*)"
+    ]
+  }
+}
