@@ -51,6 +51,15 @@ class MobilitoUserManagerTests(TestCase):
         user = MobilitoUser.objects.create_user("active@example.com")
         self.assertTrue(user.is_active)
 
+    def test_new_user_has_no_stored_language_preference(self):
+        # None = fall back to Accept-Language (§7), not any real choice.
+        user = MobilitoUser.objects.create_user("lang@example.com")
+        self.assertIsNone(user.preferred_language)
+
+    def test_new_user_uses_device_location_by_default(self):
+        user = MobilitoUser.objects.create_user("geo@example.com")
+        self.assertTrue(user.use_device_location)
+
     def test_create_user_idempotent(self):
         user1 = MobilitoUser.objects.create_user("dup@example.com")
         user2 = MobilitoUser.objects.create_user("dup@example.com")

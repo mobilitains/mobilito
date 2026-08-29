@@ -1,0 +1,130 @@
+[
+  {
+    "model": "mobilito_app.infrastructuretag",
+    "pk": 1,
+    "fields": {
+      "label": "Damaged sidewalk",
+      "label_fr": "Trottoir dégradé",
+      "label_en": "Damaged sidewalk",
+      "description": "",
+      "description_fr": "Trottoir fissuré, affaissé, ou dont le revêtement est en mauvais état.",
+      "description_en": "Cracked, sunken, or poorly surfaced sidewalk.",
+      "country": "",
+      "family": "walking",
+      "status": "active",
+      "created_at": "2026-08-29T00:00:00Z"
+    }
+  },
+  {
+    "model": "mobilito_app.infrastructuretag",
+    "pk": 2,
+    "fields": {
+      "label": "No cycle lane",
+      "label_fr": "Absence de piste cyclable",
+      "label_en": "No cycle lane",
+      "description": "",
+      "description_fr": "Aucun aménagement cyclable sur un axe qui en aurait besoin.",
+      "description_en": "No dedicated cycling infrastructure on a road that needs one.",
+      "country": "",
+      "family": "cycling",
+      "status": "active",
+      "created_at": "2026-08-29T00:00:00Z"
+    }
+  },
+  {
+    "model": "mobilito_app.infrastructuretag",
+    "pk": 3,
+    "fields": {
+      "label": "Obstructive parking",
+      "label_fr": "Stationnement gênant",
+      "label_en": "Obstructive parking",
+      "description": "",
+      "description_fr": "Véhicule stationné sur un trottoir, une piste cyclable, ou un passage piéton.",
+      "description_en": "A vehicle parked on a sidewalk, cycle lane, or crosswalk.",
+      "country": "",
+      "family": "shared",
+      "status": "active",
+      "created_at": "2026-08-29T00:00:00Z"
+    }
+  },
+  {
+    "model": "mobilito_app.infrastructuretag",
+    "pk": 4,
+    "fields": {
+      "label": "Insufficient lighting",
+      "label_fr": "Éclairage insuffisant",
+      "label_en": "Insufficient lighting",
+      "description": "",
+      "description_fr": "Zone mal éclairée la nuit, réduisant la sécurité des déplacements actifs.",
+      "description_en": "Poorly lit area at night, reducing safety for active mobility.",
+      "country": "",
+      "family": "shared",
+      "status": "active",
+      "created_at": "2026-08-29T00:00:00Z"
+    }
+  },
+  {
+    "model": "mobilito_app.infrastructuretag",
+    "pk": 5,
+    "fields": {
+      "label": "Dangerous pedestrian crossing",
+      "label_fr": "Traversée piétonne dangereuse",
+      "label_en": "Dangerous pedestrian crossing",
+      "description": "",
+      "description_fr": "Passage piéton avec mauvaise visibilité, absence de feux, ou trafic rapide.",
+      "description_en": "A crossing with poor visibility, no signals, or fast-moving traffic.",
+      "country": "",
+      "family": "walking",
+      "status": "active",
+      "created_at": "2026-08-29T00:00:00Z"
+    }
+  },
+  {
+    "model": "mobilito_app.infrastructuretag",
+    "pk": 6,
+    "fields": {
+      "label": "Good cycling infrastructure",
+      "label_fr": "Bon aménagement cyclable",
+      "label_en": "Good cycling infrastructure",
+      "description": "",
+      "description_fr": "Piste ou bande cyclable bien conçue, séparée du trafic motorisé.",
+      "description_en": "A well-designed cycle track or lane, separated from motor traffic.",
+      "country": "",
+      "family": "cycling",
+      "status": "active",
+      "created_at": "2026-08-29T00:00:00Z"
+    }
+  },
+  {
+    "model": "mobilito_app.infrastructuretag",
+    "pk": 7,
+    "fields": {
+      "label": "Missing bike parking",
+      "label_fr": "Absence de stationnement vélo",
+      "label_en": "Missing bike parking",
+      "description": "",
+      "description_fr": "Aucun arceau ou stationnement sécurisé pour les vélos à proximité.",
+      "description_en": "No bike racks or secure parking nearby.",
+      "country": "",
+      "family": "cycling",
+      "status": "active",
+      "created_at": "2026-08-29T00:00:00Z"
+    }
+  },
+  {
+    "model": "mobilito_app.infrastructuretag",
+    "pk": 8,
+    "fields": {
+      "label": "RAC non-compliant",
+      "label_fr": "Non conforme au RAC",
+      "label_en": "RAC non-compliant",
+      "description": "",
+      "description_fr": "Aménagement ne respectant pas le Référentiel Aménagements Cyclables de Nantes Métropole.",
+      "description_en": "Infrastructure that does not conform to Nantes Métropole's cycling infrastructure reference guide.",
+      "country": "FR",
+      "family": "cycling",
+      "status": "active",
+      "created_at": "2026-08-29T00:00:00Z"
+    }
+  }
+]

@@ -46,6 +46,8 @@ class MobilitoUserAdmin(UserAdmin):
                     "is_staff",
                     "is_superuser",
                     "email_validated",
+                    "preferred_language",
+                    "use_device_location",
                 )
             },
         ),

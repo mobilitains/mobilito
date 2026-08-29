@@ -21,6 +21,7 @@ along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
 
+from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -96,6 +97,19 @@ class MobilitoUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     email_validated = models.BooleanField(default=False)
+    # null is deliberate here (contra DJ01): it distinguishes "no
+    # stored preference, fall back to Accept-Language" (§7) from any
+    # valid empty value.
+    preferred_language = models.CharField(  # noqa: DJ01
+        max_length=10,
+        choices=settings.LANGUAGES,
+        null=True,
+        blank=True,
+    )
+    # Server-persisted geolocation preference (§11.2). Checked by
+    # default; when off, the app never calls the browser geolocation
+    # API and no permission prompt appears.
+    use_device_location = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

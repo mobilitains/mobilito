@@ -13,6 +13,9 @@ django-sesame==3.2.3
 # HTMX integration
 django-htmx==1.29.0
 
+# Per-locale translated model fields (InfrastructureTag)
+django-modeltranslation==0.20.3
+
 # Media storage (S3-compatible for photo uploads)
 django-storages[s3]==1.14.6
 

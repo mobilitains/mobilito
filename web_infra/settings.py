@@ -32,6 +32,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    # modeltranslation must precede django.contrib.admin so it can
+    # patch ModelAdmin classes for translated fields.
+    "modeltranslation",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -121,6 +124,18 @@ LOCALE_PATHS = [BASE_DIR / "locale"]
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
+
+MODELTRANSLATION_LANGUAGES = ("fr", "en")
+MODELTRANSLATION_DEFAULT_LANGUAGE = "fr"
+
+# Location equivalence radii (§11.4): two observations are treated as
+# "at the same location" if within this distance. Infrastructure uses
+# a small radius so opposite sides of a street aren't conflated;
+# modal share uses a larger approximation standing in for "the same
+# unbranched stretch of road", since precise path topology is not
+# modelled.
+LOCATION_EQUIVALENCE_RADIUS_INFRASTRUCTURE_METERS = 3
+LOCATION_EQUIVALENCE_RADIUS_MODAL_SHARE_METERS = 50
 
 # Static and media files
 STATIC_URL = "static/"
