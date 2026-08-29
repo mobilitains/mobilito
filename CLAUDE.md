@@ -35,6 +35,9 @@ python -m venv venv
 . venv/bin/activate
 pip install -r requirements.txt
 pip install "GDAL==$(gdal-config --version)"
+# Under Python 3.12+, also override flake8-django's pinned astroid<3.0
+# (see docker/Dockerfile for why) before running flake8 locally:
+pip install "astroid==3.3.11"
 
 cp web_infra/settings_local_template.py web_infra/settings_local.py
 # Edit settings_local.py: set SECRET_KEY and DATABASES for local PostgreSQL.

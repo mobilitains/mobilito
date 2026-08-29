@@ -19,6 +19,13 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install black==24.4.2 flake8==6.1.0 flake8-django==1.4
+          # flake8-django 1.4 pins astroid<3.0, which can't parse the
+          # PEP 695 `type` statement in Python 3.12's stdlib typing.py
+          # and crashes its DJ0 check. This job runs on 3.11 today so
+          # it doesn't hit that, but override anyway (see
+          # docker/Dockerfile) so it doesn't silently regress if this
+          # job's Python version is ever bumped to match Docker's.
+          pip install astroid==3.3.11
 
       - name: Run linters
         run: |
