@@ -47,7 +47,7 @@ case "$action" in
 	    set -e
 	    black --check --line-length 79 \
 	        --extend-exclude '(migrations|venv)' . &&
-	    flake8 --exclude=__pycache__,migrations &&
+	    flake8 --exclude=__pycache__,migrations,venv &&
 	    python manage.py makemigrations --check &&
 	    python manage.py migrate &&
 	    coverage run --source='.' manage.py test &&
