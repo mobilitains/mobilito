@@ -160,11 +160,18 @@ Some readers will later become contributors; unauthenticated browsing must there
 
 ### 8.2 Frontend stack
 
-**Recommended: Django server-side rendering + Bootstrap 5 + HTMX + minimal plain JavaScript.**
+**Recommended: Django server-side rendering + Bootstrap 5 + HTMX + explicit JavaScript modules for a few well-defined components.**
+
+**Layering policy**, most-preferred option first:
+
+1. **Ordinary Django views and templates** as the baseline for every page.
+2. **HTMX** for server-backed interactions (partial updates, polling, form submission without full reloads), rendered as server-side HTML fragments — not client-side templating over a JSON payload.
+3. **Real links and forms wherever feasible**, so important workflows still function without HTMX. This is progressive enhancement, consistent with §8.1's requirement that browsing and reading work without JavaScript.
+4. **Explicit JavaScript modules** for the few areas that genuinely need direct browser APIs: the map (Leaflet, geolocation, crosshair/pin interaction), the camera/photo flow (preview, multi-file handling), and offline resilience (tap-event queueing, sync-on-reconnect, draft persistence). These stay narrow and named — not a general-purpose client framework.
+5. **A JSON API only where a component genuinely exchanges data rather than rendered UI** — e.g. the observations GeoJSON endpoint consumed by the Leaflet map, and modal-share tap events (§20.4). Anywhere the response is meant to be displayed, prefer an HTMX-rendered HTML fragment over a JSON payload plus client-side DOM manipulation.
 
 - **Bootstrap 5** provides a mature, well-known component library with strong mobile support, responsive grids, and large tap targets out of the box. It is familiar to most Django developers and avoids framework lock-in.
-- **HTMX** handles AJAX-like interactions (tag suggestions, partial map updates, form submissions without full-page reloads) with server-rendered HTML fragments. This fits Django's rendering model naturally, avoids a heavy SPA build pipeline, and keeps the JavaScript footprint minimal.
-- **Plain JavaScript** covers browser API interactions (geolocation, touch events, tap timestamping) where HTMX cannot reach. This is a narrow residual layer.
+- **HTMX version:** pin to **htmx 2.x** (the current stable/"latest" release line) for the initial build-out. htmx 4.0 was released 2026-08-28 as a parallel "next" line (XHR replaced by fetch, attribute inheritance explicit by default, some event names renamed); the htmx project does not expect 2.x to be superseded as "latest" before roughly early 2027. Re-evaluate at Phase 4 of the roadmap (Map component — the first phase that actually wires up HTMX): since no HTMX code exists yet, there is nothing to migrate, and if 4.0 has a stable track record by then, adopt it directly instead of starting on 2.x. The htmx project characterises the 2→4 behavioural differences as small, so deferring the choice costs little either way — the only real risk today is building on a release that is one day old.
 
 A full SPA framework (React, Vue, etc.) is not warranted: the interactive surface is narrow, and the overhead in tooling, build pipeline, and developer specialisation outweighs the benefit. HTMX satisfies the AJAX requirements; jQuery is not needed.
 

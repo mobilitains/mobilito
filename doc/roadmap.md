@@ -25,7 +25,7 @@ These unblock multiple phases and should be settled first.
 | **Reverse geocoding** | Nominatim (OSM) | Free but rate-limited. Wrap in a thin service layer so the provider can be swapped without touching views. **Decision: Yes.  Assume we may also use mapbox for reverse geocoding, with an attempt to stay within their free tier.** |
 | **Object storage** | Cloudflare R2 | django-storages[s3] installed; R2 is S3-compatible and has no egress fees. Configure credentials before Phase 6. **Decision: Yes.** |
 | **Async task queue** | Celery + RabbitMQ | Needed for LLM calls (v1). RabbitMQ's push-based delivery keeps task pickup latency in milliseconds — important because the tag-proposal LLM call is a user-waiting interaction (page polls for result). Redis-as-broker has weaker acknowledgment semantics and would add unreliability overhead. Add to docker-compose when Phase 12 starts; not needed for v1-preview. **Decision: Yes.** |
-| **Javascript** | HTMX | Do we have opinions on javascript frameworks? **Decision: Use htmx to the extent possible.  Avoid to the extent possible anything that requires a large auxiliary library load.** |
+| **Javascript** | HTMX + narrow explicit JS modules | Layering policy in design.md §8.2: Django views/templates baseline → HTMX for server-backed interactions → real links/forms as a no-JS fallback where feasible → explicit JS modules only for the map, camera, and offline queueing → JSON API only where genuine data (not rendered UI) is exchanged. **Decision: htmx 2.x for now.** htmx 4.0 shipped 2026-08-28 and is worth adopting, but it's one day old at time of writing and the htmx project itself keeps 2.x as "latest" until roughly early 2027. No HTMX code exists yet, so there's nothing to migrate — **re-evaluate 2.x vs. 4.0 at Phase 4** (first phase to actually wire up HTMX), by which point 4.0 will have a track record. See design.md §8.2 for detail. |
 
 ---
 
@@ -95,13 +95,15 @@ Before building any feature page, establish the shared shell that all pages inhe
 
 A reusable component used by observation submission (both types), browsing, and observation detail pages. Build it once cleanly.
 
+**Before starting**: re-check the htmx 2.x vs. 4.0 decision (see the Decisions table and design.md §8.2) — this is the first phase that writes HTMX code, and by now 4.0 will have had time to show whether it's stable.
+
 - Leaflet.js loaded from CDN (or bundled with `django-compressor` later).
 - `map_widget.html` include: takes a Django template context with initial centre, zoom, optional observation pins GeoJSON, and configuration flags (crosshair mode on/off, GPS button on/off).
 - **Crosshair mode** (§9.2): fixed SVG crosshair overlay centred in the viewport. Map centre = reported location. "Confirm location" button posts current map centre to the server.
 - **GPS button**: calls `navigator.geolocation.getCurrentPosition()` only if `use_device_location` is True; pans map to result. Shows the "location-unverified" notice if geolocation is off or denied (§11.2).
 - **Observation pins**: coloured Leaflet markers rendered from a GeoJSON endpoint. Tapping a pin triggers a bottom-sheet partial loaded via HTMX.
 - **Bottom sheet**: Bootstrap offcanvas component anchored to the bottom; loaded by HTMX from `/observations/<id>/summary/`.
-- Reverse geocoding: on "Confirm location", fire an async request to a wrapper view that calls Nominatim; return human-readable address for user to review/edit.
+- Reverse geocoding: on "Confirm location", an HTMX request hits a wrapper view that calls Nominatim (or mapbox) and returns an HTML fragment with the human-readable address for the user to review/edit — a JSON endpoint isn't warranted here since the response is rendered UI, not data exchanged between components (§8.2 layering policy).
 
 ---
 
