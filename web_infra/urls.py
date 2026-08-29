@@ -20,6 +20,11 @@ along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 from django.contrib import admin
 from django.urls import path
 
+from core.views import set_language
+from mobilito_app.views import home
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("language/", set_language, name="set_language"),
+    path("", home, name="home"),
 ]

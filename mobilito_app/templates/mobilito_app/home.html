@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% comment %}
+extends must be the first tag in the file, so the copyright header
+follows it here instead of leading the file.
+
+Copyright 2024  Francais pour une Meilleure Mobilité.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+
+{% block title %}Mobilito{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  {# /counts/new/ and /reports/new/ land in Phase 5 and Phase 6. #}
+  <div class="row g-3 mb-4">
+    <div class="col-6">
+      <a href="/counts/new/" class="btn btn-primary btn-lg w-100 py-4">
+        {% trans "Count modal share" %}
+      </a>
+    </div>
+    <div class="col-6">
+      <a href="/reports/new/" class="btn btn-primary btn-lg w-100 py-4">
+        {% trans "Report an aménagement" %}
+      </a>
+    </div>
+  </div>
+  {# /observations/mine/ and /map/ land in Phase 7. #}
+  <p class="text-center">
+    <a href="/observations/mine/">{% trans "Your observations" %}</a>
+    &middot;
+    <a href="/map/">{% trans "Browse the map" %}</a>
+  </p>
+{% else %}
+  <div class="text-center py-5">
+    <h1>Mobilito</h1>
+    <p class="lead mx-auto" style="max-width: 40rem;">
+      {% blocktranslate %}Document how people move through your streets: count who passes by, and report the infrastructure that helps or hinders them.{% endblocktranslate %}
+    </p>
+    {# /map/ lands in Phase 7; /auth/start/ lands in Phase 3. #}
+    <div class="d-flex justify-content-center gap-3 mt-4">
+      <a href="/map/" class="btn btn-outline-primary btn-lg">
+        {% trans "Browse observations" %}
+      </a>
+      <a href="/auth/start/" class="btn btn-primary btn-lg">
+        {% trans "Make an observation" %}
+      </a>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

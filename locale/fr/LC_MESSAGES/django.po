@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 16:46+0000\n"
+"POT-Creation-Date: 2026-08-29 18:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -140,6 +140,64 @@ msgstr ""
 
 #: mobilito_app/models.py:249
 msgid "Other"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/home.html:34
+msgid "Count modal share"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/home.html:39
+msgid "Report an aménagement"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/home.html:45
+msgid "Your observations"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/home.html:47
+msgid "Browse the map"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/home.html:53
+msgid ""
+"Document how people move through your streets: count who passes by, and "
+"report the infrastructure that helps or hinders them."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/home.html:58
+msgid "Browse observations"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/home.html:61
+msgid "Make an observation"
+msgstr ""
+
+#: templates/404.html:26 templates/404.html:30
+msgid "Page not found"
+msgstr ""
+
+#: templates/404.html:32
+msgid "The page you're looking for doesn't exist."
+msgstr ""
+
+#: templates/404.html:35
+msgid "Back to Mobilito"
+msgstr ""
+
+#: templates/includes/nav.html:38
+msgid "Change language"
+msgstr ""
+
+#: templates/includes/nav.html:61
+msgid "Signed in"
+msgstr ""
+
+#: templates/includes/nav.html:63
+msgid "Sign out"
+msgstr ""
+
+#: templates/includes/nav.html:67
+msgid "Sign in"
 msgstr ""
 
 #: venv/lib/python3.10/site-packages/django/contrib/messages/apps.py:16

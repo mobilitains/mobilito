@@ -17,11 +17,16 @@ You should have received a copy of the GNU Affero General Public License
 along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.gis.geos import Point
-from django.test import TestCase
+from django.http import HttpResponse
+from django.test import RequestFactory, TestCase
+from django.urls import reverse
 from django.utils import timezone
 
 from authentication.models import MobilitoUser
+from core.middleware import SyncUserLanguageMiddleware
 from core.models import Location, LocationEvidence
 from mobilito_app.models import ModalShareSession
 
@@ -64,3 +69,83 @@ class LocationEvidenceTests(TestCase):
         )
         self.assertEqual(evidence.observation, session)
         self.assertEqual(evidence.content_type.model, "modalsharesession")
+
+
+class SetLanguageViewTests(TestCase):
+    def test_get_not_allowed(self):
+        response = self.client.get(reverse("set_language"))
+        self.assertEqual(response.status_code, 405)
+
+    def test_anonymous_sets_language_cookie(self):
+        response = self.client.post(
+            reverse("set_language"), {"language": "en", "next": "/"}
+        )
+        self.assertRedirects(response, "/")
+        self.assertEqual(
+            response.cookies[settings.LANGUAGE_COOKIE_NAME].value, "en"
+        )
+
+    def test_authenticated_user_stores_preference(self):
+        user = MobilitoUser.objects.create_user("lang@example.com")
+        self.client.force_login(user)
+        self.client.post(
+            reverse("set_language"), {"language": "en", "next": "/"}
+        )
+        user.refresh_from_db()
+        self.assertEqual(user.preferred_language, "en")
+
+    def test_invalid_language_is_ignored(self):
+        response = self.client.post(
+            reverse("set_language"), {"language": "xx", "next": "/"}
+        )
+        self.assertRedirects(response, "/")
+        self.assertNotIn(settings.LANGUAGE_COOKIE_NAME, response.cookies)
+
+    def test_unsafe_next_falls_back_to_home(self):
+        response = self.client.post(
+            reverse("set_language"),
+            {"language": "en", "next": "https://evil.example/"},
+        )
+        self.assertRedirects(response, "/")
+
+    def test_htmx_request_gets_hx_redirect_header(self):
+        response = self.client.post(
+            reverse("set_language"),
+            {"language": "en", "next": "/"},
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["HX-Redirect"], "/")
+
+
+class SyncUserLanguageMiddlewareTests(TestCase):
+    def _run(self, request):
+        seen_cookies = {}
+
+        def get_response(inner_request):
+            seen_cookies.update(inner_request.COOKIES)
+            return HttpResponse()
+
+        SyncUserLanguageMiddleware(get_response)(request)
+        return seen_cookies
+
+    def test_authenticated_users_preference_overrides_cookie(self):
+        user = MobilitoUser.objects.create_user("sync@example.com")
+        user.preferred_language = "en"
+        user.save(update_fields=["preferred_language"])
+        request = RequestFactory().get("/")
+        request.user = user
+        request.COOKIES[settings.LANGUAGE_COOKIE_NAME] = "fr"
+
+        seen_cookies = self._run(request)
+
+        self.assertEqual(seen_cookies[settings.LANGUAGE_COOKIE_NAME], "en")
+
+    def test_anonymous_user_leaves_cookie_untouched(self):
+        request = RequestFactory().get("/")
+        request.user = AnonymousUser()
+        request.COOKIES[settings.LANGUAGE_COOKIE_NAME] = "fr"
+
+        seen_cookies = self._run(request)
+
+        self.assertEqual(seen_cookies[settings.LANGUAGE_COOKIE_NAME], "fr")

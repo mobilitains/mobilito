@@ -20,6 +20,7 @@ along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 from django.contrib.gis.geos import Point
 from django.core.management import call_command
 from django.test import TestCase
+from django.urls import reverse
 from django.utils import timezone
 
 from authentication.models import MobilitoUser
@@ -150,3 +151,40 @@ class InfrastructureTagFixtureTests(TestCase):
         self.assertTrue(tag.label_fr)
         self.assertTrue(tag.label_en)
         self.assertNotEqual(tag.label_fr, tag.label_en)
+
+
+class HomeViewTests(TestCase):
+    def test_visitor_sees_landing_ctas(self):
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "mobilito_app/home.html")
+        self.assertContains(response, "Browse observations")
+        self.assertContains(response, "Make an observation")
+        self.assertNotContains(response, "Count modal share")
+
+    def test_authenticated_user_sees_observation_buttons(self):
+        user = make_user("home@example.com")
+        self.client.force_login(user)
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, "Count modal share")
+        self.assertContains(response, "Report an aménagement")
+        self.assertNotContains(response, "Browse observations")
+
+    def test_no_template_comments_leak_into_rendered_html(self):
+        # Regression check: Django's {# #} comment tag doesn't span
+        # multiple lines, so a multi-line comment written that way
+        # renders as literal text instead of being stripped.
+        # Templates here use {% comment %}/{% endcomment %} instead,
+        # for headers and any other multi-line comment.
+        response = self.client.get(reverse("home"))
+        content = response.content.decode()
+        self.assertNotIn("Copyright", content)
+        self.assertNotIn("{#", content)
+        self.assertNotIn("{%", content)
+
+        self.client.force_login(make_user("nav-comments@example.com"))
+        response = self.client.get(reverse("home"))
+        content = response.content.decode()
+        self.assertNotIn("Copyright", content)
+        self.assertNotIn("{#", content)
+        self.assertNotIn("{%", content)

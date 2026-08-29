@@ -17,6 +17,14 @@ You should have received a copy of the GNU Affero General Public License
 along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-# from django.shortcuts import render
+from django.shortcuts import render
 
-# Create your views here.
+
+def home(request):
+    """Landing page (§21.1) / authenticated home screen (§21.2).
+
+    One URL, one template: the template itself branches on
+    user.is_authenticated to swap the visitor CTAs for the two
+    observation-entry buttons.
+    """
+    return render(request, "mobilito_app/home.html")

@@ -1,0 +1,70 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">Mobilito</a>
+
+    <div class="d-flex align-items-center gap-3">
+      {% comment %}
+      Real form + submit buttons: works with no JS; htmx (below)
+      intercepts and the server replies with a full-page redirect
+      instead of a swap, so the effect is the same either way.
+      {% endcomment %}
+      <form method="post" action="{% url 'set_language' %}" hx-post="{% url 'set_language' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <div
+          class="btn-group"
+          role="group"
+          aria-label="{% trans 'Change language' %}"
+        >
+          {% for code, name in LANGUAGES %}
+            <button
+              type="submit"
+              name="language"
+              value="{{ code }}"
+              class="btn {% if code == LANGUAGE_CODE %}btn-light{% else %}btn-outline-light{% endif %}"
+              {% if code == LANGUAGE_CODE %}disabled aria-current="true"{% endif %}
+              aria-label="{{ name }}"
+              title="{{ name }}"
+            >{{ code|upper }}</button>
+          {% endfor %}
+        </div>
+      </form>
+
+      {% comment %}
+      /auth/start/ and /auth/logout/ are Phase 3 routes; not wired
+      up yet, but these are the exact paths that phase defines, so
+      no further nav changes will be needed then.
+      {% endcomment %}
+      {% if user.is_authenticated %}
+        <span class="navbar-text text-light small">{% trans "Signed in" %}</span>
+        <a href="/auth/logout/" class="btn btn-outline-light">
+          {% trans "Sign out" %}
+        </a>
+      {% else %}
+        <a href="/auth/start/" class="btn btn-outline-light">
+          {% trans "Sign in" %}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</nav>

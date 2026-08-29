@@ -1,0 +1,50 @@
+<!-- Copyright 2024  Francais pour une Meilleure Mobilité.
+
+     This file is part of the mobilito web application.
+
+     Mobilito is free software: you can redistribute it and/or
+     modify it under the terms of the GNU Affero General Public
+     License as published by the Free Software Foundation, either
+     version 3 of the License, or (at your option) any later
+     version.
+
+     Mobilito is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Affero General Public License for more details.
+
+     You should have received a copy of the GNU Affero General
+     Public License along with mobilito.  If not, see
+     <http://www.gnu.org/licenses/>.
+
+     Deliberately NOT extending base.html: Django's default 500
+     view renders this without a RequestContext, so context
+     processors (request, auth, messages, i18n) aren't guaranteed
+     to be populated. Keep this self-contained per Django's own
+     recommendation. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mobilito — Server error</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      text-align: center;
+      padding: 4rem 1rem;
+      color: #212529;
+    }
+    a { color: #0d6efd; }
+  </style>
+</head>
+<body>
+  <h1>Something went wrong</h1>
+  <p>Sorry — something broke on our end. Please try again shortly.</p>
+  <p><a href="/">Back to Mobilito</a></p>
+  <hr>
+  <h1>Une erreur est survenue</h1>
+  <p>Désolé, quelque chose s'est mal passé de notre côté. Merci de réessayer dans un instant.</p>
+  <p><a href="/">Retour à Mobilito</a></p>
+</body>
+</html>
