@@ -129,7 +129,9 @@ class MagicLinkStartTests(TestCase):
         response = self.client.get(
             reverse("auth_start"), {"next": "https://evil.example/"}
         )
-        self.assertNotContains(response, "evil.example")
+        # (The nav's language form echoes the full URL; set_language
+        # validates it separately.)
+        self.assertEqual(response.context["form"]["next"].value(), "")
 
     def test_post_creates_user_and_sends_link(self):
         response = self.client.post(
