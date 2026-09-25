@@ -19,12 +19,21 @@ along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 
 from django.shortcuts import render
 
+from authentication.provisional import get_observer
+from mobilito_app.counts import open_session
+
 
 def home(request):
     """Landing page (§21.1) / authenticated home screen (§21.2).
 
     One URL, one template: the template itself branches on
-    user.is_authenticated to swap the visitor CTAs for the two
+    whether anyone is observing (signed in, or "probably signed in",
+    §5.4) to swap the visitor CTAs for the two
     observation-entry buttons.
     """
-    return render(request, "mobilito_app/home.html")
+    observer = get_observer(request)
+    return render(
+        request,
+        "mobilito_app/home.html",
+        {"observer": observer, "open_session": open_session(observer)},
+    )

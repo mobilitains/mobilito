@@ -171,11 +171,13 @@ def observer_required(view):
         request.observer = get_observer(request)
         if request.observer.is_known:
             return view(request, *args, **kwargs)
-        target = (
-            reverse("auth_observe")
-            + "?"
-            + urlencode({"next": request.get_full_path()})
-        )
+        if request.htmx:
+            # Back to the page the request came from, not to the
+            # endpoint htmx posted to.
+            next_url = request.htmx.current_url_abs_path or "/"
+        else:
+            next_url = request.get_full_path()
+        target = reverse("auth_observe") + "?" + urlencode({"next": next_url})
         if request.htmx:
             return HttpResponseClientRedirect(target)
         return redirect(target)

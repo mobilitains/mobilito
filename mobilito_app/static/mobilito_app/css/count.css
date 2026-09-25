@@ -1,0 +1,206 @@
+/*
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>, based in part on the Mobilito
+proof of concept in transport-nantes/tn_web.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+*/
+
+/* Counting screen (§9.1): proportions from the Mobilito proof of
+   concept (transport-nantes/tn_web): square buttons of 45vw, capped,
+   big icon, bold count, finish at the top, dark background. */
+
+.mobilito-count-main {
+  min-height: 100vh;
+  min-height: 100svh;
+  background: #1b2a41;
+  color: #fff;
+  /* No pull-to-refresh or bounce while tapping fast. */
+  overscroll-behavior: contain;
+  padding: 0.75rem 0;
+}
+
+.mobilito-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: calc(100svh - 1.5rem);
+}
+
+.mobilito-count-top {
+  width: 100%;
+  max-width: 520px;
+  padding: 0 0.75rem;
+}
+
+/* Bootstrap's own .btn state rules beat plain properties (and
+   touch screens keep :hover after a tap), so set its variables.
+   Dark text: white on this orange is too faint in sunlight. */
+.mobilito-finish {
+  --bs-btn-bg: #fd7e14;
+  --bs-btn-border-color: #fd7e14;
+  --bs-btn-color: #1b2a41;
+  --bs-btn-hover-bg: #fd7e14;
+  --bs-btn-hover-border-color: #fd7e14;
+  --bs-btn-hover-color: #1b2a41;
+  --bs-btn-active-bg: #fff;
+  --bs-btn-active-border-color: #fff;
+  --bs-btn-active-color: #1b2a41;
+  --bs-btn-disabled-bg: #fd7e14;
+  --bs-btn-disabled-border-color: #fd7e14;
+  --bs-btn-disabled-color: #1b2a41;
+  font-weight: 700;
+  min-height: 3.25rem;
+}
+
+.mobilito-count-timer {
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 4.5rem;
+  text-align: right;
+}
+
+/* Room for the longest message (in French too), so that messages
+   coming and going never shift the buttons under a finger. */
+.mobilito-count-status {
+  min-height: 4.5em;
+  margin-top: 0.35rem;
+  text-align: center;
+}
+
+.mobilito-count-grid {
+  display: grid;
+  grid-template-columns: repeat(2, min(45vw, 250px));
+  gap: 0.9rem;
+  /* Bottom of the screen, within thumb reach (§9.1, §17). */
+  margin-top: auto;
+  margin-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.mobilito-count-button {
+  width: min(45vw, 250px);
+  height: min(45vw, 250px);
+  /* Short, wide screens: keep all four on screen. */
+  max-height: calc((100svh - 9rem) / 2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 15px;
+  background: #0d6efd;
+  color: #fff;
+  font-weight: 600;
+  /* No double-tap zoom or text selection on rapid taps. */
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.2s ease-out;
+}
+
+.mobilito-count-button i {
+  font-size: clamp(3rem, 18vw, 5rem);
+  line-height: 1;
+}
+
+.mobilito-count-label {
+  font-size: clamp(0.8rem, 3.6vw, 1rem);
+  font-weight: 500;
+  margin-top: 0.15rem;
+}
+
+.mobilito-count-number {
+  font-size: clamp(1.5rem, 8vw, 2rem);
+  line-height: 1.1;
+}
+
+.mobilito-count-button:disabled {
+  opacity: 0.45;
+}
+
+.mobilito-count-button:active,
+.mobilito-count-button.is-tapped {
+  background: #fff;
+  color: #0d6efd;
+  transition: none;
+}
+
+/* Over the buttons, not in the layout: opening it must not move
+   anything under a finger. */
+.mobilito-count-short-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.mobilito-count-short-backdrop[hidden] {
+  display: none;
+}
+
+.mobilito-count-short {
+  width: 100%;
+  max-width: 520px;
+  color: #212529;
+}
+
+/* Results bars (HTML/CSS, no chart library at this scale). */
+
+.mobilito-bar-row {
+  display: grid;
+  /* Fixed value column, so every track is the same length and bars
+     compare by length. */
+  grid-template-columns: 8.5rem 1fr 6.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.mobilito-bar-track {
+  display: block;
+  height: 1.5rem;
+  background: #e9ecef;
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.mobilito-bar {
+  display: block;
+  height: 100%;
+}
+
+.mobilito-bar-ped { background: #198754; }
+.mobilito-bar-bike { background: #0d6efd; }
+.mobilito-bar-car { background: #6c757d; }
+.mobilito-bar-tc { background: #fd7e14; }
+
+@media (max-width: 380px) {
+  .mobilito-bar-row {
+    grid-template-columns: 1fr auto;
+  }
+  .mobilito-bar-track {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}

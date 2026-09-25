@@ -207,6 +207,21 @@ MODELTRANSLATION_DEFAULT_LANGUAGE = "fr"
 LOCATION_EQUIVALENCE_RADIUS_INFRASTRUCTURE_METERS = 3
 LOCATION_EQUIVALENCE_RADIUS_MODAL_SHARE_METERS = 50
 
+# Modal share counting (§9.1, roadmap Phase 5).
+# Finishing sooner than this asks "keep it or discard it?".
+MODAL_SHARE_MIN_SESSION_SECONDS = 120
+# Device GPS further than this from the confirmed position flags the
+# count as lower reliability (§9.1 "Presence"); it is not rejected.
+MODAL_SHARE_LOCATION_MISMATCH_METERS = 200
+# Taps per counting session, and per IP, per minute. Generous: a busy
+# street can give several taps a second.
+RATE_LIMIT_COUNT_EVENTS_PER_SESSION = (600, 60)
+RATE_LIMIT_COUNT_EVENTS_PER_IP = (1200, 60)
+RATE_LIMIT_COUNT_START = (30, 3600)
+# A count left open (back button, closed tab) is offered for resuming
+# on the start page and home for this long.
+MODAL_SHARE_RESUME_HOURS = 6
+
 # Reverse geocoding (roadmap Phase 4, core/geocoding.py). Swap the
 # provider here, e.g. to "core.geocoding.MapboxGeocoder" (which also
 # needs MAPBOX_ACCESS_TOKEN), without touching views.

@@ -33,5 +33,6 @@ urlpatterns = [
         name="set_device_location",
     ),
     path("location/confirm/", location_confirm, name="location_confirm"),
+    path("", include("mobilito_app.urls")),
     path("", home, name="home"),
 ]

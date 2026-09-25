@@ -17,18 +17,15 @@ You should have received a copy of the GNU Affero General Public License
 along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import functools
-from urllib.parse import urlencode
-
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, resolve_url
+from django.shortcuts import render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import get_language
 from django.views.decorators.http import require_POST
 from django_htmx.http import HttpResponseClientRedirect
 
+from authentication.provisional import observer_required
 from core.forms import LocationConfirmForm
 from core.geocoding import reverse_geocode
 from core.maps import DEVICE_LOCATION_SESSION_KEY, WIDGET_ID_RE
@@ -93,30 +90,13 @@ def set_device_location(request):
     return HttpResponse(status=204)
 
 
-def htmx_login_required(view):
-    """login_required that also works for htmx requests.
-
-    Plain login_required answers an htmx request with a redirect
-    that htmx follows silently, pasting the sign-in page into the
-    swap target. Tell htmx to navigate instead, returning to the
-    page the request came from.
-    """
-    wrapped = login_required(view)
-
-    @functools.wraps(view)
-    def inner(request, *args, **kwargs):
-        if request.htmx and not request.user.is_authenticated:
-            next_url = request.htmx.current_url_abs_path or "/"
-            return HttpResponseClientRedirect(
-                f"{resolve_url(settings.LOGIN_URL)}?"
-                + urlencode({"next": next_url})
-            )
-        return wrapped(request, *args, **kwargs)
-
-    return inner
+def _observer_key(observer) -> str:
+    if observer.user is not None:
+        return f"user:{observer.user.pk}"
+    return f"attempt:{observer.attempt.pk}"
 
 
-@htmx_login_required
+@observer_required
 @require_POST
 def location_confirm(request):
     """Reverse-geocode the confirmed crosshair position (Phase 4).
@@ -136,7 +116,7 @@ def location_confirm(request):
     if form.is_valid() and not (
         is_rate_limited(
             "location_confirm_user",
-            str(request.user.pk),
+            _observer_key(request.observer),
             *settings.RATE_LIMIT_LOCATION_CONFIRM,
         )
         or is_rate_limited(

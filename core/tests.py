@@ -422,7 +422,19 @@ class LocationConfirmViewTests(TestCase):
         response = self.client.post(reverse("location_confirm"), {})
         self.assertContains(response, "couldn't read that position")
 
-    def test_htmx_request_when_signed_out_navigates_to_sign_in(self):
+    def test_provisional_observer_can_confirm(self):
+        self.client.logout()
+        self.client.post(
+            reverse("auth_observe"), {"email": "walker@example.com"}
+        )
+        with mock.patch("core.views.reverse_geocode", return_value=None):
+            response = self.client.post(
+                reverse("location_confirm"),
+                {"map-lat": "47.2", "map-lon": "-1.5"},
+            )
+        self.assertContains(response, "Location confirmed.")
+
+    def test_htmx_request_from_nobody_asks_for_an_email(self):
         self.client.logout()
         response = self.client.post(
             reverse("location_confirm"),
@@ -433,7 +445,7 @@ class LocationConfirmViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response["HX-Redirect"],
-            reverse("auth_start") + "?next=%2Freports%2Fnew%2F",
+            reverse("auth_observe") + "?next=%2Freports%2Fnew%2F",
         )
 
     @mock.patch("core.views.reverse_geocode", return_value=None)

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% comment %}
+The four-button counting screen (§9.1). The layout (2×2 square
+buttons, big icon, count below, finish at the top, no page chrome)
+follows the Mobilito proof of concept in transport-nantes/tn_web,
+the one part of its UX the field trials confirmed.
+{% endcomment %}
+
+{% block title %}{% trans "Counting" %} · Mobilito{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'mobilito_app/css/count.css' %}">
+  <script src="{% static 'mobilito_app/js/count.js' %}" defer></script>
+{% endblock %}
+
+{% block nav %}{% endblock %}
+{% block main_class %}mobilito-count-main{% endblock %}
+
+{% block content %}
+{{ config|json_script:"count-config" }}
+<div class="mobilito-count" data-count
+     data-msg-offline="{% trans 'No connection: your counts are saved on this phone and will be sent when the connection comes back.' %}"
+     data-msg-syncing="{% trans 'Sending your counts…' %}"
+     data-msg-sending="{% trans 'Sending your count…' %}"
+     data-msg-finishing="{% trans 'Waiting for a connection to send your count. Keep this page open.' %}"
+     data-msg-error="{% trans 'Something went wrong sending your count. It is saved on this phone, and we will keep trying.' %}"
+     data-msg-nodiscard="{% trans 'No connection: the count can’t be discarded yet. Try again in a moment.' %}"
+     data-msg-discardfailed="{% trans 'The count couldn’t be discarded. Try again.' %}">
+  <div class="mobilito-count-top">
+    <div class="d-flex align-items-center gap-2">
+      <button type="button" class="btn btn-lg mobilito-finish flex-grow-1" data-finish>
+        <i class="bi bi-stop-fill" aria-hidden="true"></i>
+        {% comment %}Translators: ends a modal share count.{% endcomment %}
+        {% trans "Finish" %}
+      </button>
+      <span class="mobilito-count-timer" data-timer role="timer"
+            aria-label="{% trans 'Time counted' %}">0:00</span>
+    </div>
+    <div class="mobilito-count-status small" role="status" aria-live="polite" data-status></div>
+  </div>
+
+  <div class="mobilito-count-grid">
+    {% for code, label, icon in modes %}
+      <button type="button" class="mobilito-count-button" data-mode="{{ code }}">
+        <i class="bi {{ icon }}" aria-hidden="true"></i>
+        <span class="mobilito-count-label">{{ label }}</span>
+        <span class="mobilito-count-number" data-total="{{ code }}">0</span>
+      </button>
+    {% endfor %}
+  </div>
+
+  <div class="mobilito-count-short-backdrop" data-short hidden>
+    <div class="mobilito-count-short card" role="alertdialog" aria-modal="true"
+         aria-labelledby="short-title" aria-describedby="short-help" tabindex="-1"
+         data-short-dialog>
+      <div class="card-body">
+        <p class="fw-semibold mb-2" id="short-title">
+          {% trans "That was a short count. Keep counting?" %}
+        </p>
+        <p class="small mb-3" id="short-help">
+          {% blocktranslate trimmed count minutes=min_minutes %}
+            Counts of at least {{ minutes }} minute are more useful.
+          {% plural %}
+            Counts of at least {{ minutes }} minutes are more useful.
+          {% endblocktranslate %}
+        </p>
+        {% comment %}
+        Discard at the top, away from where the Cars and Public
+        transit buttons were: a counter who keeps tapping out of habit
+        lands on "Keep counting", never on "Discard it".
+        {% endcomment %}
+        <div class="d-grid gap-2">
+          <button type="button" class="btn btn-outline-danger btn-lg" data-discard>
+            {% trans "Discard it" %}
+          </button>
+          <button type="button" class="btn btn-outline-primary btn-lg" data-keep>
+            {% trans "Save it anyway" %}
+          </button>
+          <button type="button" class="btn btn-primary btn-lg" data-resume>
+            {% trans "Keep counting" %}
+          </button>
+        </div>
+        <p class="small text-danger mt-2 mb-0" role="status" aria-live="polite"
+           data-short-status></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

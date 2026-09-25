@@ -26,11 +26,19 @@ License along with mobilito.  If not, see
 {% block title %}Mobilito{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
-  {# /counts/new/ and /reports/new/ land in Phase 5 and Phase 6. #}
+{% if observer.is_known %}
+  {% if open_session %}
+    <div class="alert alert-warning d-flex flex-wrap align-items-center gap-2" role="status">
+      <span class="flex-grow-1">{% trans "You have a count in progress." %}</span>
+      <a href="{% url 'counts_count' open_session.pk %}" class="btn btn-warning">
+        {% trans "Go back to it" %}
+      </a>
+    </div>
+  {% endif %}
+  {# /reports/new/ lands in Phase 6. #}
   <div class="row g-3 mb-4">
     <div class="col-6">
-      <a href="/counts/new/" class="btn btn-primary btn-lg w-100 py-4">
+      <a href="{% url 'counts_new' %}" class="btn btn-primary btn-lg w-100 py-4">
         {% trans "Count modal share" %}
       </a>
     </div>
@@ -57,7 +65,7 @@ License along with mobilito.  If not, see
       <a href="/map/" class="btn btn-outline-primary btn-lg">
         {% trans "Browse observations" %}
       </a>
-      <a href="{% url 'auth_start' %}" class="btn btn-primary btn-lg">
+      <a href="{% url 'auth_observe' %}?next=/" class="btn btn-primary btn-lg">
         {% trans "Make an observation" %}
       </a>
     </div>
