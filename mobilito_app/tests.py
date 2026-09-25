@@ -160,14 +160,14 @@ class HomeViewTests(TestCase):
         self.assertTemplateUsed(response, "mobilito_app/home.html")
         self.assertContains(response, "Browse observations")
         self.assertContains(response, "Make an observation")
-        self.assertNotContains(response, "Count modal share")
+        self.assertNotContains(response, "Count what goes by")
 
     def test_authenticated_user_sees_observation_buttons(self):
         user = make_user("home@example.com")
         self.client.force_login(user)
         response = self.client.get(reverse("home"))
-        self.assertContains(response, "Count modal share")
-        self.assertContains(response, "Report an aménagement")
+        self.assertContains(response, "Count what goes by")
+        self.assertContains(response, "Report a street feature")
         self.assertNotContains(response, "Browse observations")
 
     def test_no_template_comments_leak_into_rendered_html(self):

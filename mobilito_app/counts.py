@@ -64,7 +64,9 @@ logger = logging.getLogger(__name__)
 # Plural labels, as on the counting buttons and the results.
 MODE_LABELS = {
     "ped": gettext_lazy("Pedestrians"),
-    "bike": gettext_lazy("Cyclists"),
+    # "Bikes", not "Cyclists": scooters and skateboards count here too
+    # (design §9.1, things on the road by behaviour).
+    "bike": gettext_lazy("Bikes"),
     "car": gettext_lazy("Cars"),
     "tc": gettext_lazy("Public transit"),
 }

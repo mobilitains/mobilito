@@ -57,6 +57,15 @@ the one part of its UX the field trials confirmed.
       </button>
       <span class="mobilito-count-timer" data-timer role="timer"
             aria-label="{% trans 'Time counted' %}">0:00</span>
+      {% comment %}
+      Doubts arise here ("was that a moped?"), so the guide is one
+      tap away, as an overlay: nothing moves under a finger.
+      {% endcomment %}
+      <button type="button" class="btn btn-outline-light mobilito-count-help"
+              data-guide-open aria-label="{% trans 'What counts as what?' %}"
+              title="{% trans 'What counts as what?' %}">
+        <i class="bi bi-question-lg" aria-hidden="true"></i>
+      </button>
     </div>
     <div class="mobilito-count-status small" role="status" aria-live="polite" data-status></div>
   </div>
@@ -69,6 +78,25 @@ the one part of its UX the field trials confirmed.
         <span class="mobilito-count-number" data-total="{{ code }}">0</span>
       </button>
     {% endfor %}
+  </div>
+
+  <div class="mobilito-count-short-backdrop" data-guide hidden>
+    <div class="mobilito-count-short card mobilito-count-guide" role="dialog"
+         aria-modal="true" aria-labelledby="guide-title" tabindex="-1"
+         data-guide-dialog>
+      <div class="card-body">
+        <p class="fw-semibold mb-2" id="guide-title">
+          {% blocktranslate trimmed %}
+            One tap for each thing that goes by, not for each person
+            in it.
+          {% endblocktranslate %}
+        </p>
+        {% include "mobilito_app/counts/what_counts_body.html" %}
+        <button type="button" class="btn btn-primary btn-lg w-100 mt-3 mobilito-count-guide-close" data-guide-close>
+          {% trans "Back to counting" %}
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="mobilito-count-short-backdrop" data-short hidden>

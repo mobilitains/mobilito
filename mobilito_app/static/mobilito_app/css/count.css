@@ -204,3 +204,24 @@ License along with mobilito.  If not, see
     grid-row: 2;
   }
 }
+
+.mobilito-count-help {
+  width: 3.25rem;
+  height: 3.25rem;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+/* The "what counts as what" overlay: scrolls within itself on short
+   screens, so "Back to counting" is always reachable. */
+.mobilito-count-guide {
+  max-height: calc(100svh - 1.5rem);
+  overflow-y: auto;
+}
+
+/* Always reachable, even while the guide scrolls on small screens. */
+.mobilito-count-guide-close {
+  position: sticky;
+  bottom: 0;
+  box-shadow: 0 -0.5rem 0.75rem #fff;
+}

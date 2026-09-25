@@ -202,7 +202,7 @@ We count *things on the road* rather than people: this is not quite the usual de
 
 - **Bike:** bicycles, e-bikes, tricycles, monowheels, skateboards, stand-up scooters (electric or not). A passenger doesn't add one.
 - **Pedestrian:** people walking, including people walking a bike, and wheelchairs (unless motorised enough to behave like a vehicle, a subtlety counters can judge). An infant in a pram doesn't count; a child toddling beside a parent does. A child on a toy bike riding beside a walking parent is a bike *and* a pedestrian.
-- **Car:** cars, and also lorries, vans and motorcycles.
+- **Car:** cars, and also lorries, vans and motorcycles. Mopeds and motor scooters too *(inferred from the behaviour rule; not yet explicitly confirmed)*. Beware the word "scooter": in French a *scooter* is a motor scooter (a car here), while a stand-up *trottinette* is a bike.
 - **TC (public transit):** by the same principle, each bus or tram is one thing on the road; its passengers don't add to the count. *(Follows from the principle; not yet explicitly confirmed.)*
 
 This needs explaining to users from several angles, because most people won't read a tutorial:
@@ -702,7 +702,7 @@ S3-compatible object storage (AWS S3 or Cloudflare R2; to be decided). All media
 
 ### 21.2 Authenticated user — home screen
 
-- Two large side-by-side buttons at the top: *Count modal share* and *Report an aménagement* (final copy TBD; French: *Compter les modes* and *Signaler un aménagement*). Candidates to user-test, in plainer language: *Count who goes by* / *Compter les passages*, and *Report a street feature* / *Signaler un aménagement* (with "good or bad" as a subtitle, since reports can be positive). The current UI uses these candidates until testing says otherwise.
+- Two large side-by-side buttons at the top: *Count modal share* and *Report an aménagement* (final copy TBD; French: *Compter les modes* and *Signaler un aménagement*). Candidates to user-test, in plainer language: *Count what goes by* / *Compter les passages* (not "who": we count things on the road, not people), and *Report a street feature* / *Signaler un aménagement* (with "good or bad" as a subtitle, since reports can be positive). The current UI uses these candidates until testing says otherwise.
 - Below: links to own past observations and to the public map/browse view.
 
 ### 21.3 Authenticated user — modal share (Scenario A/MS)

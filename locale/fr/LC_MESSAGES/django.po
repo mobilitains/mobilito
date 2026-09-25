@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 09:53+0000\n"
+"POT-Creation-Date: 2026-09-25 12:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -512,22 +512,26 @@ msgid ""
 msgstr ""
 
 #: mobilito_app/counts.py:66
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:29
 msgid "Pedestrians"
 msgstr ""
 
-#: mobilito_app/counts.py:67
-msgid "Cyclists"
+#: mobilito_app/counts.py:69
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:36
+msgid "Bikes"
 msgstr ""
 
-#: mobilito_app/counts.py:68
+#: mobilito_app/counts.py:70
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:45
 msgid "Cars"
 msgstr ""
 
-#: mobilito_app/counts.py:69 mobilito_app/models.py:40
+#: mobilito_app/counts.py:71 mobilito_app/models.py:40
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:52
 msgid "Public transit"
 msgstr ""
 
-#: mobilito_app/counts.py:460
+#: mobilito_app/counts.py:462
 msgid "Count discarded."
 msgstr ""
 
@@ -653,26 +657,40 @@ msgstr ""
 msgid "Time counted"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:80
+#: mobilito_app/templates/mobilito_app/counts/count.html:66
+#: mobilito_app/templates/mobilito_app/counts/count.html:67
+#: mobilito_app/templates/mobilito_app/counts/what_counts.html:42
+msgid "What counts as what?"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:90
+msgid "One tap for each thing that goes by, not for each person in it."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:97
+msgid "Back to counting"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:109
 msgid "That was a short count. Keep counting?"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:83
+#: mobilito_app/templates/mobilito_app/counts/count.html:112
 #, python-format
 msgid "Counts of at least %(minutes)s minute are more useful."
 msgid_plural "Counts of at least %(minutes)s minutes are more useful."
 msgstr[0] ""
 msgstr[1] ""
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:97
+#: mobilito_app/templates/mobilito_app/counts/count.html:126
 msgid "Discard it"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:100
+#: mobilito_app/templates/mobilito_app/counts/count.html:129
 msgid "Save it anyway"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:103
+#: mobilito_app/templates/mobilito_app/counts/count.html:132
 msgid "Keep counting"
 msgstr ""
 
@@ -681,7 +699,7 @@ msgid "Modal share count"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/counts/detail.html:33
-msgid "Who passed by"
+msgid "What went by"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/counts/detail.html:39
@@ -741,8 +759,8 @@ msgid "Link to share this count:"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/counts/new.html:25
-#: mobilito_app/templates/mobilito_app/home.html:42
-msgid "Count modal share"
+#: mobilito_app/templates/mobilito_app/home.html:50
+msgid "Count what goes by"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/counts/new.html:33
@@ -763,44 +781,88 @@ msgstr ""
 msgid "Counting again at the same spot? Check the target, then confirm."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/new.html:54
+#: mobilito_app/templates/mobilito_app/counts/new.html:55
 #, python-format
 msgid ""
-"Then count everyone who passes, for as long as you like: at least "
+"Then count everything that goes by, for as long as you like: at least "
 "%(minutes)s minute makes a useful count."
 msgid_plural ""
-"Then count everyone who passes, for as long as you like: at least "
+"Then count everything that goes by, for as long as you like: at least "
 "%(minutes)s minutes makes a useful count."
 msgstr[0] ""
 msgstr[1] ""
 
-#: mobilito_app/templates/mobilito_app/counts/new.html:64
+#: mobilito_app/templates/mobilito_app/counts/new.html:65
 msgid "Start counting"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:47
-msgid "Report an aménagement"
+#: mobilito_app/templates/mobilito_app/counts/what_counts.html:36
+msgid ""
+"One tap for each thing that goes by (a walker, a bike, a car, a bus), not "
+"for each person in it."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:53
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:27
+msgid "Count each thing as what it behaves like."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:31
+msgid ""
+"People walking, wheelchairs, people pushing a bike. A child walking counts; "
+"a baby in a pram or stroller doesn't."
+msgstr ""
+
+#. Translators: « trottinettes (électriques ou non) », not « scooters », which in French are motor scooters (counted as cars).
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:39
+msgid ""
+"Anything that behaves like a bike: bikes, e-bikes, tricycles, kick scooters "
+"and e-scooters, skateboards, monowheels. Passengers (a child in a seat or a "
+"cargo bike) don't add one."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:47
+msgid ""
+"Cars, vans, lorries, motorbikes and mopeds: one each, whoever is inside."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:54
+msgid "Each bus or tram, once."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:60
+msgid ""
+"A child on a little bike next to a walking parent: one bike and one "
+"pedestrian."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/home.html:56
+msgid "Report a street feature"
+msgstr ""
+
+#. Translators: reports can be positive. Avoid a grade like « bon ou mauvais »; e.g. « ce qui aide, ce qui gêne ».
+#: mobilito_app/templates/mobilito_app/home.html:58
+msgid "good or bad"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/home.html:64
 msgid "Your observations"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:55
+#: mobilito_app/templates/mobilito_app/home.html:66
 msgid "Browse the map"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:61
+#: mobilito_app/templates/mobilito_app/home.html:72
 msgid ""
-"Document how people move through your streets: count who passes by, and "
-"report the infrastructure that helps or hinders them."
+"Document how people move through your streets: count what goes by, and "
+"report the infrastructure that helps or hinders it."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:66
+#: mobilito_app/templates/mobilito_app/home.html:77
 msgid "Browse observations"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:69
+#: mobilito_app/templates/mobilito_app/home.html:80
 msgid "Make an observation"
 msgstr ""
 

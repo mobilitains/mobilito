@@ -122,6 +122,15 @@ class NewCountTests(CountFlowTestCase):
         self.assertContains(response, "data-map-gps")
         self.assertContains(response, "Start counting")
 
+    def test_explains_what_counts_as_what(self):
+        response = self.client.get(reverse("counts_new"))
+        self.assertContains(response, "What counts as what?")
+        self.assertContains(response, "One tap for each thing that goes by")
+        self.assertContains(
+            response, '<details class="mobilito-what-counts card mt-3">'
+        )
+        self.assertContains(response, "kick scooters")
+
     def test_provisional_observer_can_start(self):
         self.client.logout()
         self.client.post(
@@ -259,6 +268,10 @@ class CountScreenTests(CountFlowTestCase):
         response = self.client.get(reverse("counts_count", args=[session.pk]))
         for mode in ("ped", "bike", "car", "tc"):
             self.assertContains(response, f'data-mode="{mode}"')
+        # The guide opens as an overlay, not in the layout.
+        self.assertContains(response, "data-guide-open")
+        self.assertContains(response, "kick scooters")
+        self.assertNotContains(response, "<details")
         self.assertContains(
             response, reverse("counts_event", args=[session.pk])
         )

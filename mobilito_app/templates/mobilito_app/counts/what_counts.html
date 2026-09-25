@@ -1,0 +1,47 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+{% comment %}
+Short "what counts as what" guide (design §9.1; roadmap Phase 5b).
+A details element: works without JS, stays out of the way for
+people who already know, one tap for everyone else. Pass
+guide_class to override the default top margin.
+{% endcomment %}
+<details class="mobilito-what-counts card {{ guide_class|default:'mt-3' }}">
+  {% comment %}
+  The rule itself is the summary, so it's read even when nobody
+  opens the details.
+  {% endcomment %}
+  <summary class="card-body py-2">
+    {% blocktranslate trimmed %}
+      One tap for each thing that goes by (a walker, a bike, a car, a
+      bus), not for each person in it.
+    {% endblocktranslate %}
+    <span class="fw-semibold text-nowrap">
+      <i class="bi bi-question-circle" aria-hidden="true"></i>
+      {% trans "What counts as what?" %}
+    </span>
+  </summary>
+  <div class="card-body pt-0">
+    {% include "mobilito_app/counts/what_counts_body.html" %}
+  </div>
+</details>

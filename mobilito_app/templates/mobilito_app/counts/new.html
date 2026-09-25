@@ -22,7 +22,7 @@ License along with mobilito.  If not, see
 {% endcomment %}
 {% load i18n %}
 
-{% block title %}{% trans "Count modal share" %} · Mobilito{% endblock %}
+{% block title %}{% trans "Count what goes by" %} · Mobilito{% endblock %}
 
 {% block extra_head %}{% include "core/includes/map_assets.html" %}{% endblock %}
 
@@ -50,13 +50,14 @@ License along with mobilito.  If not, see
     {% include "core/includes/map_widget.html" with map=map %}
     {{ form.origin }}
     {% include "includes/honeypot.html" with field=form.hp_field %}
+    {% include "mobilito_app/counts/what_counts.html" %}
     <p class="text-body-secondary mt-3">
       {% blocktranslate trimmed count minutes=min_minutes %}
-        Then count everyone who passes, for as long as you like: at
-        least {{ minutes }} minute makes a useful count.
+        Then count everything that goes by, for as long as you like:
+        at least {{ minutes }} minute makes a useful count.
       {% plural %}
-        Then count everyone who passes, for as long as you like: at
-        least {{ minutes }} minutes makes a useful count.
+        Then count everything that goes by, for as long as you like:
+        at least {{ minutes }} minutes makes a useful count.
       {% endblocktranslate %}
     </p>
     <button type="submit" class="btn btn-success btn-lg w-100">

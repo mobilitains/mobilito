@@ -38,13 +38,23 @@ License along with mobilito.  If not, see
   {# /reports/new/ lands in Phase 6. #}
   <div class="row g-3 mb-4">
     <div class="col-6">
-      <a href="{% url 'counts_new' %}" class="btn btn-primary btn-lg w-100 py-4">
-        {% trans "Count modal share" %}
+      {% comment %}
+      Candidate copy to user-test (design §21.2); plainer than the
+      original "Count modal share" / "Report an aménagement".
+      {% endcomment %}
+      <a href="{% url 'counts_new' %}" class="btn btn-primary btn-lg w-100 h-100 py-4">
+        <span class="d-flex justify-content-center gap-2 fs-4 mb-1" aria-hidden="true">
+          <i class="bi bi-person-walking"></i><i class="bi bi-bicycle"></i><i class="bi bi-car-front-fill"></i><i class="bi bi-bus-front-fill"></i>
+        </span>
+        {% trans "Count what goes by" %}
       </a>
     </div>
     <div class="col-6">
-      <a href="/reports/new/" class="btn btn-primary btn-lg w-100 py-4">
-        {% trans "Report an aménagement" %}
+      <a href="/reports/new/" class="btn btn-primary btn-lg w-100 h-100 py-4">
+        <i class="bi bi-signpost-split d-block fs-2 mb-1" aria-hidden="true"></i>
+        {% trans "Report a street feature" %}
+        {% comment %}Translators: reports can be positive. Avoid a grade like « bon ou mauvais »; e.g. « ce qui aide, ce qui gêne ».{% endcomment %}
+        <small class="d-block fw-normal mt-1">{% trans "good or bad" %}</small>
       </a>
     </div>
   </div>
@@ -58,7 +68,7 @@ License along with mobilito.  If not, see
   <div class="text-center py-5">
     <h1>Mobilito</h1>
     <p class="lead mx-auto" style="max-width: 40rem;">
-      {% blocktranslate %}Document how people move through your streets: count who passes by, and report the infrastructure that helps or hinders them.{% endblocktranslate %}
+      {% blocktranslate %}Document how people move through your streets: count what goes by, and report the infrastructure that helps or hinders it.{% endblocktranslate %}
     </p>
     {# /map/ lands in Phase 7. #}
     <div class="d-flex justify-content-center gap-3 mt-4">

@@ -481,6 +481,33 @@ License along with mobilito.  If not, see
       }
     });
 
+    // "What counts as what?" overlay.
+    const guide = element.querySelector('[data-guide]');
+    const guideOpen = element.querySelector('[data-guide-open]');
+    if (guide && guideOpen) {
+      const closeGuide = function () {
+        guide.hidden = true;
+        guideOpen.focus();
+      };
+      guideOpen.addEventListener('click', function () {
+        guide.hidden = false;
+        element.querySelector('[data-guide-dialog]').focus();
+      });
+      element
+        .querySelector('[data-guide-close]')
+        .addEventListener('click', closeGuide);
+      guide.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+          closeGuide();
+        }
+      });
+      guide.addEventListener('click', function (event) {
+        if (event.target === guide) {
+          closeGuide(); // a tap on the backdrop, outside the card
+        }
+      });
+    }
+
     // Keep the screen on: quiet streets can go longer between taps
     // than a phone's screen timeout. Best effort.
     function keepAwake() {

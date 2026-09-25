@@ -55,6 +55,10 @@ function build(config = CONFIG) {
             `<button data-mode="${m}"><span data-total="${m}">0</span></button>`
         )
         .join('')}
+      <button data-guide-open></button>
+      <div data-guide hidden>
+        <div data-guide-dialog tabindex="-1"><button data-guide-close></button></div>
+      </div>
       <div data-short hidden>
         <div data-short-dialog tabindex="-1">
           <button data-keep></button><button data-discard></button>
@@ -364,6 +368,41 @@ describe('screen', () => {
     env.tickFn();
     await flushPromises();
     expect(env.fetch.mock.calls.length).toBe(calls + 1);
+  });
+});
+
+describe('guide', () => {
+  test('opens over the buttons and closes back to counting', () => {
+    const element = build();
+    initCounter(element, makeEnv());
+    element.querySelector('[data-guide-open]').click();
+    expect(element.querySelector('[data-guide]').hidden).toBe(false);
+    expect(document.activeElement).toBe(
+      element.querySelector('[data-guide-dialog]')
+    );
+    element.querySelector('[data-guide-close]').click();
+    expect(element.querySelector('[data-guide]').hidden).toBe(true);
+    expect(document.activeElement).toBe(
+      element.querySelector('[data-guide-open]')
+    );
+  });
+
+  test('a tap outside the card closes it', () => {
+    const element = build();
+    initCounter(element, makeEnv());
+    element.querySelector('[data-guide-open]').click();
+    element.querySelector('[data-guide]').click();
+    expect(element.querySelector('[data-guide]').hidden).toBe(true);
+  });
+
+  test('Escape closes it', () => {
+    const element = build();
+    initCounter(element, makeEnv());
+    element.querySelector('[data-guide-open]').click();
+    element
+      .querySelector('[data-guide]')
+      .dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(element.querySelector('[data-guide]').hidden).toBe(true);
   });
 });
 
