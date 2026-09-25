@@ -150,6 +150,9 @@ class InfrastructureObservation(Observation):
         max_length=4, choices=ObserverPerspective.choices
     )
     description = models.TextField(blank=True)
+    tags = models.ManyToManyField(
+        "InfrastructureTag", blank=True, related_name="observations"
+    )
     moderation_state = models.CharField(
         max_length=20,
         choices=ModerationState.choices,
@@ -184,6 +187,9 @@ class InfrastructureMedia(models.Model):
         choices=MediaType.choices,
         default=MediaType.PHOTO,
     )
+    # Stored re-encoded, metadata stripped, under a random name
+    # (core/images.py); served only through a view that checks the
+    # observation may be seen.
     file = models.ImageField(upload_to="infrastructure_media/%Y/%m/")
     exif_point = gis_models.PointField(geography=True, null=True, blank=True)
     moderation_state = models.CharField(

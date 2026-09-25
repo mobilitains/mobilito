@@ -131,7 +131,8 @@ class Location(models.Model):
     point = gis_models.PointField(geography=True)
     user_entered_address = models.CharField(max_length=255, blank=True)
     reverse_geocoded_address = models.CharField(max_length=255, blank=True)
-    country = models.CharField(max_length=100, blank=True)
+    # ISO 3166-1 alpha-2 code, e.g. "FR" (see GeocodeResult).
+    country = models.CharField(max_length=2, blank=True)
     region = models.CharField(max_length=100, blank=True)
     department = models.CharField(max_length=100, blank=True)
     commune = models.CharField(max_length=100, blank=True)

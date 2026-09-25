@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 12:57+0000\n"
+"POT-Creation-Date: 2026-09-25 14:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -363,6 +363,16 @@ msgstr ""
 msgid "Leave this field empty"
 msgstr ""
 
+#: core/images.py:97
+#, python-format
+msgid "“%(name)s” isn't a photo we can read (JPEG or PNG work best)."
+msgstr ""
+
+#: core/images.py:110
+#, python-format
+msgid "“%(name)s” is too large (at most %(mb)s MB per photo)."
+msgstr ""
+
 #: core/models.py:38
 msgid "Draft"
 msgstr ""
@@ -556,59 +566,59 @@ msgstr ""
 msgid "Both"
 msgstr ""
 
-#: mobilito_app/models.py:165
+#: mobilito_app/models.py:168
 msgid "Photo"
 msgstr ""
 
-#: mobilito_app/models.py:207
+#: mobilito_app/models.py:213
 msgid "Active"
 msgstr ""
 
-#: mobilito_app/models.py:208
+#: mobilito_app/models.py:214
 msgid "Deprecated"
 msgstr ""
 
-#: mobilito_app/models.py:223
+#: mobilito_app/models.py:229
 msgid "ISO 3166-1 alpha-2 code. Blank means universal."
 msgstr ""
 
-#: mobilito_app/models.py:238
+#: mobilito_app/models.py:244
 msgid "Me too"
 msgstr ""
 
-#: mobilito_app/models.py:239
+#: mobilito_app/models.py:245
 msgid "Progress"
 msgstr ""
 
-#: mobilito_app/models.py:240
+#: mobilito_app/models.py:246
 msgid "Degradation"
 msgstr ""
 
-#: mobilito_app/models.py:241
+#: mobilito_app/models.py:247
 msgid "Resolved"
 msgstr ""
 
-#: mobilito_app/models.py:242
+#: mobilito_app/models.py:248
 msgid "Additional issue"
 msgstr ""
 
-#: mobilito_app/models.py:278
+#: mobilito_app/models.py:284
 msgid "Email"
 msgstr ""
 
-#: mobilito_app/models.py:316
+#: mobilito_app/models.py:322
 msgid "Inappropriate"
 msgstr ""
 
-#: mobilito_app/models.py:317
+#: mobilito_app/models.py:323
 msgid "Spam"
 msgstr ""
 
-#: mobilito_app/models.py:318
+#: mobilito_app/models.py:324
 msgid "Off-topic"
 msgstr ""
 
-#: mobilito_app/models.py:319
+#: mobilito_app/models.py:325
 msgid "Other"
 msgstr ""
 

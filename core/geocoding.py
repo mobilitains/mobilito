@@ -47,6 +47,8 @@ class GeocodeResult:
     """A human-readable address plus area metadata (§11.1, §20.2)."""
 
     address: str = ""
+    # ISO 3166-1 alpha-2, upper case (e.g. "FR"): what tags and
+    # contact methods are scoped by (§20.7, §20.9).
     country: str = ""
     region: str = ""
     department: str = ""
@@ -148,7 +150,7 @@ class NominatimGeocoder:
         first = street or data.get("name") or ""
         return GeocodeResult(
             address=", ".join(part for part in (first, commune) if part),
-            country=address.get("country", ""),
+            country=address.get("country_code", "").upper()[:2],
             region=address.get("state", ""),
             # In France Nominatim puts the département in "county".
             department=address.get("county", ""),
@@ -199,11 +201,13 @@ class MapboxGeocoder:
         def name(key: str) -> str:
             return (context.get(key) or {}).get("name", "")
 
+        country_code = (context.get("country") or {}).get("country_code", "")
+
         commune = name("place") or name("locality")
         first = properties.get("name", "")
         return GeocodeResult(
             address=", ".join(part for part in (first, commune) if part),
-            country=name("country"),
+            country=country_code.upper()[:2],
             region=name("region"),
             department=name("district"),
             commune=commune,
@@ -223,7 +227,7 @@ def reverse_geocode(lat: float, lon: float, language: str):
     also keeps us inside free-tier quotas.
     """
     # Bump the version whenever GeocodeResult's fields change.
-    key = f"geocoding:v1:reverse:{lat:.5f}:{lon:.5f}:{language}"
+    key = f"geocoding:v2:reverse:{lat:.5f}:{lon:.5f}:{language}"
     cached = cache.get(key)
     if cached is not None:
         return GeocodeResult(**cached) if cached else None

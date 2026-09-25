@@ -20,6 +20,7 @@ along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 import hashlib
 import http.client
 import io
+from fractions import Fraction
 import json
 from unittest import mock
 
@@ -28,12 +29,15 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.gis.geos import Point
 from django.template.loader import render_to_string
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponse
 from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
 from authentication.models import MobilitoUser
+from core.images import process_photo
 from core.geocoding import (
     GeocodeResult,
     GeocoderError,
@@ -223,6 +227,7 @@ NOMINATIM_NANTES = {
         "county": "Loire-Atlantique",
         "state": "Pays de la Loire",
         "country": "France",
+        "country_code": "fr",
     },
 }
 
@@ -230,7 +235,7 @@ MAPBOX_NANTES = {
     "properties": {
         "name": "2 Rue de Strasbourg",
         "context": {
-            "country": {"name": "France"},
+            "country": {"name": "France", "country_code": "FR"},
             "region": {"name": "Pays de la Loire"},
             "district": {"name": "Loire-Atlantique"},
             "place": {"name": "Nantes"},
@@ -240,7 +245,7 @@ MAPBOX_NANTES = {
 
 EXPECTED_NANTES = GeocodeResult(
     address="2 Rue de Strasbourg, Nantes",
-    country="France",
+    country="FR",
     region="Pays de la Loire",
     department="Loire-Atlantique",
     commune="Nantes",
@@ -612,3 +617,181 @@ class BaseTemplateCsrfTests(TestCase):
     def test_htmx_requests_carry_csrf_header(self):
         response = self.client.get(reverse("home"))
         self.assertContains(response, 'hx-headers=\'{"X-CSRFToken": "')
+
+
+def make_photo(
+    fmt="JPEG",
+    size=(40, 20),
+    mode="RGB",
+    gps=None,
+    orientation=None,
+    name="photo.jpg",
+    refs=None,
+    **save_options,
+):
+    """An in-memory upload; gps is (lat, lon), orientation an EXIF value."""
+    from PIL import Image
+
+    image = Image.new(mode, size, "red" if mode == "RGB" else None)
+    exif = Image.Exif()
+    if orientation:
+        exif[0x0112] = orientation
+    if gps:
+        lat, lon = gps
+
+        def dms(value):
+            value = abs(value)
+            degrees = int(value)
+            minutes = int((value - degrees) * 60)
+            seconds = (value - degrees - minutes / 60) * 3600
+            return (
+                Fraction(degrees),
+                Fraction(minutes),
+                Fraction(seconds).limit_denominator(10000),
+            )
+
+        lat_ref, lon_ref = refs or (
+            "N" if lat >= 0 else "S",
+            "E" if lon >= 0 else "W",
+        )
+        exif[0x8825] = {1: lat_ref, 2: dms(lat), 3: lon_ref, 4: dms(lon)}
+    buffer = io.BytesIO()
+    if fmt == "JPEG":
+        image.save(buffer, fmt, exif=exif, **save_options)
+    else:
+        image.save(buffer, fmt, **save_options)
+    return SimpleUploadedFile(name, buffer.getvalue())
+
+
+class ProcessPhotoTests(TestCase):
+    def open_result(self, processed):
+        from PIL import Image
+
+        return Image.open(io.BytesIO(processed.content.read()))
+
+    def test_reencodes_as_jpeg_under_a_random_name(self):
+        processed = process_photo(make_photo(name="my holiday.jpg"))
+        self.assertTrue(processed.content.name.endswith(".jpg"))
+        self.assertNotIn("holiday", processed.content.name)
+        self.assertEqual(self.open_result(processed).format, "JPEG")
+
+    def test_reads_gps_and_strips_all_metadata(self):
+        from PIL import ImageCms
+
+        icc = ImageCms.ImageCmsProfile(
+            ImageCms.createProfile("sRGB")
+        ).tobytes()
+        processed = process_photo(
+            make_photo(
+                gps=(47.2184, -1.5536),
+                comment=b"SECRET COMMENT",
+                xmp=b"<x:xmpmeta>SECRET XMP</x:xmpmeta>",
+                icc_profile=icc,
+            )
+        )
+        self.assertAlmostEqual(processed.exif_point.y, 47.2184, places=3)
+        self.assertAlmostEqual(processed.exif_point.x, -1.5536, places=3)
+        raw = processed.content.read()
+        self.assertNotIn(b"SECRET", raw)
+        processed.content.seek(0)
+        result = self.open_result(processed)
+        self.assertEqual(len(result.getexif()), 0)
+        self.assertEqual(
+            {key for key in result.info if not key.startswith("jfif")},
+            set(),
+        )
+
+    def test_southern_and_western_positions(self):
+        processed = process_photo(make_photo(gps=(-33.9, -70.6)))
+        self.assertLess(processed.exif_point.y, 0)
+        self.assertLess(processed.exif_point.x, 0)
+
+    def test_hemisphere_refs_as_bytes_or_lower_case(self):
+        processed = process_photo(
+            make_photo(gps=(33.9, 70.6), refs=(b"S\x00", "w"))
+        )
+        self.assertLess(processed.exif_point.y, 0)
+        self.assertLess(processed.exif_point.x, 0)
+
+    def test_out_of_range_gps_components_are_ignored(self):
+        from PIL import Image
+
+        image = Image.new("RGB", (10, 10))
+        exif = Image.Exif()
+        exif[0x8825] = {
+            1: "N",
+            2: (Fraction(47), Fraction(99), Fraction(0)),
+            3: "E",
+            4: (Fraction(1), Fraction(0), Fraction(0)),
+        }
+        buffer = io.BytesIO()
+        image.save(buffer, "JPEG", exif=exif)
+        processed = process_photo(
+            SimpleUploadedFile("x.jpg", buffer.getvalue())
+        )
+        self.assertIsNone(processed.exif_point)
+
+    def test_no_gps_is_fine(self):
+        self.assertIsNone(process_photo(make_photo()).exif_point)
+
+    def test_applies_orientation_before_dropping_it(self):
+        # Orientation 6 = rotate 90°: a 40x20 photo is shown 20x40.
+        processed = process_photo(make_photo(orientation=6))
+        self.assertEqual(self.open_result(processed).size, (20, 40))
+
+    @override_settings(PHOTO_MAX_DIMENSION=10)
+    def test_scales_down_keeping_proportions(self):
+        processed = process_photo(make_photo(size=(40, 20)))
+        self.assertEqual(self.open_result(processed).size, (10, 5))
+
+    def test_png_with_transparency_becomes_jpeg_on_white(self):
+        processed = process_photo(
+            make_photo(fmt="PNG", mode="RGBA", name="shot.png")
+        )
+        result = self.open_result(processed)
+        self.assertEqual(result.mode, "RGB")
+        red, green, blue = result.getpixel((5, 5))
+        self.assertGreater(min(red, green, blue), 240)
+
+    @override_settings(PHOTO_MAX_PIXELS={"JPEG": 10**9, "PNG": 100})
+    def test_caps_are_per_format(self):
+        process_photo(make_photo(size=(40, 20)))  # JPEG: fine
+        with self.assertRaises(ValidationError):
+            process_photo(make_photo(fmt="PNG", size=(40, 20), name="x.png"))
+
+    def test_rejections_are_logged(self):
+        with self.assertLogs("core.images", "WARNING"):
+            with self.assertRaises(ValidationError):
+                process_photo(SimpleUploadedFile("x.jpg", b"not an image"))
+
+    def test_refuses_formats_outside_the_allowlist(self):
+        from PIL import Image
+
+        buffer = io.BytesIO()
+        Image.new("RGB", (10, 10)).save(buffer, "BMP")
+        with self.assertRaises(ValidationError):
+            process_photo(SimpleUploadedFile("x.bmp", buffer.getvalue()))
+
+    @override_settings(PHOTO_MAX_PIXELS={"JPEG": 100})
+    def test_refuses_huge_images_before_decoding(self):
+        with mock.patch("PIL.ImageFile.ImageFile.load") as load:
+            with self.assertRaises(ValidationError):
+                process_photo(make_photo(size=(40, 20)))
+        load.assert_not_called()
+
+    def test_refuses_what_is_not_an_image(self):
+        with self.assertRaises(ValidationError) as caught:
+            process_photo(SimpleUploadedFile("notes.jpg", b"not an image"))
+        self.assertIn("notes.jpg", caught.exception.messages[0])
+
+    @override_settings(PHOTO_MAX_UPLOAD_BYTES=10)
+    def test_refuses_oversized_uploads(self):
+        with self.assertRaises(ValidationError):
+            process_photo(make_photo())
+
+    def test_refuses_decompression_bombs(self):
+        from PIL import Image
+
+        with mock.patch.object(Image, "MAX_IMAGE_PIXELS", 100):
+            with self.assertRaises(ValidationError):
+                process_photo(make_photo(size=(400, 400)))

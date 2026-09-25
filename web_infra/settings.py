@@ -257,6 +257,51 @@ MAP_TILE_ATTRIBUTION = (
     "OpenStreetMap</a> contributors"
 )
 
+# Photos (core/images.py, §20.6): re-encoded as JPEG no larger than
+# this on either side, metadata stripped.
+PHOTO_MAX_UPLOAD_BYTES = 20 * 1024 * 1024
+PHOTO_MAX_DIMENSION = 2048
+# Refused before decoding, per format: a small file can decode to
+# gigabytes. JPEG decodes at reduced scale (cheap), so 60 MP covers
+# phone cameras; PNG, GIF and WebP decode in full, and phones don't
+# produce large ones, so their caps are lower.
+PHOTO_MAX_PIXELS = {
+    "JPEG": 60_000_000,
+    "MPO": 60_000_000,
+    "PNG": 20_000_000,
+    "GIF": 20_000_000,
+    "WEBP": 12_000_000,
+}
+PHOTO_JPEG_QUALITY = 85
+PHOTO_MAX_PER_REPORT = 6
+
+# Media storage. Photos go to Cloudflare R2 (S3-compatible, §20.11)
+# when its bucket is configured, else to MEDIA_ROOT on local disk.
+# Either way they are private: pages serve them through a view that
+# checks the observation may be seen (mobilito_app.reports.photo),
+# never by a public URL.
+if os.environ.get("R2_BUCKET_NAME"):
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "bucket_name": os.environ["R2_BUCKET_NAME"],
+                "endpoint_url": os.environ["R2_ENDPOINT_URL"],
+                "access_key": os.environ["R2_ACCESS_KEY_ID"],
+                "secret_key": os.environ["R2_SECRET_ACCESS_KEY"],
+                "region_name": "auto",
+                "signature_version": "s3v4",
+                # R2 has no ACLs; the bucket itself must be private.
+                "default_acl": None,
+                "querystring_auth": True,
+                "file_overwrite": False,
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+
 # Static and media files
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"

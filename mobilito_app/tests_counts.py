@@ -39,7 +39,7 @@ from mobilito_app.models import ModalShareCountEvent, ModalShareSession
 
 NANTES = GeocodeResult(
     address="2 Rue de Strasbourg, Nantes",
-    country="France",
+    country="FR",
     region="Pays de la Loire",
     department="Loire-Atlantique",
     commune="Nantes",
