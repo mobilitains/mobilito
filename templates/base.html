@@ -17,7 +17,7 @@ You should have received a copy of the GNU Affero General Public
 License along with mobilito.  If not, see
 <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n %}
+{% load i18n mobilito_tags %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
@@ -39,6 +39,7 @@ License along with mobilito.  If not, see
 <body>
   {% include "includes/nav.html" %}
   <main class="container py-4">
+    {% unvalidated_banner %}
     {% if messages %}
       {% for message in messages %}
         <div class="alert alert-{{ message.tags|default:'info' }}" role="alert">

@@ -20,6 +20,8 @@ along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 import os
 from pathlib import Path
 
+from django.contrib.messages import constants as message_constants
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Override in settings_local.py or via DJANGO_SECRET_KEY env var.
@@ -60,6 +62,49 @@ AUTHENTICATION_BACKENDS = [
 
 # Magic-link tokens expire after 30 minutes.
 SESAME_MAX_AGE = 1800
+# Each magic link signs the user in once. The verify view only
+# consumes the token on POST (after the user taps "Sign in"), so
+# email link scanners that prefetch the GET don't burn it.
+SESAME_ONE_TIME = True
+
+LOGIN_URL = "auth_start"
+
+# Bootstrap names its red alert "danger", not "error".
+MESSAGE_TAGS = {message_constants.ERROR: "danger"}
+LOGOUT_REDIRECT_URL = "home"
+
+# Email. Production uses AWS SES through its SMTP interface (see
+# doc/roadmap.md, decisions table), configured entirely from the
+# environment. Without EMAIL_HOST, mail is printed to the console,
+# which is what the Docker dev environment wants.
+if os.environ.get("EMAIL_HOST"):
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = os.environ["EMAIL_HOST"]
+    EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+    EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+    # SES: STARTTLS on 587 (default), or implicit TLS on 465.
+    EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", "") == "1"
+    EMAIL_USE_TLS = not EMAIL_USE_SSL
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = os.environ.get(
+    "DJANGO_DEFAULT_FROM_EMAIL", "Mobilito <noreply@example.com>"
+)
+
+# Server-side rate limits (§16), as (max requests, window seconds).
+# Counters live in the default cache. The local-memory default is
+# per-process, so production with several workers should configure
+# a shared cache (e.g. memcached or Redis) in settings_local.py.
+# Per-IP is generous: a volunteer evening on shared wifi, or mobile
+# carrier NAT, puts many real people behind one address.
+RATE_LIMIT_AUTH_START_PER_IP = (60, 3600)
+RATE_LIMIT_AUTH_START_PER_EMAIL = (5, 3600)
+# Request header holding the real client IP when behind a trusted
+# proxy, in request.META form, e.g. "HTTP_CF_CONNECTING_IP" behind
+# Cloudflare. None means use REMOTE_ADDR. Never set this unless the
+# proxy is guaranteed to overwrite the header: clients can forge it.
+RATE_LIMIT_CLIENT_IP_HEADER = None
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

@@ -30,7 +30,7 @@ License along with mobilito.  If not, see
       {% endcomment %}
       <form method="post" action="{% url 'set_language' %}" hx-post="{% url 'set_language' %}">
         {% csrf_token %}
-        <input type="hidden" name="next" value="{{ request.path }}">
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
         <div
           class="btn-group"
           role="group"
@@ -50,18 +50,16 @@ License along with mobilito.  If not, see
         </div>
       </form>
 
-      {% comment %}
-      /auth/start/ and /auth/logout/ are Phase 3 routes; not wired
-      up yet, but these are the exact paths that phase defines, so
-      no further nav changes will be needed then.
-      {% endcomment %}
       {% if user.is_authenticated %}
-        <span class="navbar-text text-light small">{% trans "Signed in" %}</span>
-        <a href="/auth/logout/" class="btn btn-outline-light">
-          {% trans "Sign out" %}
-        </a>
+        <span class="navbar-text text-light small d-none d-sm-inline">{% trans "Signed in" %}</span>
+        <form method="post" action="{% url 'auth_logout' %}" class="m-0">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-light">
+            {% trans "Sign out" %}
+          </button>
+        </form>
       {% else %}
-        <a href="/auth/start/" class="btn btn-outline-light">
+        <a href="{% url 'auth_start' %}" class="btn btn-outline-light">
           {% trans "Sign in" %}
         </a>
       {% endif %}

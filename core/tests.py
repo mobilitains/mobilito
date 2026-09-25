@@ -17,17 +17,21 @@ You should have received a copy of the GNU Affero General Public License
 along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import hashlib
+
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.gis.geos import Point
+from django.core.cache import cache
 from django.http import HttpResponse
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
 from authentication.models import MobilitoUser
 from core.middleware import SyncUserLanguageMiddleware
 from core.models import Location, LocationEvidence
+from core.ratelimit import client_ip, is_rate_limited
 from mobilito_app.models import ModalShareSession
 
 
@@ -149,3 +153,49 @@ class SyncUserLanguageMiddlewareTests(TestCase):
         seen_cookies = self._run(request)
 
         self.assertEqual(seen_cookies[settings.LANGUAGE_COOKIE_NAME], "fr")
+
+
+class RateLimitTests(TestCase):
+    def setUp(self):
+        cache.clear()
+
+    def test_allows_up_to_limit_then_blocks(self):
+        results = [is_rate_limited("t", "a", 3, 60) for _ in range(4)]
+        self.assertEqual(results, [False, False, False, True])
+
+    def test_identifiers_are_counted_separately(self):
+        self.assertFalse(is_rate_limited("t", "a", 1, 60))
+        self.assertFalse(is_rate_limited("t", "b", 1, 60))
+        self.assertTrue(is_rate_limited("t", "a", 1, 60))
+
+    def test_scopes_are_counted_separately(self):
+        self.assertFalse(is_rate_limited("s1", "a", 1, 60))
+        self.assertFalse(is_rate_limited("s2", "a", 1, 60))
+
+    def test_identifier_not_stored_verbatim(self):
+        is_rate_limited("t", "someone@example.com", 1, 60)
+        self.assertIsNone(cache.get("ratelimit:t:someone@example.com"))
+        digest = hashlib.sha256(b"someone@example.com").hexdigest()
+        self.assertEqual(cache.get(f"ratelimit:t:{digest}"), 1)
+
+
+class ClientIpTests(TestCase):
+    def test_uses_remote_addr_by_default(self):
+        request = RequestFactory().get(
+            "/", REMOTE_ADDR="192.0.2.1", HTTP_CF_CONNECTING_IP="198.51.100.1"
+        )
+        self.assertEqual(client_ip(request), "192.0.2.1")
+
+    @override_settings(RATE_LIMIT_CLIENT_IP_HEADER="HTTP_CF_CONNECTING_IP")
+    def test_uses_trusted_header_when_configured(self):
+        request = RequestFactory().get(
+            "/",
+            REMOTE_ADDR="192.0.2.1",
+            HTTP_CF_CONNECTING_IP="198.51.100.1, 203.0.113.9",
+        )
+        self.assertEqual(client_ip(request), "198.51.100.1")
+
+    @override_settings(RATE_LIMIT_CLIENT_IP_HEADER="HTTP_CF_CONNECTING_IP")
+    def test_falls_back_when_header_missing(self):
+        request = RequestFactory().get("/", REMOTE_ADDR="192.0.2.1")
+        self.assertEqual(client_ip(request), "192.0.2.1")
