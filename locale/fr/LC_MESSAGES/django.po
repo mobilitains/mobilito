@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 08:33+0000\n"
+"POT-Creation-Date: 2026-09-25 09:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -240,30 +240,36 @@ msgstr ""
 msgid "The map couldn't load. Check your connection and reload the page."
 msgstr ""
 
+#: core/templates/core/includes/map_widget.html:77
 #: core/templates/core/includes/map_widget.html:78
-#: core/templates/core/includes/map_widget.html:79
 msgid "Go to my location"
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:95
+#: core/templates/core/includes/map_widget.html:94
 msgid "Use device location"
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:98
+#: core/templates/core/includes/map_widget.html:97
 msgid "We'll remember this choice."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:107
+#: core/templates/core/includes/map_widget.html:106
 msgid ""
 "Your observation will be marked “location not checked”, which makes it less "
 "useful to local authorities."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:108
+#: core/templates/core/includes/map_widget.html:107
 msgid ""
 "Your browser is blocking location. You can allow it in your browser "
 "settings, or place the target by hand. Until then, your observation will be "
 "marked “location not checked”."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:108
+msgid ""
+"This browser can’t share your position. Place the target by hand. Your "
+"observation will be marked “location not checked”."
 msgstr ""
 
 #: core/templates/core/includes/map_widget.html:109
@@ -276,33 +282,33 @@ msgstr ""
 msgid "Confirm location"
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:134
+#: core/templates/core/includes/map_widget.html:135
 msgid "You moved the map. Tap “Confirm location” again."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:135
+#: core/templates/core/includes/map_widget.html:136
 msgid ""
 "The map moved to where you are. Check the target and tap “Confirm location” "
 "again."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:136
+#: core/templates/core/includes/map_widget.html:137
 msgid "We couldn’t confirm the location. Check your connection and try again."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:142
+#: core/templates/core/includes/map_widget.html:143
 msgid "Loading…"
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:143
+#: core/templates/core/includes/map_widget.html:144
 msgid "We couldn’t load this observation. Close this panel and try again."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:146
+#: core/templates/core/includes/map_widget.html:147
 msgid "Observation"
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:149
+#: core/templates/core/includes/map_widget.html:150
 msgid "Close"
 msgstr ""
 

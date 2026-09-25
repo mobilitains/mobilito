@@ -113,7 +113,7 @@ function buildWidget(config) {
       <input type="checkbox" data-map-device-location
              ${config.useDeviceLocation ? 'checked' : ''}>
       <div data-map-gps-status data-msg-off="OFF" data-msg-denied="DENIED"
-           data-msg-unavailable="UNAVAILABLE"></div>
+           data-msg-unavailable="UNAVAILABLE" data-msg-nogeo="NOGEO"></div>
       <input data-map-field="lat"><input data-map-field="lon">
       <input data-map-field="device_lat">
       <input data-map-field="device_lon">
@@ -317,6 +317,27 @@ describe('crosshair', () => {
     confirmed.innerHTML = '<input name="lat" value="1">';
     geolocation.pending();
     expect(confirmed.textContent).toBe('LOCATED');
+  });
+
+  test('Confirm is hidden while a confirmation is current', () => {
+    const { L } = fakeLeaflet();
+    const widget = initMapWidget(buildWidget(BASE_CONFIG), { L });
+    const button = document.querySelector('[data-map-confirm]');
+    const confirmed = document.querySelector('[data-map-confirmed]');
+    confirmed.innerHTML = '<input name="lat" value="1">';
+    confirmed.dispatchEvent(new Event('htmx:afterSwap'));
+    expect(button.hidden).toBe(true);
+    L.drag(widget.map, 47.3, -1.6);
+    expect(button.hidden).toBe(false);
+  });
+
+  test('Confirm stays available after an error fragment', () => {
+    const { L } = fakeLeaflet();
+    initMapWidget(buildWidget(BASE_CONFIG), { L });
+    const confirmed = document.querySelector('[data-map-confirmed]');
+    confirmed.innerHTML = '<div class="alert">Try again</div>';
+    confirmed.dispatchEvent(new Event('htmx:afterSwap'));
+    expect(document.querySelector('[data-map-confirm]').hidden).toBe(false);
   });
 
   test('controls needing the map are shown once it loads', () => {
@@ -535,10 +556,11 @@ describe('GPS', () => {
     expect(status()).toBe('');
   });
 
-  test('missing geolocation API says it is unavailable', () => {
+  test('missing geolocation API says so and hides the button', () => {
     const { L } = fakeLeaflet();
     initMapWidget(buildWidget(gpsConfig), { L });
-    expect(status()).toBe('UNAVAILABLE');
+    expect(status()).toBe('NOGEO');
+    expect(document.querySelector('[data-map-gps]').hidden).toBe(true);
   });
 
   test('unticking clears device evidence; re-ticking locates', () => {

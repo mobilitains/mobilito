@@ -85,6 +85,12 @@ License along with mobilito.  If not, see
     const L = env.L;
     const config = readConfig(component, doc);
     const mapEl = component.querySelector('.mobilito-map');
+    const map = L.map(mapEl).setView(config.center, config.zoom);
+    L.tileLayer(config.tileUrl, {
+      maxZoom: 19,
+      attribution: config.tileAttribution,
+    }).addTo(map);
+
     const fallback = component.querySelector('[data-map-fallback]');
     if (fallback) {
       // Shown only if this script (or Leaflet) never runs.
@@ -97,11 +103,6 @@ License along with mobilito.  If not, see
         el.hidden = false;
       }
     );
-    const map = L.map(mapEl).setView(config.center, config.zoom);
-    L.tileLayer(config.tileUrl, {
-      maxZoom: 19,
-      attribution: config.tileAttribution,
-    }).addTo(map);
 
     function field(name) {
       return component.querySelector('[data-map-field="' + name + '"]');
@@ -165,7 +166,20 @@ License along with mobilito.  If not, see
     // re-confirmation (e.g. after an accidental pan).
     let typedAddress = '';
 
+    const button = component.querySelector('[data-map-confirm]');
+
+    // While a confirmation is current the fragment says so, and the
+    // button is hidden: tapping it again (taking it for "save")
+    // would replace what the user typed, or on a bad connection
+    // replace a good confirmation with an error.
+    function showButton(show) {
+      if (button) {
+        button.hidden = !show;
+      }
+    }
+
     function say(key) {
+      showButton(true);
       confirmed.innerHTML = '';
       const note = doc.createElement('p');
       note.className = 'text-body-secondary';
@@ -259,6 +273,14 @@ License along with mobilito.  If not, see
     });
 
     confirmed.addEventListener('htmx:afterSwap', function () {
+      const isConfirmed = !!confirmed.querySelector('input[name="lat"]');
+      if (isConfirmed && button && doc.activeElement === button) {
+        // Don't let focus fall back to the top of the page when the
+        // button it's on disappears; the container isn't an input,
+        // so no on-screen keyboard pops up.
+        confirmed.focus({ preventScroll: true });
+      }
+      showButton(!isConfirmed);
       applyDevice(currentDevice());
       const address = confirmed.querySelector('input[name="address"]');
       if (address && typedAddress) {
@@ -349,8 +371,12 @@ License along with mobilito.  If not, see
         return;
       }
       if (!env.geolocation) {
+        // Old browser or non-HTTPS page: retrying can't help.
         clearDevice();
-        say('unavailable');
+        say('nogeo');
+        if (button) {
+          button.hidden = true;
+        }
         return;
       }
       setBusy(true);
