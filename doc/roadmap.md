@@ -111,6 +111,13 @@ A reusable component used by observation submission (both types), browsing, and 
 
 Full counting workflow (§9.1, §21.3).
 
+**Provisional sign-in (§5.3, §5.4)** — this is the first phase where someone can observe before confirming their email, so it lands here:
+- Entering an email to start counting signs the user in provisionally and sends the magic link at the same time (Phase 3's flow, minus the wait).
+- A `SignInAttempt` model tracks each provisional sign-in: email, session, started / reminded / confirmed timestamps. Observations, count events, media and location evidence created during the attempt link to it.
+- Scope: a provisional session sees only what its own attempt created, never an existing user's data or preferences with the same email.
+- Confirming (magic link) attaches the attempt's data to the user.
+- Management command (run from cron; Celery later) to send the reminder after a configurable delay, then delete everything linked to attempts still unconfirmed after a further configurable period, including stored photos and any never-confirmed user left with no data.
+
 **Server side:**
 - `POST /counts/start/` — create `ModalShareSession` (state: Draft), return session id.
 - `POST /counts/<id>/event/` — append `ModalShareCountEvent`; accept JSON `{mode, client_timestamp, lat, lon}`. Rate-limited.
@@ -283,7 +290,7 @@ Use prompt caching where possible (system prompt + tag list as cached prefix).
 
 - **User deletion flow**: view at `/preferences/delete/`. Replaces email with `deleted-user-<id>@example.com`, sets `is_active = False`, nulls all FK references to the user in `ObservationAction`, `InfrastructureMedia`. All observation content retained, fully anonymised.
 - **Privacy policy**: static pages in FR and EN at `/legal/privacy/`.
-- **Data retention**: management command to delete unvalidated users who have never submitted and are older than a configurable threshold (e.g. 90 days).
+- **Data retention**: management command to delete unvalidated users who have never submitted and are older than a configurable threshold (e.g. 90 days). (Unconfirmed sign-in attempts and their data are already reminded and dropped by the Phase 5 command, §5.4; fold both into one documented retention schedule here.)
 - **ROPA** (Art. 30 record of processing): internal document; not a code task, but required before launch.
 - Legal review of the lawful basis table from §19.1.
 

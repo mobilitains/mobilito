@@ -106,7 +106,7 @@ We'll (probably) implement password in the user preferences / profile section.  
 | State | Description |
 |---|---|
 | Unauthenticated | No identity known. Can browse; cannot submit observations. |
-| Authenticated, unvalidated | Email known but not yet confirmed. Can submit; observations hidden from others and excluded from aggregates. |
+| Authenticated, unvalidated ("probably signed in") | Email given in this browser but not yet confirmed. Can submit; observations hidden from others and excluded from aggregates. Provisional: tracked as a sign-in attempt that is reminded and then dropped if never confirmed (§5.4). |
 | Authenticated, validated | Email confirmed. Observations are eligible for publication after moderation. |
 
 ### 5.4 Identity validation
@@ -115,7 +115,18 @@ We'll (probably) implement password in the user preferences / profile section.  
 - Observations from unvalidated users are recorded but **not visible to other users, and excluded from aggregate statistics and map data**. Only the author and admins can see them.
 - The user sees a plain note that their observation is not yet visible to others.
 - Admins see a prominent banner showing: time since first interaction, number of observations, and a brief summary of when they were submitted.
-- Validation can be deferred: the user can complete an observation session first and validate via the confirmation email afterwards. If validation is never completed, the observation is retained but remains permanently hidden.
+- Validation can be deferred: the user can complete an observation session first and validate via the confirmation email afterwards.
+
+#### Provisional ("probably signed in") mode
+
+Entering an email address signs the user in straight away, in a provisional state, so that a volunteer standing at the kerb can start counting without first going to their inbox. The confirmation email (the magic link) is sent at the same moment. This mode has to be tracked explicitly, because an unconfirmed attempt may be a typo, someone else's address, or a bot:
+
+- **Every provisional sign-in is recorded as a sign-in attempt**: the email address, the browser session it belongs to, when it started, when reminders were sent, and when (if ever) it was confirmed. Everything created during the attempt (observations, count events, photos and other media, location evidence, me-toos, preference changes) is linked to the attempt, so that it can be found and removed as a unit.
+- **Scope.** A provisional session sees and acts only on what that attempt itself created. It never exposes anything belonging to an existing identity with the same email address (their observations, history or preferences), and it cannot change that identity's stored preferences; choices made during the attempt stay in the session until confirmation. Otherwise, typing someone else's address would reveal their data.
+- **Confirmation** (clicking the magic link, in any browser) validates the email and attaches the attempt's data to that identity, which then follows the normal lifecycle (§14).
+- **Reminder.** If the attempt is still unconfirmed after a configurable delay, a reminder email is sent (e.g. after 24 hours; the number and timing of reminders is configurable).
+- **Drop.** If it is still unconfirmed after a further configurable period (e.g. 7 days after the last reminder), all data related to the attempt is deleted, including stored photos, and the identity record itself if it has nothing else (never confirmed, no other data). Nothing from an unconfirmed attempt is ever published, aggregated or retained beyond this period.
+- The UI never calls this state "provisional" or "account". It says plainly that the observation will count once the email address is confirmed, and offers to resend the link.
 
 ### 5.5 User deletion (GDPR right to erasure)
 
@@ -543,7 +554,7 @@ Photos and text in observations describe physical-world infrastructure. The user
 ### 19.3 GDPR requirements before public launch
 
 - Formal privacy policy in French and English.
-- Data retention periods and automated deletion schedule.
+- Data retention periods and automated deletion schedule, including the drop of unconfirmed sign-in attempts and their data (§5.4).
 - Record of processing activities (ROPA, GDPR Art. 30).
 - Legal review of the lawful basis for each data category above.
 - The right-to-erasure workflow (§5.5) must be operational.
