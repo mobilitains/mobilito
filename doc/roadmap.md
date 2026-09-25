@@ -137,8 +137,19 @@ Full counting workflow (§9.1, §21.3).
 - Unvalidated user: gentle prompt to check email.
 - Share link (direct URL to this observation).
 
-Note that a POC of this was built at ~/src/jma/transport-nantes/tn_web/transport_nantes/mobilito/ .
+Note that a POC of this was built at ~/src/jma/transport-nantes/tn_web/transport_nantes/mobilito/ (public: github.com/transport-nantes/tn_web).
 Use that code to inspire you here.  The only part of that UX that is particularly confirmed by the POC is the large four-button grid for counting.
+
+---
+
+## Phase 5b — Counting guidance
+
+What counts as what (design §9.1, "What counts as what"): we count things on the road, by behaviour, not people. Users need this from several angles, since most won't read a tutorial.
+
+- **Short text guide** on the start-counting page: the one-line rule plus common edge cases, collapsible. *(v1-preview)*
+- **Home-screen labels**: plainer candidate copy (§21.2) in place; user-test it. *(v1-preview)*
+- **Visual tutorial**: per mode, a rapidly changing image (2–3 per second) labelled with the mode, showing clearly identifiable examples. Needs a set of images we have the rights to (photos or illustrations), and a way to reach it from the counting flow (e.g. first count, and a "?" on the start page). *(v1)*
+- **Explainer article**: a blog-like page on counting things on the road vs the usual definition of modal share. Content task, in FR and EN. *(v1)*
 
 ---
 

@@ -192,9 +192,26 @@ A full SPA framework (React, Vue, etc.) is not warranted: the interactive surfac
 
 ### 9.1 Modal share counting
 
-**Purpose:** Count how many individuals of each transport mode pass a fixed observation point over a time window.
+**Purpose:** Count the things on the road that pass a fixed observation point over a time window, by mode.
 
 **Modes tracked:** pedestrian, cyclist, car, TC.
+
+#### What counts as what
+
+We count *things on the road* rather than people: this is not quite the usual definition of modal share (which is usually a share of trips or of people travelling). Each thing that passes counts once, in the mode whose road behaviour it has. The rough rule: **things that behave like a bike are a bike, things that behave like a pedestrian are a pedestrian, things that behave like a car are a car.**
+
+- **Bike:** bicycles, e-bikes, tricycles, monowheels, skateboards, stand-up scooters (electric or not). A passenger doesn't add one.
+- **Pedestrian:** people walking, including people walking a bike, and wheelchairs (unless motorised enough to behave like a vehicle, a subtlety counters can judge). An infant in a pram doesn't count; a child toddling beside a parent does. A child on a toy bike riding beside a walking parent is a bike *and* a pedestrian.
+- **Car:** cars, and also lorries, vans and motorcycles.
+- **TC (public transit):** by the same principle, each bus or tram is one thing on the road; its passengers don't add to the count. *(Follows from the principle; not yet explicitly confirmed.)*
+
+This needs explaining to users from several angles, because most people won't read a tutorial:
+
+- **A short text guide** where a count starts (the rule, plus the common edge cases).
+- **A visual tutorial:** for each mode, a rapidly changing image (2–3 per second) labelled with the mode ("Bike") and showing clearly identifiable examples of things that count as that mode. Quick to absorb, no reading required.
+- **An explainer article** (blog-like) on why we count things on the road, and how that differs from the usual definition of modal share, for people who want the reasoning and for anyone citing the data.
+
+These rules and the behaviour-based principle came from a discussion with the project owner during Phase 5 of the roadmap (2026-09-25).
 
 #### UI
 
@@ -685,7 +702,7 @@ S3-compatible object storage (AWS S3 or Cloudflare R2; to be decided). All media
 
 ### 21.2 Authenticated user — home screen
 
-- Two large side-by-side buttons at the top: *Count modal share* and *Report an aménagement* (final copy TBD; French: *Compter les modes* and *Signaler un aménagement*).
+- Two large side-by-side buttons at the top: *Count modal share* and *Report an aménagement* (final copy TBD; French: *Compter les modes* and *Signaler un aménagement*). Candidates to user-test, in plainer language: *Count who goes by* / *Compter les passages*, and *Report a street feature* / *Signaler un aménagement* (with "good or bad" as a subtitle, since reports can be positive). The current UI uses these candidates until testing says otherwise.
 - Below: links to own past observations and to the public map/browse view.
 
 ### 21.3 Authenticated user — modal share (Scenario A/MS)
