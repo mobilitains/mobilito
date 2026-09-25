@@ -69,6 +69,8 @@ function fakeLeaflet() {
     tileLayer: () => ({ addTo() {} }),
     canvas: (options) => ({ canvas: options }),
     circleMarker: (latlng, style) => evented({ latlng, style }),
+    marker: (latlng, options) => evented({ latlng, options }),
+    divIcon: (options) => ({ divIcon: options }),
     // Simulates the user dragging the map to a new centre.
     drag(map, lat, lng) {
       map.fire('dragstart');
@@ -85,6 +87,9 @@ function fakeLeaflet() {
         },
         clearLayers() {
           layer.pins = [];
+        },
+        getLayers() {
+          return layer.pins;
         },
         addData(geojson) {
           geojson.features.forEach((feature) => {
@@ -108,7 +113,8 @@ function buildWidget(config) {
       <script type="application/json" id="map-config">${JSON.stringify(
         config
       )}</script>
-      <div class="mobilito-map"><p data-map-fallback>No map</p></div>
+      <div class="mobilito-map" tabindex="0"><p data-map-fallback>No map</p></div>
+      <p data-map-pins-status data-msg-empty="EMPTY" data-msg-failed="PINS FAILED"></p>
       <button data-map-gps></button>
       <input type="checkbox" data-map-device-location
              ${config.useDeviceLocation ? 'checked' : ''}>
@@ -121,7 +127,9 @@ function buildWidget(config) {
       <button data-map-confirm data-map-requires-js hidden></button>
       <div data-map-confirmed data-msg-moved="MOVED" data-msg-located="LOCATED"
            data-msg-failed="CONFIRM FAILED"></div>
-      <div data-map-sheet data-msg-loading="LOADING" data-msg-failed="FAILED">
+      <div data-map-sheet data-msg-loading="LOADING" data-msg-failed="FAILED"
+           data-msg-title="ONE" data-msg-title-stack="SEVERAL">
+        <h2 class="offcanvas-title">ONE</h2>
         <div data-map-sheet-body></div>
       </div>
     </div>`;
@@ -647,7 +655,7 @@ describe('pins', () => {
     );
     await widget.pinsLoaded;
     expect(fetch.mock.calls[0][0]).toBe(
-      '/api/pins?bbox=' + encodeURIComponent('-2,47,-1,48')
+      '/api/pins?bbox=' + encodeURIComponent('-2,47,-1,48') + '&zoom=13'
     );
     expect(created.layers[0].pins).toHaveLength(1);
     expect(created.layers[0].pins[0].style.fillColor).toBe('#fd7e14');
@@ -655,6 +663,169 @@ describe('pins', () => {
     expect(created.layers[0].pins[0].style.renderer).toEqual({
       canvas: { tolerance: 10 },
     });
+  });
+
+  test('a cluster shows its number and zooms in when tapped', async () => {
+    const { L, created } = fakeLeaflet();
+    const cluster = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [-1.5, 47.3] },
+          properties: { kind: 'cluster', count: 12 },
+        },
+      ],
+    };
+    const component = buildWidget({ ...BASE_CONFIG, pinsUrl: '/api/pins' });
+    component
+      .querySelector('[data-map-sheet]')
+      .setAttribute('data-msg-cluster', '%(n)s HERE');
+    const widget = initMapWidget(component, { L, fetch: fakeFetch(cluster) });
+    await widget.pinsLoaded;
+    const marker = created.layers[0].pins[0];
+    expect(marker.options.title).toBeUndefined(); // named once, below
+    expect(marker.options.keyboard).toBe(true);
+    const html = marker.options.icon.divIcon.html;
+    // Seen: the number. Heard: the sentence.
+    expect(html.querySelector('[aria-hidden]').textContent).toBe('12');
+    expect(html.querySelector('.visually-hidden').textContent).toBe(
+      '12 HERE'
+    );
+    // Activated from the keyboard: focus stays on the map.
+    const button = document.createElement('div');
+    button.tabIndex = 0;
+    document.body.appendChild(button);
+    button.focus();
+    marker.getElement = () => button;
+    marker.fire('click');
+    expect(widget.map.center).toEqual({ lat: 47.3, lng: -1.5 });
+    expect(widget.map.zoom).toBe(15);
+    expect(document.activeElement).toBe(
+      component.querySelector('.mobilito-map')
+    );
+  });
+
+  test('a stack at one spot opens its list instead of zooming', async () => {
+    const { L, created } = fakeLeaflet();
+    const htmx = { ajax: jest.fn() };
+    const show = jest.fn();
+    const bootstrap = {
+      Offcanvas: { getOrCreateInstance: () => ({ show }) },
+    };
+    const stack = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [-1.5, 47.3] },
+          properties: {
+            kind: 'cluster',
+            count: 3,
+            summary_url: '/map/here/?total=3&count=1%2C2&report=3',
+          },
+        },
+      ],
+    };
+    const component = buildWidget({ ...BASE_CONFIG, pinsUrl: '/api/pins' });
+    component
+      .querySelector('[data-map-sheet]')
+      .setAttribute('data-msg-stack', '%(n)s AT THIS SPOT');
+    const widget = initMapWidget(component, {
+      L,
+      htmx,
+      bootstrap,
+      fetch: fakeFetch(stack),
+    });
+    await widget.pinsLoaded;
+    const marker = created.layers[0].pins[0];
+    expect(
+      marker.options.icon.divIcon.html.querySelector('.visually-hidden')
+        .textContent
+    ).toBe('3 AT THIS SPOT');
+    const zoom = widget.map.zoom;
+    marker.fire('click');
+    expect(widget.map.zoom).toBe(zoom);
+    expect(htmx.ajax.mock.calls[0][1]).toBe('/map/here/?total=3&count=1%2C2&report=3');
+    expect(show).toHaveBeenCalled();
+    expect(component.querySelector('.offcanvas-title').textContent).toBe(
+      'SEVERAL'
+    );
+  });
+
+  test('pins show on the world copy in view', async () => {
+    // Panned one world east: Leaflet's bounds are 360° off.
+    const { L, created } = fakeLeaflet();
+    const fetch = fakeFetch(geojson);
+    const widget = initMapWidget(
+      buildWidget({ ...BASE_CONFIG, pinsUrl: '/api/pins' }),
+      { L, fetch }
+    );
+    await widget.pinsLoaded;
+    widget.map.getBounds = () => ({
+      getCenter: () => ({ lat: 47.5, lng: 358.5 }),
+    });
+    widget.map.wrapLatLngBounds = () => ({
+      toBBoxString: () => '-2,47,-1,48',
+      getCenter: () => ({ lat: 47.5, lng: -1.5 }),
+    });
+    await widget.loadPins();
+    expect(fetch.mock.calls[1][0]).toContain(
+      encodeURIComponent('-2,47,-1,48')
+    );
+    // The report at -1.55 is drawn at 358.45, where the user looks.
+    expect(created.layers[0].pins[0].latlng).toEqual([47.21, 358.45]);
+  });
+
+  test('a four-digit cluster gets a smaller number', async () => {
+    const { L, created } = fakeLeaflet();
+    const big = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [-1.5, 47.3] },
+          properties: { kind: 'cluster', count: 1234 },
+        },
+      ],
+    };
+    const widget = initMapWidget(
+      buildWidget({ ...BASE_CONFIG, pinsUrl: '/api/pins' }),
+      { L, fetch: fakeFetch(big) }
+    );
+    await widget.pinsLoaded;
+    expect(created.layers[0].pins[0].options.icon.divIcon.className).toBe(
+      'mobilito-cluster mobilito-cluster-large'
+    );
+  });
+
+  test('says when there is nothing here', async () => {
+    const { L } = fakeLeaflet();
+    const empty = { type: 'FeatureCollection', features: [] };
+    const component = buildWidget({ ...BASE_CONFIG, pinsUrl: '/api/pins' });
+    const widget = initMapWidget(component, { L, fetch: fakeFetch(empty) });
+    await widget.pinsLoaded;
+    const status = component.querySelector('[data-map-pins-status]');
+    expect(status.textContent).toBe('EMPTY');
+  });
+
+  test('says when pins could not load, unless some are showing', async () => {
+    const { L } = fakeLeaflet();
+    let ok = false;
+    const fetch = jest.fn(() =>
+      Promise.resolve({ ok, status: ok ? 200 : 500, json: () => geojson })
+    );
+    const component = buildWidget({ ...BASE_CONFIG, pinsUrl: '/api/pins' });
+    const widget = initMapWidget(component, { L, fetch });
+    await widget.pinsLoaded;
+    const status = component.querySelector('[data-map-pins-status]');
+    expect(status.textContent).toBe('PINS FAILED');
+    ok = true;
+    await widget.loadPins();
+    expect(status.textContent).toBe('');
+    ok = false;
+    await widget.loadPins();
+    expect(status.textContent).toBe(''); // pins still shown
   });
 
   test('a slow old response does not replace newer pins', async () => {

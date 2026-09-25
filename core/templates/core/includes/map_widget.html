@@ -78,6 +78,12 @@ The map itself needs JavaScript (Leaflet).
         <i class="bi bi-cursor-fill" aria-hidden="true"></i>
       </button>
     {% endif %}
+    {% if map.js.pinsUrl %}
+      {# Over the map: below it, it would be off-screen on a phone. #}
+      <p class="mobilito-map-status small mb-0" role="status" aria-live="polite" data-map-pins-status
+         data-msg-empty="{% trans 'No observations here yet. Zoom out or move the map to look further.' %}"
+         data-msg-failed="{% trans 'We couldn’t load the observations. Check your connection: moving the map tries again.' %}"></p>
+    {% endif %}
   </div>
 
   {% if map.gps %}
@@ -139,6 +145,10 @@ The map itself needs JavaScript (Leaflet).
        id="{{ map.id }}-sheet" aria-labelledby="{{ map.id }}-sheet-title"
        data-bs-backdrop="false" data-bs-scroll="true" data-map-sheet
        data-msg-loading="{% trans 'Loading…' %}"
+       data-msg-title="{% trans 'Observation' %}"
+       data-msg-title-stack="{% trans 'Observations here' %}"
+       data-msg-cluster="{% trans '%(n)s observations here. Zoom in on them.' %}"
+       data-msg-stack="{% trans '%(n)s observations at this spot. Show them.' %}"
        data-msg-failed="{% trans 'We couldn’t load this observation. Close this panel and try again.' %}">
     <div class="offcanvas-header">
       <h2 class="offcanvas-title h5" id="{{ map.id }}-sheet-title">

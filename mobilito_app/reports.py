@@ -435,3 +435,21 @@ def photo(request, pk, media_id):
     # moderation, and must then stop being served.
     response["Cache-Control"] = "private, max-age=600"
     return response
+
+
+@require_GET
+def summary(request, pk):
+    """A report in the map's bottom sheet (§9.2 "Selecting ...")."""
+    report, is_owner = _visible_report(request, pk)
+    media = report.media.all()
+    if not is_owner:
+        media = media.filter(published=True)
+    return render(
+        request,
+        "mobilito_app/reports/summary.html",
+        {
+            "report": report,
+            "photo": media.first(),
+            "tags": report.tags.all(),
+        },
+    )

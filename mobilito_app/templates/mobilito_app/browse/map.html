@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+{% block title %}{% trans "Map" %} · Mobilito{% endblock %}
+
+{% block extra_head %}
+  {% include "core/includes/map_assets.html" %}
+  <link rel="stylesheet" href="{% static 'mobilito_app/css/browse.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1 class="h4 mb-1">{% trans "What people have seen" %}</h1>
+<p class="mb-2">{% trans "Tap a dot to see what someone saw there." %}</p>
+<p class="mb-2 mobilito-map-legend">
+  <span class="text-nowrap"><span class="mobilito-legend-dot mobilito-legend-count" aria-hidden="true"></span> {% trans "Counts of what goes by" %}</span>
+  <span class="text-nowrap"><span class="mobilito-legend-dot mobilito-legend-report" aria-hidden="true"></span> {% trans "Street features" %}</span>
+  <span class="text-nowrap"><span class="mobilito-legend-dot mobilito-legend-cluster" aria-hidden="true">3</span> {% trans "Several together: tap to see them" %}</span>
+</p>
+<div class="mobilito-browse-map">
+  {% include "core/includes/map_widget.html" with map=map %}
+</div>
+{% endblock %}

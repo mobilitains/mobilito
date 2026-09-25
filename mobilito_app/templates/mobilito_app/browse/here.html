@@ -1,0 +1,70 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+{% comment %}Several observations at one spot, in the map's bottom sheet.{% endcomment %}
+{% if items %}
+  <h3 class="h6">
+    {% with location=items.0.1.location %}{% include "core/partials/place_name.html" %}{% endwith %}
+  </h3>
+  <div class="list-group">
+    {% for kind, item in items %}
+      {% if kind == "count" %}
+        <a href="{% url 'counts_detail' item.pk %}" class="list-group-item list-group-item-action py-3">
+          <i class="bi bi-bar-chart-fill text-primary" aria-hidden="true"></i>
+          {% trans "Count" %}
+          <span class="d-block small text-body-secondary">{{ item.started_at|date:"DATETIME_FORMAT" }}</span>
+          <span class="d-block small">
+            {% blocktranslate trimmed count total=item.total %}
+              {{ total }} counted
+            {% plural %}
+              {{ total }} counted
+            {% endblocktranslate %}
+            ·
+            {% blocktranslate trimmed count minutes=item.minutes %}
+              {{ minutes }} minute
+            {% plural %}
+              {{ minutes }} minutes
+            {% endblocktranslate %}
+          </span>
+        </a>
+      {% else %}
+        <a href="{% url 'reports_detail' item.pk %}" class="list-group-item list-group-item-action py-3">
+          <i class="bi bi-signpost-split text-warning" aria-hidden="true"></i>
+          {% trans "Street feature" %}
+          <span class="d-block small text-body-secondary">{{ item.created_at|date:"DATETIME_FORMAT" }}</span>
+          {% if item.description %}<span class="d-block small">{{ item.description|truncatewords:12 }}</span>{% endif %}
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% if cut %}
+    <p class="small text-body-secondary mt-2 mb-0">
+      {% blocktranslate trimmed count n=items|length %}
+        Showing the latest {{ n }}.
+      {% plural %}
+        Showing the latest {{ n }}.
+      {% endblocktranslate %}
+    </p>
+  {% endif %}
+{% else %}
+  <p class="mb-0">{% trans "These observations aren’t shown any more." %}</p>
+{% endif %}

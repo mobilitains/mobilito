@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 14:33+0000\n"
+"POT-Creation-Date: 2026-09-25 16:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -430,70 +430,95 @@ msgstr ""
 msgid "Go to my location"
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:94
+#: core/templates/core/includes/map_widget.html:85
+msgid "No observations here yet. Zoom out or move the map to look further."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:86
+msgid ""
+"We couldn’t load the observations. Check your connection: moving the map "
+"tries again."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:100
 msgid "Use device location"
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:97
+#: core/templates/core/includes/map_widget.html:103
 msgid "We'll remember this choice."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:106
+#: core/templates/core/includes/map_widget.html:112
 msgid ""
 "Your observation will be marked “location not checked”, which makes it less "
 "useful to local authorities."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:107
+#: core/templates/core/includes/map_widget.html:113
 msgid ""
 "Your browser is blocking location. You can allow it in your browser "
 "settings, or place the target by hand. Until then, your observation will be "
 "marked “location not checked”."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:108
+#: core/templates/core/includes/map_widget.html:114
 msgid ""
 "This browser can’t share your position. Place the target by hand. Your "
 "observation will be marked “location not checked”."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:109
+#: core/templates/core/includes/map_widget.html:115
 msgid ""
 "We couldn’t get your position. Tap the arrow button at the top right of the "
 "map to try again, or place the target by hand."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:130
+#: core/templates/core/includes/map_widget.html:136
 msgid "Confirm location"
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:135
+#: core/templates/core/includes/map_widget.html:141
 msgid "You moved the map. Tap “Confirm location” again."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:136
+#: core/templates/core/includes/map_widget.html:142
 msgid ""
 "The map moved to where you are. Check the target and tap “Confirm location” "
 "again."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:137
+#: core/templates/core/includes/map_widget.html:143
 msgid "We couldn’t confirm the location. Check your connection and try again."
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:143
+#: core/templates/core/includes/map_widget.html:149
 msgid "Loading…"
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:144
-msgid "We couldn’t load this observation. Close this panel and try again."
-msgstr ""
-
-#: core/templates/core/includes/map_widget.html:147
+#: core/templates/core/includes/map_widget.html:150
+#: core/templates/core/includes/map_widget.html:157
 msgid "Observation"
 msgstr ""
 
-#: core/templates/core/includes/map_widget.html:150
+#: core/templates/core/includes/map_widget.html:151
+msgid "Observations here"
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:152
+#, python-format
+msgid "%%(n)s observations here. Zoom in on them."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:153
+#, python-format
+msgid "%%(n)s observations at this spot. Show them."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:154
+msgid "We couldn’t load this observation. Close this panel and try again."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:160
 msgid "Close"
 msgstr ""
 
@@ -519,6 +544,11 @@ msgstr ""
 msgid ""
 "We couldn't read that position. Move the map slightly and tap “Confirm "
 "location” again."
+msgstr ""
+
+#: core/templates/core/partials/place_name.html:25
+#, python-format
+msgid "Near %(lat)s, %(lon)s"
 msgstr ""
 
 #: mobilito_app/counts.py:65
@@ -668,6 +698,66 @@ msgstr ""
 msgid "Thank you! Your report has been sent."
 msgstr ""
 
+#: mobilito_app/templates/mobilito_app/browse/here.html:34
+#: mobilito_app/templates/mobilito_app/counts/summary.html:27
+msgid "Count"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/here.html:37
+#, python-format
+msgid "%(total)s counted"
+msgid_plural "%(total)s counted"
+msgstr[0] ""
+msgstr[1] ""
+
+#: mobilito_app/templates/mobilito_app/browse/here.html:43
+#, python-format
+msgid "%(minutes)s minute"
+msgid_plural "%(minutes)s minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: mobilito_app/templates/mobilito_app/browse/here.html:53
+#: mobilito_app/templates/mobilito_app/reports/detail.html:42
+#: mobilito_app/templates/mobilito_app/reports/summary.html:27
+msgid "Street feature"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/here.html:62
+#, python-format
+msgid "Showing the latest %(n)s."
+msgid_plural "Showing the latest %(n)s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: mobilito_app/templates/mobilito_app/browse/here.html:70
+msgid "These observations aren’t shown any more."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/map.html:25
+msgid "Map"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/map.html:33
+msgid "What people have seen"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/map.html:34
+msgid "Tap a dot to see what someone saw there."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/map.html:36
+msgid "Counts of what goes by"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/map.html:37
+msgid "Street features"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/map.html:38
+msgid "Several together: tap to see them"
+msgstr ""
+
 #: mobilito_app/templates/mobilito_app/counts/count.html:31
 msgid "Counting"
 msgstr ""
@@ -758,61 +848,45 @@ msgstr ""
 msgid "What went by"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/detail.html:39
-#: mobilito_app/templates/mobilito_app/reports/detail.html:44
-#, python-format
-msgid "Near %(lat)s, %(lon)s"
-msgstr ""
-
-#: mobilito_app/templates/mobilito_app/counts/detail.html:45
+#: mobilito_app/templates/mobilito_app/counts/detail.html:37
 #, python-format
 msgid "%(date)s, for less than a minute"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/detail.html:49
+#: mobilito_app/templates/mobilito_app/counts/detail.html:41
 #, python-format
 msgid "%(date)s, for %(minutes)s minute"
 msgid_plural "%(date)s, for %(minutes)s minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: mobilito_app/templates/mobilito_app/counts/detail.html:59
+#: mobilito_app/templates/mobilito_app/counts/detail.html:51
 msgid ""
 "Thank you! Your count will be visible to others once it has been reviewed."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/detail.html:64
+#: mobilito_app/templates/mobilito_app/counts/detail.html:56
+#: mobilito_app/templates/mobilito_app/counts/summary.html:35
 msgid "Nothing was counted this time."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/detail.html:73
-#, python-format
-msgid "%(percent)s%%"
-msgstr ""
-
-#: mobilito_app/templates/mobilito_app/counts/detail.html:77
-#, python-format
-msgid "%(total)s person or vehicle counted in all."
-msgid_plural "%(total)s people and vehicles counted in all."
-msgstr[0] ""
-msgstr[1] ""
-
-#: mobilito_app/templates/mobilito_app/counts/detail.html:89
+#: mobilito_app/templates/mobilito_app/counts/detail.html:64
 msgid ""
 "The phone's own position was some distance from this spot when the count "
 "started."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/detail.html:96
+#: mobilito_app/templates/mobilito_app/counts/detail.html:71
+#: mobilito_app/templates/mobilito_app/counts/summary.html:41
 msgid "Do another count here"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/detail.html:99
-#: mobilito_app/templates/mobilito_app/reports/detail.html:96
+#: mobilito_app/templates/mobilito_app/counts/detail.html:74
+#: mobilito_app/templates/mobilito_app/reports/detail.html:94
 msgid "Back to the start"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/detail.html:105
+#: mobilito_app/templates/mobilito_app/counts/detail.html:80
 msgid "Link to share this count:"
 msgstr ""
 
@@ -852,6 +926,11 @@ msgstr[1] ""
 
 #: mobilito_app/templates/mobilito_app/counts/new.html:65
 msgid "Start counting"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/summary.html:38
+#: mobilito_app/templates/mobilito_app/reports/summary.html:47
+msgid "See more"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/counts/what_counts.html:36
@@ -919,58 +998,66 @@ msgid ""
 "report the infrastructure that helps or hinders it."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:76
+#: mobilito_app/templates/mobilito_app/home.html:75
 msgid "Browse observations"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:79
+#: mobilito_app/templates/mobilito_app/home.html:78
 msgid "Make an observation"
 msgstr ""
+
+#: mobilito_app/templates/mobilito_app/partials/count_bars.html:34
+#, python-format
+msgid "%(percent)s%%"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/partials/count_bars.html:38
+#, python-format
+msgid "%(total)s person or vehicle counted in all."
+msgid_plural "%(total)s people and vehicles counted in all."
+msgstr[0] ""
+msgstr[1] ""
 
 #: mobilito_app/templates/mobilito_app/reports/detail.html:25
 msgid "Street feature report"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/reports/detail.html:42
-msgid "Street feature"
-msgstr ""
-
-#: mobilito_app/templates/mobilito_app/reports/detail.html:54
+#: mobilito_app/templates/mobilito_app/reports/detail.html:52
 msgid "Seen on foot"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/reports/detail.html:55
+#: mobilito_app/templates/mobilito_app/reports/detail.html:53
 msgid "Seen by bike"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/reports/detail.html:56
+#: mobilito_app/templates/mobilito_app/reports/detail.html:54
 msgid "Seen on foot and by bike"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/reports/detail.html:62
+#: mobilito_app/templates/mobilito_app/reports/detail.html:60
 msgid ""
 "Once you've opened the link we sent you by email, we'll check your report "
 "and then show it to others."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/reports/detail.html:64
+#: mobilito_app/templates/mobilito_app/reports/detail.html:62
 msgid "Your report will be visible to others once it has been reviewed."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/reports/detail.html:73
+#: mobilito_app/templates/mobilito_app/reports/detail.html:71
 #, python-format
 msgid "Photo %(n)s"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/reports/detail.html:75
+#: mobilito_app/templates/mobilito_app/reports/detail.html:73
 msgid "(opens in a new tab)"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/reports/detail.html:94
+#: mobilito_app/templates/mobilito_app/reports/detail.html:92
 msgid "Report something else"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/reports/detail.html:101
+#: mobilito_app/templates/mobilito_app/reports/detail.html:99
 msgid "Link to share this report:"
 msgstr ""
 
@@ -1074,6 +1161,10 @@ msgstr ""
 
 #: mobilito_app/templates/mobilito_app/reports/new.html:140
 msgid "Send report"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/summary.html:33
+msgid "Photo of this street feature"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/reports/tags.html:30

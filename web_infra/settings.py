@@ -251,6 +251,12 @@ RATE_LIMIT_LOCATION_CONFIRM = (30, 60)
 # no better information. Nantes, where Mobilito starts.
 MAP_DEFAULT_CENTER = (47.2184, -1.5536)  # (lat, lon)
 MAP_DEFAULT_ZOOM = 13
+# Browse map pins (roadmap Phase 7): below this zoom, nearby
+# observations are grouped into numbered clusters; at or above it,
+# each is its own pin (at most MAP_PINS_MAX per kind per view).
+MAP_CLUSTER_MAX_ZOOM = 17
+MAP_PINS_MAX = 1000
+MAP_PINS_CACHE_SECONDS = 60
 MAP_TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 MAP_TILE_ATTRIBUTION = (
     '&copy; <a href="https://www.openstreetmap.org/copyright">'

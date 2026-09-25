@@ -57,11 +57,11 @@ License along with mobilito.  If not, see
       </a>
     </div>
   </div>
-  {# /observations/mine/ and /map/ land in Phase 7. #}
+  {# /observations/mine/ lands later in Phase 7. #}
   <p class="text-center">
     <a href="/observations/mine/">{% trans "Your observations" %}</a>
     &middot;
-    <a href="/map/">{% trans "Browse the map" %}</a>
+    <a href="{% url 'map' %}">{% trans "Browse the map" %}</a>
   </p>
 {% else %}
   <div class="text-center py-5">
@@ -69,9 +69,8 @@ License along with mobilito.  If not, see
     <p class="lead mx-auto" style="max-width: 40rem;">
       {% blocktranslate %}Document how people move through your streets: count what goes by, and report the infrastructure that helps or hinders it.{% endblocktranslate %}
     </p>
-    {# /map/ lands in Phase 7. #}
     <div class="d-flex justify-content-center gap-3 mt-4">
-      <a href="/map/" class="btn btn-outline-primary btn-lg">
+      <a href="{% url 'map' %}" class="btn btn-outline-primary btn-lg">
         {% trans "Browse observations" %}
       </a>
       <a href="{% url 'auth_observe' %}?next=/" class="btn btn-primary btn-lg">

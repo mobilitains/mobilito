@@ -63,6 +63,8 @@ License along with mobilito.  If not, see
   const GPS_ZOOM = 17;
   const PIN_COLOURS = { count: '#0d6efd', report: '#fd7e14' };
   const PIN_RELOAD_DELAY_MS = 300;
+  const CLUSTER_ZOOM_STEP = 2;
+  const MAX_ZOOM = 19;
 
   function readConfig(component, doc) {
     const id = component.getAttribute('data-mobilito-map') + '-config';
@@ -87,7 +89,7 @@ License along with mobilito.  If not, see
     const mapEl = component.querySelector('.mobilito-map');
     const map = L.map(mapEl).setView(config.center, config.zoom);
     L.tileLayer(config.tileUrl, {
-      maxZoom: 19,
+      maxZoom: MAX_ZOOM,
       attribution: config.tileAttribution,
     }).addTo(map);
 
@@ -467,22 +469,104 @@ License along with mobilito.  If not, see
     // tap without making them visually large. It must be passed to
     // each marker: L.geoJSON doesn't forward it to pointToLayer's.
     const renderer = L.canvas({ tolerance: 10 });
+    const pinsStatus = component.querySelector('[data-map-pins-status]');
+
+    function sayPins(key) {
+      if (pinsStatus) {
+        pinsStatus.textContent = key
+          ? pinsStatus.getAttribute('data-msg-' + key)
+          : '';
+      }
+    }
     // TODO(Phase 7): canvas pins aren't reachable by keyboard or
     // screen reader; the list view (/observations/) is the
     // accessible alternative and should be linked near the map.
     const layer = L.geoJSON(null, {
       pointToLayer: function (feature, latlng) {
+        // Drawn on the copy of the world being looked at.
+        latlng = [latlng.lat, latlng.lng + worldShift];
+        if (isCluster(feature)) {
+          return clusterMarker(feature, latlng);
+        }
         return L.circleMarker(
           latlng,
           Object.assign({ renderer: renderer }, pinStyle(feature))
         );
       },
       onEachFeature: function (feature, pin) {
+        pin.worldShift = worldShift;
         pin.on('click', function () {
-          openSheet(feature);
+          if (isCluster(feature) && !isStack(feature)) {
+            // Several observations close together: show them apart.
+            const [lon, lat] = feature.geometry.coordinates;
+            const element = pin.getElement && pin.getElement();
+            map.setView(
+              [lat, lon + pin.worldShift],
+              Math.min(map.getZoom() + CLUSTER_ZOOM_STEP, MAX_ZOOM)
+            );
+            if (element && element === component.ownerDocument.activeElement) {
+              // The marker is about to be replaced: keep keyboard
+              // users on the map rather than back at the page top.
+              component.querySelector('.mobilito-map').focus();
+            }
+          } else {
+            openSheet(feature);
+          }
         });
       },
     }).addTo(map);
+
+    function isCluster(feature) {
+      return feature.properties && feature.properties.kind === 'cluster';
+    }
+
+    function isStack(feature) {
+      // Several at the very same spot: zooming can't separate them,
+      // so the sheet lists them instead.
+      return isCluster(feature) && Boolean(feature.properties.summary_url);
+    }
+
+    function clusterMarker(feature, latlng) {
+      // A DOM marker (not canvas): it shows its number, and Leaflet
+      // makes it focusable, with Enter acting as a tap.
+      const doc = component.ownerDocument;
+      const number = feature.properties.count;
+      let count;
+      try {
+        count = Number(number).toLocaleString(
+          doc.documentElement.lang || undefined
+        );
+      } catch (err) {
+        count = String(number); // unknown language tag
+      }
+      const key = isStack(feature) ? 'data-msg-stack' : 'data-msg-cluster';
+      const label = ((sheet && sheet.getAttribute(key)) || '%(n)s').replace(
+        '%(n)s',
+        count
+      );
+      // Leaflet makes the marker a button named by its content: the
+      // number is for the eye, the sentence for screen readers.
+      const html = doc.createElement('span');
+      const shown = doc.createElement('span');
+      shown.setAttribute('aria-hidden', 'true');
+      shown.textContent = count;
+      const sentence = doc.createElement('span');
+      sentence.className = 'visually-hidden';
+      sentence.textContent = label;
+      html.appendChild(shown);
+      html.appendChild(sentence);
+      return L.marker(latlng, {
+        icon: L.divIcon({
+          // Four digits need a smaller font to fit the circle.
+          className:
+            'mobilito-cluster' +
+            (number >= 1000 ? ' mobilito-cluster-large' : ''),
+          html: html,
+          iconSize: [44, 44],
+        }),
+        keyboard: true,
+      });
+    }
 
     function showSheetMessage(key, spinner) {
       sheetBody.innerHTML = '';
@@ -502,10 +586,17 @@ License along with mobilito.  If not, see
       sheetBody.appendChild(wrap);
     }
 
+    const sheetTitle = sheet && sheet.querySelector('.offcanvas-title');
+
     function openSheet(feature) {
       const url = feature.properties && feature.properties.summary_url;
       if (!url || !sheet) {
         return;
+      }
+      if (sheetTitle) {
+        sheetTitle.textContent = sheet.getAttribute(
+          isStack(feature) ? 'data-msg-title-stack' : 'data-msg-title'
+        );
       }
       showSheetMessage('loading', true);
       const request = env.htmx.ajax('GET', url, {
@@ -532,15 +623,27 @@ License along with mobilito.  If not, see
     }
 
     let latestRequest = 0;
+    // Longitude offset of the world copy in view (Leaflet repeats
+    // the world sideways): the server answers for the real one.
+    let worldShift = 0;
 
     function loadPins() {
       const requestNumber = ++latestRequest;
+      const bounds = map.getBounds();
+      const wrapped = map.wrapLatLngBounds
+        ? map.wrapLatLngBounds(bounds)
+        : bounds;
+      const shift = wrapped.getCenter
+        ? bounds.getCenter().lng - wrapped.getCenter().lng
+        : 0;
       const separator = config.pinsUrl.indexOf('?') === -1 ? '?' : '&';
       const url =
         config.pinsUrl +
         separator +
         'bbox=' +
-        encodeURIComponent(map.getBounds().toBBoxString());
+        encodeURIComponent(wrapped.toBBoxString()) +
+        '&zoom=' +
+        Math.round(map.getZoom());
       return env
         .fetch(url, { headers: { Accept: 'application/geo+json' } })
         .then(function (response) {
@@ -556,11 +659,20 @@ License along with mobilito.  If not, see
             return;
           }
           layer.clearLayers();
+          worldShift = shift;
           layer.addData(data);
+          sayPins(data.features && data.features.length ? null : 'empty');
         })
         .catch(function () {
           // Keep whatever pins are showing; the next move retries.
+          if (requestNumber === latestRequest && !shown()) {
+            sayPins('failed');
+          }
         });
+    }
+
+    function shown() {
+      return layer.getLayers ? layer.getLayers().length > 0 : false;
     }
 
     let timer = null;

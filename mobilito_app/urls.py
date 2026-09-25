@@ -22,12 +22,20 @@ License along with mobilito.  If not, see
 
 from django.urls import path
 
-from mobilito_app import counts, reports
+from mobilito_app import browse, counts, reports
 
 urlpatterns = [
+    path("map/", browse.map_page, name="map"),
+    path("map/here/", browse.observations_here, name="observations_here"),
+    path(
+        "api/observations.geojson",
+        browse.observations_geojson,
+        name="observations_geojson",
+    ),
     path("counts/new/", counts.new_count, name="counts_new"),
     path("counts/start/", counts.start_count, name="counts_start"),
     path("counts/<int:pk>/", counts.detail, name="counts_detail"),
+    path("counts/<int:pk>/summary/", counts.summary, name="counts_summary"),
     path("counts/<int:pk>/count/", counts.count, name="counts_count"),
     path("counts/<int:pk>/event/", counts.record_event, name="counts_event"),
     path("counts/<int:pk>/finish/", counts.finish, name="counts_finish"),
@@ -40,6 +48,7 @@ urlpatterns = [
     ),
     path("reports/new/submit/", reports.submit_report, name="reports_submit"),
     path("reports/<int:pk>/", reports.detail, name="reports_detail"),
+    path("reports/<int:pk>/summary/", reports.summary, name="reports_summary"),
     path(
         "reports/<int:pk>/photos/<int:media_id>/",
         reports.photo,

@@ -41,9 +41,7 @@ License along with mobilito.  If not, see
       {% else %}
         {% trans "Street feature" %}
         <small class="d-block fs-6 fw-normal text-body-secondary">
-          {% blocktranslate trimmed with lat=location.point.y|floatformat:"5u" lon=location.point.x|floatformat:"5u" %}
-            Near {{ lat }}, {{ lon }}
-          {% endblocktranslate %}
+          {% include "core/partials/place_name.html" %}
         </small>
       {% endif %}
     {% endwith %}

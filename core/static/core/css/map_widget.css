@@ -103,3 +103,28 @@ License along with mobilito.  If not, see
 .mobilito-map-component .htmx-request.htmx-indicator {
   display: inline-block;
 }
+
+/* Pins status ("nothing here", "couldn't load"), over the map's
+   bottom edge, clear of the attribution; hidden while empty. Above
+   Leaflet's map panes, below the bottom sheet. Taps go through it
+   to the map. */
+.mobilito-map-status {
+  pointer-events: none;
+  position: absolute;
+  bottom: 1.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
+  width: max-content;
+  max-width: calc(100% - 1rem);
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.375rem;
+  background: #ffffff;
+  color: #212529;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.mobilito-map-status:empty {
+  display: none;
+}

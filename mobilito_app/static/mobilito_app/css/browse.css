@@ -1,0 +1,105 @@
+/*
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+*/
+
+
+/* Browse map (roadmap Phase 7). */
+
+.mobilito-browse-map .mobilito-map {
+  /* A browse page has nothing below the map to scroll to. */
+  height: 65vh;
+  height: calc(100svh - 16rem);
+  min-height: 18rem;
+}
+
+/* Numbered cluster: several observations close together. */
+.mobilito-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #212529;
+  border: 3px solid #ffffff;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.mobilito-cluster-large {
+  font-size: 0.75rem;
+}
+
+.mobilito-cluster:focus-visible {
+  outline: 3px solid #212529;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px #ffffff;
+}
+
+.mobilito-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1rem;
+}
+
+.mobilito-map-legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.mobilito-legend-dot {
+  display: inline-block;
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px #adb5bd;
+}
+
+.mobilito-legend-count {
+  background: #0d6efd;
+}
+
+.mobilito-legend-report {
+  background: #fd7e14;
+}
+
+.mobilito-legend-cluster {
+  width: 1.4rem;
+  height: 1.4rem;
+  background: #212529;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.1rem;
+  text-align: center;
+}
+
+.mobilito-summary-photo {
+  display: block;
+  width: 100%;
+  max-height: 12rem;
+  object-fit: cover;
+  border-radius: 0.375rem;
+}

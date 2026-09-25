@@ -452,14 +452,8 @@ def discard(request, pk):
     return JsonResponse({"redirect": reverse("home")})
 
 
-@require_GET
-def detail(request, pk):
-    """Results of a count (§9.1 "On finish")."""
-    session = _visible_session(request, pk)
-    observer = get_observer(request)
-    is_owner = observer.owns(session)
-    if is_owner and session.is_open:
-        return redirect("counts_count", pk=session.pk)
+def totals_bars(session) -> dict:
+    """Context for partials/count_bars.html: {"bars", "total"}."""
     totals = session.totals()
     total = sum(totals.values())
     bars = [
@@ -471,13 +465,23 @@ def detail(request, pk):
         }
         for mode in ("ped", "bike", "car", "tc")
     ]
+    return {"bars": bars, "total": total}
+
+
+@require_GET
+def detail(request, pk):
+    """Results of a count (§9.1 "On finish")."""
+    session = _visible_session(request, pk)
+    observer = get_observer(request)
+    is_owner = observer.owns(session)
+    if is_owner and session.is_open:
+        return redirect("counts_count", pk=session.pk)
     return render(
         request,
         "mobilito_app/counts/detail.html",
         {
             "session": session,
-            "bars": bars,
-            "total": total,
+            **totals_bars(session),
             "is_owner": is_owner,
             "published": session.publication_state
             == PublicationState.PUBLISHED,
@@ -486,4 +490,17 @@ def detail(request, pk):
             ),
             "share_url": request.build_absolute_uri(),
         },
+    )
+
+
+@require_GET
+def summary(request, pk):
+    """A count in the map's bottom sheet (§9.2 "Selecting ...")."""
+    session = _visible_session(request, pk)
+    if session.is_open:
+        raise Http404
+    return render(
+        request,
+        "mobilito_app/counts/summary.html",
+        {"session": session, **totals_bars(session)},
     )

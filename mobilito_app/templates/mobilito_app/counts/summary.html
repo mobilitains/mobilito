@@ -1,0 +1,42 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+{% comment %}A count in the map's bottom sheet: swapped into it by htmx.{% endcomment %}
+<h3 class="h6 mb-1">
+  <i class="bi bi-bar-chart-fill text-primary" aria-hidden="true"></i>
+  {% trans "Count" %}
+  <span class="fw-normal">·
+    {% include "core/partials/place_name.html" with location=session.location %}</span>
+</h3>
+<p class="small text-body-secondary mb-2">{{ session.started_at|date:"DATETIME_FORMAT" }}</p>
+{% if total %}
+  {% include "mobilito_app/partials/count_bars.html" with caption_id="sheet-bars-caption" %}
+{% else %}
+  <p>{% trans "Nothing was counted this time." %}</p>
+{% endif %}
+<div class="d-grid gap-2">
+  <a href="{% url 'counts_detail' session.pk %}" class="btn btn-primary">{% trans "See more" %}</a>
+  <a href="{% url 'counts_new' %}?from={{ session.pk }}" class="btn btn-outline-primary">
+    <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+    {% trans "Do another count here" %}
+  </a>
+</div>
