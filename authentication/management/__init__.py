@@ -19,16 +19,3 @@ You should have received a copy of the GNU Affero General Public
 License along with mobilito.  If not, see
 <http://www.gnu.org/licenses/>.
 """
-
-from django.urls import path
-
-from authentication import views
-
-urlpatterns = [
-    path("start/", views.start, name="auth_start"),
-    path("sent/", views.sent, name="auth_sent"),
-    path("verify/<str:token>/", views.verify, name="auth_verify"),
-    path("logout/", views.logout_view, name="auth_logout"),
-    path("observe/", views.observe, name="auth_observe"),
-    path("observe/resend/", views.observe_resend, name="auth_observe_resend"),
-]

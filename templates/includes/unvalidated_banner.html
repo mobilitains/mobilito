@@ -21,21 +21,28 @@ License along with mobilito.  If not, see
 {% endcomment %}
 {% load i18n %}
 {% if show %}
-  <div class="alert alert-info d-flex flex-wrap align-items-center gap-2" role="status">
-    <div class="flex-grow-1">
+  <div class="alert alert-info small py-2 mb-3" role="status">
+    {% if signed_in %}
       {% blocktranslate trimmed %}
-        Please confirm your email address using the link we sent to
-        <strong>{{ email }}</strong>. Until then, your observations are
-        visible only to you.
+        Please confirm your email address, <strong>{{ email }}</strong>,
+        so that what you record counts.
       {% endblocktranslate %}
-    </div>
-    <form method="post" action="{% url 'auth_start' %}" class="m-0">
+    {% else %}
+      {% blocktranslate trimmed %}
+        Carry on: what you record will count once you open the link we
+        sent to <strong>{{ email }}</strong>.
+      {% endblocktranslate %}
+    {% endif %}
+    <form method="post" action="{{ resend_url }}" class="d-inline">
       {% csrf_token %}
       <input type="hidden" name="email" value="{{ email }}">
       <input type="hidden" name="next" value="{{ next }}">
-      <button type="submit" class="btn btn-outline-primary">
-        {% trans "Send the link again" %}
-      </button>
+      <button type="submit" class="btn btn-link btn-sm p-0 align-baseline">
+        {% if signed_in %}{% trans "Send me a link" %}{% else %}{% trans "Send it again" %}{% endif %}</button>
     </form>
+    {% if change_url %}
+      &middot;
+      <a href="{{ change_url }}">{% trans "Not your address?" %}</a>
+    {% endif %}
   </div>
 {% endif %}

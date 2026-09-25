@@ -30,6 +30,7 @@ from django.contrib.auth.models import (
 )
 from django.core.handlers.wsgi import WSGIRequest
 from django.db import DatabaseError, IntegrityError, models, transaction
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("django")
@@ -136,8 +137,11 @@ class MobilitoUser(AbstractBaseUser, PermissionsMixin):
         remember_user: int = 0,
     ) -> None:
         """Mark email as validated and optionally log the user in."""
+        from core.lifecycle import promote
+
         self.email_validated = True
         self.save()
+        promote(self)
         if auth_user:
             login(request, self)
         # remember_user=0: expire session when browser closes.
@@ -154,3 +158,90 @@ def get_user_by_email(email: str) -> MobilitoUser:
     except DatabaseError as err:
         logger.error(f"Unexpected database error: {err}")
         raise
+
+
+def lock_user_first(user_id) -> None:
+    """Lock a user row before any of its sign-in attempt rows.
+
+    Confirming, dropping and re-pointing attempts all touch both the
+    user and attempt rows; taking them in one fixed order (user, then
+    attempt) keeps them from deadlocking each other. Call inside a
+    transaction.
+    """
+    MobilitoUser.objects.select_for_update().filter(pk=user_id).first()
+
+
+class SignInAttempt(models.Model):
+    """A provisional ("probably signed in") sign-in (§5.3, §5.4).
+
+    Created when someone gives an email address in order to start
+    observing straight away. The browser session holds the attempt,
+    not a Django login: the session sees only what the attempt
+    itself created (observations link to it, with no user until it
+    is confirmed), so typing someone else's address reveals nothing
+    of theirs. Confirming the emailed link attaches the attempt's
+    data to `user`; an attempt never confirmed is reminded and then
+    dropped with everything linked to it (process_sign_in_attempts).
+    """
+
+    email = models.EmailField()
+    # The user the confirmation link signs in (created on demand, so
+    # possibly never validated).
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="sign_in_attempts",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    # Whether this attempt created `user`, which a drop may then
+    # delete; a pre-existing user is never deleted by a drop.
+    created_user = models.BooleanField(default=False)
+    # Language the person asked in, for reminders sent from cron to a
+    # user with no stored preference.
+    language = models.CharField(max_length=10, blank=True)
+    reminders_sent = models.PositiveSmallIntegerField(default=0)
+    last_reminded_at = models.DateTimeField(null=True, blank=True)
+    confirmed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["confirmed_at", "created_at"])]
+
+    def __str__(self) -> str:
+        return f"Sign-in attempt {self.pk}"
+
+    @property
+    def is_confirmed(self) -> bool:
+        return self.confirmed_at is not None
+
+    CONFIRMED = "confirmed"
+    ALREADY_CONFIRMED = "already_confirmed"
+    DROPPED = "dropped"
+
+    def confirm(self) -> str:
+        """Attach everything created during the attempt to the user.
+
+        Locks the row, so it can't interleave with a concurrent drop
+        (process_sign_in_attempts) or a second confirmation. Returns
+        CONFIRMED, ALREADY_CONFIRMED (someone got there first: the
+        link is single-use) or DROPPED.
+        """
+        from core.lifecycle import observations_for_attempt, promote
+
+        with transaction.atomic():
+            lock_user_first(self.user_id)
+            locked = (
+                SignInAttempt.objects.select_for_update()
+                .filter(pk=self.pk)
+                .first()
+            )
+            if locked is None:
+                return self.DROPPED
+            if locked.confirmed_at is not None:
+                self.confirmed_at = locked.confirmed_at
+                return self.ALREADY_CONFIRMED
+            locked.confirmed_at = self.confirmed_at = timezone.now()
+            locked.save(update_fields=["confirmed_at"])
+            for queryset in observations_for_attempt(self):
+                queryset.filter(user__isnull=True).update(user=self.user)
+            promote(self.user)
+        return self.CONFIRMED

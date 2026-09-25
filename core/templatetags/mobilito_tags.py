@@ -21,32 +21,56 @@ License along with mobilito.  If not, see
 """
 
 from django import template
+from urllib.parse import urlencode
+
+from django.urls import reverse
 
 register = template.Library()
 
 
 @register.inclusion_tag("includes/unvalidated_banner.html", takes_context=True)
 def unvalidated_banner(context):
-    """Gently prompt a signed-in user to confirm their email (§5.4).
+    """Gently prompt someone to confirm their email address (§5.4).
 
-    Renders nothing unless the user is authenticated but hasn't yet
-    proved control of their address. The magic-link flow validates
-    the address as it signs the user in, so today this only fires
-    for users signed in some other way (admin-created, and later
-    password sign-in or deferred validation, §5.4).
+    Shown to a provisional ("probably signed in") session whose
+    attempt isn't confirmed yet, and to a signed-in user whose
+    address isn't validated (e.g. admin-created). Renders nothing
+    otherwise.
     """
+    from authentication.provisional import get_observer
+
     request = context.get("request")
-    user = getattr(request, "user", None)
-    show = bool(
-        user is not None and user.is_authenticated and not user.email_validated
+    empty = {"show": False}
+    if request is None or not hasattr(request, "session"):
+        return empty
+    observer = get_observer(request)
+    next_url = (
+        request.get_full_path()
+        if not request.path.startswith("/auth/")
+        else ""
     )
-    return {
-        "show": show,
-        "email": user.email if show else "",
-        # Don't send them back to an auth page after signing in.
-        "next": (
-            request.get_full_path()
-            if show and not request.path.startswith("/auth/")
-            else ""
-        ),
-    }
+    if observer.user is not None:
+        if observer.user.email_validated:
+            return empty
+        return {
+            "show": True,
+            "signed_in": True,
+            "email": observer.user.email,
+            "resend_url": reverse("auth_start"),
+            "next": next_url,
+        }
+    if request.path.startswith("/auth/"):
+        # Those pages are about exactly this; the banner would repeat
+        # (or link to) them.
+        return empty
+    if observer.attempt is not None and not observer.attempt.is_confirmed:
+        return {
+            "show": True,
+            "email": observer.attempt.email,
+            "resend_url": reverse("auth_observe_resend"),
+            "change_url": reverse("auth_observe")
+            + "?"
+            + urlencode({"change": "1", "next": next_url or "/"}),
+            "next": next_url,
+        }
+    return empty

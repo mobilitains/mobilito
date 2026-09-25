@@ -18,7 +18,10 @@ along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import (
+    GenericForeignKey,
+    GenericRelation,
+)
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models as gis_models
 from django.db import models
@@ -79,6 +82,31 @@ class Observation(models.Model):
         "core.Location",
         on_delete=models.PROTECT,
         related_name="%(class)ss",
+    )
+    # Set when made during a provisional sign-in (§5.4); `user` then
+    # stays empty until the attempt is confirmed. Dropping an
+    # unconfirmed attempt deletes these observations explicitly.
+    # PROTECT: an attempt (and so its user) must be removed through
+    # drop_attempt(), which deletes these first; anything else would
+    # leave unowned observations nothing ever cleans up.
+    sign_in_attempt = models.ForeignKey(
+        "authentication.SignInAttempt",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="%(class)ss",
+    )
+    # So deleting an observation also deletes its location evidence
+    # (a generic relation doesn't cascade otherwise).
+    location_evidence = GenericRelation(
+        "core.LocationEvidence",
+        content_type_field="content_type",
+        object_id_field="object_id",
+    )
+    moderation_flags = GenericRelation(
+        "mobilito_app.ModerationFlag",
+        content_type_field="content_type",
+        object_id_field="object_id",
     )
     publication_state = models.CharField(
         max_length=20,

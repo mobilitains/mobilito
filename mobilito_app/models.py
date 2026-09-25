@@ -18,7 +18,10 @@ along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import (
+    GenericForeignKey,
+    GenericRelation,
+)
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models as gis_models
 from django.db import models
@@ -127,6 +130,11 @@ class InfrastructureMedia(models.Model):
         default=ModerationState.UNREVIEWED,
     )
     published = models.BooleanField(default=True)
+    moderation_flags = GenericRelation(
+        "mobilito_app.ModerationFlag",
+        content_type_field="content_type",
+        object_id_field="object_id",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:

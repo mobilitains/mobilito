@@ -20,7 +20,7 @@ along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import MobilitoUser
+from .models import MobilitoUser, SignInAttempt
 
 
 @admin.register(MobilitoUser)
@@ -69,3 +69,35 @@ class MobilitoUserAdmin(UserAdmin):
             },
         ),
     )
+
+
+@admin.register(SignInAttempt)
+class SignInAttemptAdmin(admin.ModelAdmin):
+    """Provisional sign-ins (§5.4), for oversight; not edited by hand."""
+
+    list_display = (
+        "id",
+        "email",
+        "created_at",
+        "reminders_sent",
+        "confirmed_at",
+    )
+    list_filter = ("confirmed_at",)
+    search_fields = ("email",)
+    readonly_fields = (
+        "email",
+        "user",
+        "created_user",
+        "created_at",
+        "reminders_sent",
+        "last_reminded_at",
+        "confirmed_at",
+    )
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        # Only process_sign_in_attempts drops attempts, together with
+        # everything linked to them (drop_attempt).
+        return False

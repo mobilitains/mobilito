@@ -21,7 +21,7 @@ License along with mobilito.  If not, see
 """
 
 from django.conf import settings
-from django.core.checks import Tags, Warning, register
+from django.core.checks import Error, Tags, Warning, register
 
 LOCAL_CACHES = (
     "django.core.cache.backends.locmem.LocMemCache",
@@ -46,6 +46,30 @@ def shared_cache_check(app_configs, **kwargs):
                 hint="Configure a shared CACHES backend (e.g. Redis, "
                 "memcached or the database cache) in settings_local.py.",
                 id="core.W001",
+            )
+        ]
+    return []
+
+
+@register()
+def sign_in_attempt_link_check(app_configs, **kwargs):
+    """Every reminder's link must outlive the attempt it confirms.
+
+    The last reminder goes out SIGN_IN_ATTEMPT_DROP_AFTER_DAYS before
+    the drop; a link that expires sooner would leave people with no
+    way to save their data (design §5.4).
+    """
+    if (
+        settings.SIGN_IN_ATTEMPT_LINK_MAX_AGE
+        < settings.SIGN_IN_ATTEMPT_DROP_AFTER_DAYS * 86400
+    ):
+        return [
+            Error(
+                "SIGN_IN_ATTEMPT_LINK_MAX_AGE is shorter than "
+                "SIGN_IN_ATTEMPT_DROP_AFTER_DAYS.",
+                hint="Links sent with the last reminder would expire "
+                "before the data is dropped.",
+                id="core.E001",
             )
         ]
     return []

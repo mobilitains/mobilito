@@ -23,26 +23,52 @@ License along with mobilito.  If not, see
 <html lang="{{ language }}">
 <body style="font-family: sans-serif; line-height: 1.5; color: #212529; background: #ffffff;">
   <p>{% trans "Hello," %}</p>
-  <p>{% trans "Use the button below to sign in to Mobilito:" %}</p>
-  <p>
-    <a href="{{ link }}" style="display: inline-block; padding: 12px 24px; background: #0d6efd; color: #ffffff; text-decoration: none; border-radius: 6px;">{% trans "Sign in" %}</a>
-  </p>
-  {% if has_next %}
-    <p>{% trans "If you open it on the device where you asked for it, you'll go straight back to what you were doing." %}</p>
+  {% if drop_on %}
+    <p>{% trans "You recorded an observation on Mobilito, but haven't confirmed your email address yet. Confirm it's you so that what you recorded counts:" %}</p>
+  {% elif attempt %}
+    <p>{% trans "You gave this email address on Mobilito. Confirm it's you so that what you record counts:" %}</p>
+  {% else %}
+    <p>{% trans "Use the button below to sign in to Mobilito:" %}</p>
   {% endif %}
   <p>
-    {% blocktranslate trimmed count minutes=max_age_minutes %}
-      The link works once, for {{ minutes }} minute.
-    {% plural %}
-      The link works once, for {{ minutes }} minutes.
-    {% endblocktranslate %}
+    <a href="{{ link }}" style="display: inline-block; padding: 12px 24px; background: #0d6efd; color: #ffffff; text-decoration: none; border-radius: 6px;">{% if attempt %}{% trans "Confirm my email address" %}{% else %}{% trans "Sign in" %}{% endif %}</a>
+  </p>
+  {% if drop_on %}
+    <p>
+      {% blocktranslate trimmed with date=drop_on|date:"DATE_FORMAT" %}
+        If you don't confirm your email address by {{ date }}, what you recorded will be deleted.
+      {% endblocktranslate %}
+    </p>
+  {% elif attempt %}
+    <p>{% trans "No hurry: you can finish what you're doing first." %}</p>
+  {% elif has_next %}
+    <p>{% trans "You'll be taken back to what you were doing." %}</p>
+  {% endif %}
+  <p>
+    {% if attempt %}
+      {% blocktranslate trimmed count days=max_age_days %}
+        The link works once, for {{ days }} day.
+      {% plural %}
+        The link works once, for {{ days }} days.
+      {% endblocktranslate %}
+    {% else %}
+      {% blocktranslate trimmed count minutes=max_age_minutes %}
+        The link works once, for {{ minutes }} minute.
+      {% plural %}
+        The link works once, for {{ minutes }} minutes.
+      {% endblocktranslate %}
+    {% endif %}
   </p>
   <p style="color: #6c757d; font-size: 0.9em;">
     {% trans "If the button doesn't work, copy this address into your browser:" %}<br>
     <a href="{{ link }}" style="word-break: break-all;">{{ link }}</a>
   </p>
   <p style="color: #6c757d; font-size: 0.9em;">
-    {% trans "If you didn't ask for this, you can ignore this email." %}
+    {% if attempt %}
+      {% trans "If you didn't ask for this, you can ignore this email: nothing will be kept." %}
+    {% else %}
+      {% trans "If you didn't ask for this, you can ignore this email." %}
+    {% endif %}
   </p>
   <p>Mobilito</p>
 </body>

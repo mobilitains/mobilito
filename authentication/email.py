@@ -30,25 +30,64 @@ from django.utils import translation
 from sesame.utils import get_token
 
 from authentication.models import MobilitoUser
+from authentication.tokens import make_attempt_token
 
 
-def send_magic_link(request, user: MobilitoUser, next_url: str = "") -> None:
+def send_magic_link(
+    request,
+    user: MobilitoUser,
+    next_url: str = "",
+    *,
+    attempt=None,
+    drop_on=None,
+    base_url: str = "",
+) -> None:
     """Email `user` a single-use sign-in link.
 
     `next_url` (already checked safe by the caller) is carried in
     the link so that the user returns to what they were doing, e.g.
     an observation in progress, even if they open the link on a
     different device.
+
+    With `attempt`, the link confirms that provisional sign-in
+    (§5.4) and only it (authentication.tokens), and stays valid for
+    SIGN_IN_ATTEMPT_LINK_MAX_AGE rather than SESAME_MAX_AGE, since
+    people confirm after observing. `drop_on` (a date) marks a
+    reminder, which says when unconfirmed data will be deleted.
+    Without a request (management commands), links are built on
+    `base_url`.
     """
-    path = reverse("auth_verify", args=[get_token(user)])
+    if attempt is not None:
+        token = make_attempt_token(attempt)
+        # Marks the token as an attempt token (authentication.tokens).
+        query = {"attempt": "1"}
+        max_age = settings.SIGN_IN_ATTEMPT_LINK_MAX_AGE
+    else:
+        token = get_token(user)
+        query = {}
+        max_age = settings.SESAME_MAX_AGE
     if next_url:
-        path += "?" + urlencode({"next": next_url})
-    context = {
-        "link": request.build_absolute_uri(path),
-        "max_age_minutes": settings.SESAME_MAX_AGE // 60,
-        "has_next": bool(next_url),
-    }
+        query["next"] = next_url
     language = user.preferred_language or translation.get_language()
+    if not user.preferred_language and language in dict(settings.LANGUAGES):
+        # Stored on the user only once the link is used (§5.4, §7).
+        query["lang"] = language
+    path = reverse("auth_verify", args=[token])
+    if query:
+        path += "?" + urlencode(query)
+    link = (
+        request.build_absolute_uri(path)
+        if request is not None
+        else base_url.rstrip("/") + path
+    )
+    context = {
+        "link": link,
+        "max_age_minutes": max_age // 60,
+        "max_age_days": max_age // 86400,
+        "has_next": bool(next_url),
+        "attempt": attempt,
+        "drop_on": drop_on,
+    }
     context["language"] = language
     with translation.override(language):
         subject = render_to_string(

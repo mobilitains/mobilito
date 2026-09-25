@@ -19,4 +19,4 @@ You should have received a copy of the GNU Affero General Public
 License along with mobilito.  If not, see
 <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n %}{% trans "Your Mobilito sign-in link" %}
+{% load i18n %}{% if drop_on %}{% trans "Reminder: confirm your email address for Mobilito" %}{% elif attempt %}{% trans "Confirm your email address for Mobilito" %}{% else %}{% trans "Your Mobilito sign-in link" %}{% endif %}

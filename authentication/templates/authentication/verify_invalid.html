@@ -22,19 +22,46 @@ License along with mobilito.  If not, see
 {% endcomment %}
 {% load i18n %}
 
-{% block title %}{% trans "This link no longer works" %} · Mobilito{% endblock %}
+{% block title %}{% if already_confirmed %}{% trans "Already confirmed" %}{% else %}{% trans "This link no longer works" %}{% endif %} · Mobilito{% endblock %}
 
 {% block content %}
 <div class="mx-auto text-center" style="max-width: 32rem;">
-  <h1 class="h3 mb-3">{% trans "This link no longer works" %}</h1>
-  <p>
-    {% blocktranslate trimmed %}
-      Sign-in links work only once, and only for a short time. Ask for
-      a new one and we'll send it straight away.
-    {% endblocktranslate %}
-  </p>
-  <a href="{% url 'auth_start' %}{% if next %}?next={{ next|urlencode }}{% endif %}" class="btn btn-primary btn-lg">
-    {% trans "Send me a new link" %}
-  </a>
+  {% if already_confirmed %}
+    <h1 class="h3 mb-3">{% trans "Already confirmed" %}</h1>
+    <p>
+      {% blocktranslate trimmed %}
+        Your email address is already confirmed: what you recorded
+        counts. To see it on this device, sign in here too.
+      {% endblocktranslate %}
+    </p>
+    <a href="{% url 'auth_start' %}{% if next %}?next={{ next|urlencode }}{% endif %}" class="btn btn-primary btn-lg">
+      {% trans "Sign in on this device" %}
+    </a>
+  {% else %}
+    <h1 class="h3 mb-3">{% trans "This link no longer works" %}</h1>
+    <p>
+      {% blocktranslate trimmed %}
+        It has already been used, or it has expired. Ask for a new one
+        and we'll send it straight away.
+      {% endblocktranslate %}
+    </p>
+    {% if attempt %}
+      {% comment %}
+      This browser has an unconfirmed provisional sign-in: send a new
+      link for it, which also confirms what it recorded.
+      {% endcomment %}
+      <form method="post" action="{% url 'auth_observe_resend' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <button type="submit" class="btn btn-primary btn-lg">
+          {% trans "Send me a new link" %}
+        </button>
+      </form>
+    {% else %}
+      <a href="{% url 'auth_start' %}{% if next %}?next={{ next|urlencode }}{% endif %}" class="btn btn-primary btn-lg">
+        {% trans "Send me a new link" %}
+      </a>
+    {% endif %}
+  {% endif %}
 </div>
 {% endblock %}

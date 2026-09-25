@@ -21,19 +21,29 @@ License along with mobilito.  If not, see
 {% endcomment %}
 {% load i18n %}{% autoescape off %}{% trans "Hello," %}
 
-{% trans "Open this link to sign in to Mobilito:" %}
+{% if drop_on %}{% trans "You recorded an observation on Mobilito, but haven't confirmed your email address yet. Open this link to confirm it's you, so that what you recorded counts:" %}{% elif attempt %}{% trans "You gave this email address on Mobilito. Open this link to confirm it's you, so that what you record counts:" %}{% else %}{% trans "Open this link to sign in to Mobilito:" %}{% endif %}
 
 {{ link }}
 
-{% if has_next %}{% trans "If you open it on the device where you asked for it, you'll go straight back to what you were doing." %}
+{% if drop_on %}{% blocktranslate trimmed with date=drop_on|date:"DATE_FORMAT" %}
+If you don't confirm your email address by {{ date }}, what you recorded will be deleted.
+{% endblocktranslate %}
 
-{% endif %}{% blocktranslate trimmed count minutes=max_age_minutes %}
+{% elif attempt %}{% trans "No hurry: you can finish what you're doing first." %}
+
+{% elif has_next %}{% trans "You'll be taken back to what you were doing." %}
+
+{% endif %}{% if attempt %}{% blocktranslate trimmed count days=max_age_days %}
+The link works once, for {{ days }} day.
+{% plural %}
+The link works once, for {{ days }} days.
+{% endblocktranslate %}{% else %}{% blocktranslate trimmed count minutes=max_age_minutes %}
 The link works once, for {{ minutes }} minute.
 {% plural %}
 The link works once, for {{ minutes }} minutes.
-{% endblocktranslate %}
+{% endblocktranslate %}{% endif %}
 
-{% trans "If you didn't ask for this, you can ignore this email." %}
+{% if attempt %}{% trans "If you didn't ask for this, you can ignore this email: nothing will be kept." %}{% else %}{% trans "If you didn't ask for this, you can ignore this email." %}{% endif %}
 
 -- 
 Mobilito

@@ -66,6 +66,27 @@ SESAME_MAX_AGE = 1800
 # consumes the token on POST (after the user taps "Sign in"), so
 # email link scanners that prefetch the GET don't burn it.
 SESAME_ONE_TIME = True
+# v2 only: v1 tokens can't carry a scope and raise on one; nothing
+# issued v1 tokens.
+SESAME_TOKENS = ["sesame.tokens_v2"]
+
+# Provisional sign-in (design §5.4): someone who gives an email to
+# start observing is "probably signed in" straight away. Their
+# confirmation link is scoped to that attempt and stays valid long
+# enough to confirm after observing. Unconfirmed attempts that
+# recorded something get reminders at these delays after they
+# started, then everything linked to them is deleted this long
+# after the last reminder (process_sign_in_attempts, run from cron).
+SIGN_IN_ATTEMPT_LINK_MAX_AGE = 7 * 24 * 3600
+SIGN_IN_ATTEMPT_REMINDER_DELAYS_HOURS = [24]
+SIGN_IN_ATTEMPT_DROP_AFTER_DAYS = 7
+# Once confirmed from another browser (often an email app's own), the
+# browser that made the attempt keeps recording as that user for this
+# long, then has to sign in properly. Bounds what a stranger's
+# browser can do if the address owner is tricked into confirming.
+SIGN_IN_ATTEMPT_CONFIRMED_SESSION_HOURS = 24
+# Absolute base for links in emails sent outside a request (cron).
+SITE_URL = os.environ.get("DJANGO_SITE_URL", "http://localhost:8000")
 
 LOGIN_URL = "auth_start"
 

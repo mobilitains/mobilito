@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 09:04+0000\n"
+"POT-Creation-Date: 2026-09-25 09:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: authentication/forms.py:31
+#: authentication/templates/authentication/observe.html:25
 msgid "Your email address"
 msgstr ""
 
@@ -26,12 +27,18 @@ msgstr ""
 msgid "Stay signed in on this device"
 msgstr ""
 
-#: authentication/models.py:70
+#: authentication/models.py:71
 msgid "Superuser must have is_staff=True."
 msgstr ""
 
-#: authentication/models.py:72
+#: authentication/models.py:73
 msgid "Superuser must have is_superuser=True."
+msgstr ""
+
+#: authentication/provisional.py:148
+msgid ""
+"Your email address wasn't confirmed in time, so anything you recorded was "
+"deleted."
 msgstr ""
 
 #: authentication/templates/authentication/email/magic_link.html:25
@@ -39,28 +46,64 @@ msgstr ""
 msgid "Hello,"
 msgstr ""
 
-#: authentication/templates/authentication/email/magic_link.html:26
+#: authentication/templates/authentication/email/magic_link.html:27
+msgid ""
+"You recorded an observation on Mobilito, but haven't confirmed your email "
+"address yet. Confirm it's you so that what you recorded counts:"
+msgstr ""
+
+#: authentication/templates/authentication/email/magic_link.html:29
+msgid ""
+"You gave this email address on Mobilito. Confirm it's you so that what you "
+"record counts:"
+msgstr ""
+
+#: authentication/templates/authentication/email/magic_link.html:31
 msgid "Use the button below to sign in to Mobilito:"
 msgstr ""
 
-#: authentication/templates/authentication/email/magic_link.html:28
+#: authentication/templates/authentication/email/magic_link.html:34
+#: authentication/templates/authentication/verify.html:54
+msgid "Confirm my email address"
+msgstr ""
+
+#: authentication/templates/authentication/email/magic_link.html:34
 #: authentication/templates/authentication/start.html:25
 #: authentication/templates/authentication/start.html:29
 #: authentication/templates/authentication/verify.html:25
-#: authentication/templates/authentication/verify.html:47
+#: authentication/templates/authentication/verify.html:54
 #: templates/includes/nav.html:64
 msgid "Sign in"
 msgstr ""
 
-#: authentication/templates/authentication/email/magic_link.html:31
+#: authentication/templates/authentication/email/magic_link.html:38
 #: authentication/templates/authentication/email/magic_link.txt:28
+#, python-format
 msgid ""
-"If you open it on the device where you asked for it, you'll go straight back "
-"to what you were doing."
+"If you don't confirm your email address by %(date)s, what you recorded will "
+"be deleted."
 msgstr ""
 
-#: authentication/templates/authentication/email/magic_link.html:34
-#: authentication/templates/authentication/email/magic_link.txt:30
+#: authentication/templates/authentication/email/magic_link.html:43
+#: authentication/templates/authentication/email/magic_link.txt:32
+msgid "No hurry: you can finish what you're doing first."
+msgstr ""
+
+#: authentication/templates/authentication/email/magic_link.html:45
+#: authentication/templates/authentication/email/magic_link.txt:34
+msgid "You'll be taken back to what you were doing."
+msgstr ""
+
+#: authentication/templates/authentication/email/magic_link.html:49
+#: authentication/templates/authentication/email/magic_link.txt:36
+#, python-format
+msgid "The link works once, for %(days)s day."
+msgid_plural "The link works once, for %(days)s days."
+msgstr[0] ""
+msgstr[1] ""
+
+#: authentication/templates/authentication/email/magic_link.html:55
+#: authentication/templates/authentication/email/magic_link.txt:40
 #: authentication/templates/authentication/sent.html:42
 #, python-format
 msgid "The link works once, for %(minutes)s minute."
@@ -68,13 +111,32 @@ msgid_plural "The link works once, for %(minutes)s minutes."
 msgstr[0] ""
 msgstr[1] ""
 
-#: authentication/templates/authentication/email/magic_link.html:41
+#: authentication/templates/authentication/email/magic_link.html:63
 msgid "If the button doesn't work, copy this address into your browser:"
 msgstr ""
 
-#: authentication/templates/authentication/email/magic_link.html:45
-#: authentication/templates/authentication/email/magic_link.txt:36
+#: authentication/templates/authentication/email/magic_link.html:68
+#: authentication/templates/authentication/email/magic_link.txt:46
+msgid ""
+"If you didn't ask for this, you can ignore this email: nothing will be kept."
+msgstr ""
+
+#: authentication/templates/authentication/email/magic_link.html:70
+#: authentication/templates/authentication/email/magic_link.txt:46
 msgid "If you didn't ask for this, you can ignore this email."
+msgstr ""
+
+#: authentication/templates/authentication/email/magic_link.txt:24
+msgid ""
+"You recorded an observation on Mobilito, but haven't confirmed your email "
+"address yet. Open this link to confirm it's you, so that what you recorded "
+"counts:"
+msgstr ""
+
+#: authentication/templates/authentication/email/magic_link.txt:24
+msgid ""
+"You gave this email address on Mobilito. Open this link to confirm it's you, "
+"so that what you record counts:"
 msgstr ""
 
 #: authentication/templates/authentication/email/magic_link.txt:24
@@ -82,7 +144,54 @@ msgid "Open this link to sign in to Mobilito:"
 msgstr ""
 
 #: authentication/templates/authentication/email/magic_link_subject.txt:22
+msgid "Reminder: confirm your email address for Mobilito"
+msgstr ""
+
+#: authentication/templates/authentication/email/magic_link_subject.txt:22
+msgid "Confirm your email address for Mobilito"
+msgstr ""
+
+#: authentication/templates/authentication/email/magic_link_subject.txt:22
 msgid "Your Mobilito sign-in link"
+msgstr ""
+
+#: authentication/templates/authentication/observe.html:30
+msgid "Change your email address"
+msgstr ""
+
+#: authentication/templates/authentication/observe.html:32
+msgid ""
+"Correct your address and we'll send the link there instead. What you've "
+"recorded so far is kept."
+msgstr ""
+
+#: authentication/templates/authentication/observe.html:38
+msgid "Before you start"
+msgstr ""
+
+#: authentication/templates/authentication/observe.html:40
+msgid ""
+"What's your email address? You can start straight away. We'll email you a "
+"link: open it within a week so that what you record counts."
+msgstr ""
+
+#: authentication/templates/authentication/observe.html:67
+msgid "Continue"
+msgstr ""
+
+#: authentication/templates/authentication/observe.html:71
+msgid ""
+"We only use your address to send you this link and news about your "
+"observations. It's never shown to anyone. If you don't confirm it within a "
+"week, what you record is deleted."
+msgstr ""
+
+#: authentication/templates/authentication/observe.html:79
+msgid "Already used Mobilito?"
+msgstr ""
+
+#: authentication/templates/authentication/observe.html:80
+msgid "Sign in instead"
 msgstr ""
 
 #: authentication/templates/authentication/sent.html:25
@@ -133,54 +242,120 @@ msgid ""
 "observations. It's never shown to anyone."
 msgstr ""
 
+#: authentication/templates/authentication/verify.html:25
+msgid "Confirm your email address"
+msgstr ""
+
 #: authentication/templates/authentication/verify.html:29
 msgid "One more tap"
 msgstr ""
 
-#: authentication/templates/authentication/verify.html:31
+#: authentication/templates/authentication/verify.html:32
+#, python-format
+msgid ""
+"Tap the button to confirm <strong>%(email)s</strong>. What you recorded will "
+"then count, and this device will be signed in."
+msgstr ""
+
+#: authentication/templates/authentication/verify.html:37
 #, python-format
 msgid "Tap the button to finish signing in as <strong>%(email)s</strong>."
 msgstr ""
 
-#: authentication/templates/authentication/verify.html:43
+#: authentication/templates/authentication/verify.html:50
 msgid "Uncheck this on a shared or public device."
 msgstr ""
 
 #: authentication/templates/authentication/verify_invalid.html:25
-#: authentication/templates/authentication/verify_invalid.html:29
+#: authentication/templates/authentication/verify_invalid.html:30
+msgid "Already confirmed"
+msgstr ""
+
+#: authentication/templates/authentication/verify_invalid.html:25
+#: authentication/templates/authentication/verify_invalid.html:41
 msgid "This link no longer works"
 msgstr ""
 
-#: authentication/templates/authentication/verify_invalid.html:31
+#: authentication/templates/authentication/verify_invalid.html:32
 msgid ""
-"Sign-in links work only once, and only for a short time. Ask for a new one "
-"and we'll send it straight away."
+"Your email address is already confirmed: what you recorded counts. To see it "
+"on this device, sign in here too."
 msgstr ""
 
-#: authentication/templates/authentication/verify_invalid.html:37
+#: authentication/templates/authentication/verify_invalid.html:38
+msgid "Sign in on this device"
+msgstr ""
+
+#: authentication/templates/authentication/verify_invalid.html:43
+msgid ""
+"It has already been used, or it has expired. Ask for a new one and we'll "
+"send it straight away."
+msgstr ""
+
+#: authentication/templates/authentication/verify_invalid.html:58
+#: authentication/templates/authentication/verify_invalid.html:63
 msgid "Send me a new link"
 msgstr ""
 
-#: authentication/views.py:71
+#: authentication/views.py:85
 msgid ""
 "There have been several requests for links in a short time. Check your inbox "
 "and spam folder for one we've already sent. If it no longer works, you can "
 "ask for a new one within the hour."
 msgstr ""
 
-#: authentication/views.py:136
+#: authentication/views.py:142
 msgid "We couldn't send the email just now. Please try again in a few minutes."
 msgstr ""
 
-#: authentication/views.py:199
+#: authentication/views.py:238
+msgid "Your email address is confirmed: what you recorded will count."
+msgstr ""
+
+#: authentication/views.py:243
 msgid "Sign-in complete."
 msgstr ""
 
-#: authentication/views.py:213
+#: authentication/views.py:259
+msgid "Your email address is already confirmed: what you recorded counts."
+msgstr ""
+
+#: authentication/views.py:304
 msgid "You're already signed in."
 msgstr ""
 
-#: authentication/views.py:226
+#: authentication/views.py:381
+msgid ""
+"You can start now, but we couldn't send the email just now. Use “Send it "
+"again” in a few minutes."
+msgstr ""
+
+#: authentication/views.py:391
+#, python-format
+msgid "We've sent a new link to %(email)s."
+msgstr ""
+
+#: authentication/views.py:393
+#, python-format
+msgid "You can start now. We've sent a link to %(email)s."
+msgstr ""
+
+#: authentication/views.py:414
+msgid ""
+"We've sent several links already. Check your inbox and spam folder, or try "
+"again later."
+msgstr ""
+
+#: authentication/views.py:425
+msgid "We couldn't send the email just now. Please try again soon."
+msgstr ""
+
+#: authentication/views.py:430
+#, python-format
+msgid "We've sent the link again to %(email)s."
+msgstr ""
+
+#: authentication/views.py:439
 msgid "You're signed out."
 msgstr ""
 
@@ -188,43 +363,43 @@ msgstr ""
 msgid "Leave this field empty"
 msgstr ""
 
-#: core/models.py:35
+#: core/models.py:38
 msgid "Draft"
 msgstr ""
 
-#: core/models.py:36
+#: core/models.py:39
 msgid "Submitted"
 msgstr ""
 
-#: core/models.py:37
+#: core/models.py:40
 msgid "Pending validation"
 msgstr ""
 
-#: core/models.py:38
+#: core/models.py:41
 msgid "Pending moderation"
 msgstr ""
 
-#: core/models.py:39
+#: core/models.py:42
 msgid "Published"
 msgstr ""
 
-#: core/models.py:40
+#: core/models.py:43
 msgid "Light hold"
 msgstr ""
 
-#: core/models.py:41
+#: core/models.py:44
 msgid "Sandboxed"
 msgstr ""
 
-#: core/models.py:53
+#: core/models.py:56
 msgid "Unreviewed"
 msgstr ""
 
-#: core/models.py:54
+#: core/models.py:57
 msgid "Cleared"
 msgstr ""
 
-#: core/models.py:55
+#: core/models.py:58
 msgid "Flagged for review"
 msgstr ""
 
@@ -336,79 +511,79 @@ msgid ""
 "location” again."
 msgstr ""
 
-#: mobilito_app/models.py:31 mobilito_app/models.py:76
+#: mobilito_app/models.py:34 mobilito_app/models.py:79
 msgid "Pedestrian"
 msgstr ""
 
-#: mobilito_app/models.py:32 mobilito_app/models.py:77
+#: mobilito_app/models.py:35 mobilito_app/models.py:80
 msgid "Cyclist"
 msgstr ""
 
-#: mobilito_app/models.py:33
+#: mobilito_app/models.py:36
 msgid "Car"
 msgstr ""
 
-#: mobilito_app/models.py:34
+#: mobilito_app/models.py:37
 msgid "Public transit"
 msgstr ""
 
-#: mobilito_app/models.py:78
+#: mobilito_app/models.py:81
 msgid "Both"
 msgstr ""
 
-#: mobilito_app/models.py:100
+#: mobilito_app/models.py:103
 msgid "Photo"
 msgstr ""
 
-#: mobilito_app/models.py:137
+#: mobilito_app/models.py:145
 msgid "Active"
 msgstr ""
 
-#: mobilito_app/models.py:138
+#: mobilito_app/models.py:146
 msgid "Deprecated"
 msgstr ""
 
-#: mobilito_app/models.py:153
+#: mobilito_app/models.py:161
 msgid "ISO 3166-1 alpha-2 code. Blank means universal."
 msgstr ""
 
-#: mobilito_app/models.py:168
+#: mobilito_app/models.py:176
 msgid "Me too"
 msgstr ""
 
-#: mobilito_app/models.py:169
+#: mobilito_app/models.py:177
 msgid "Progress"
 msgstr ""
 
-#: mobilito_app/models.py:170
+#: mobilito_app/models.py:178
 msgid "Degradation"
 msgstr ""
 
-#: mobilito_app/models.py:171
+#: mobilito_app/models.py:179
 msgid "Resolved"
 msgstr ""
 
-#: mobilito_app/models.py:172
+#: mobilito_app/models.py:180
 msgid "Additional issue"
 msgstr ""
 
-#: mobilito_app/models.py:208
+#: mobilito_app/models.py:216
 msgid "Email"
 msgstr ""
 
-#: mobilito_app/models.py:246
+#: mobilito_app/models.py:254
 msgid "Inappropriate"
 msgstr ""
 
-#: mobilito_app/models.py:247
+#: mobilito_app/models.py:255
 msgid "Spam"
 msgstr ""
 
-#: mobilito_app/models.py:248
+#: mobilito_app/models.py:256
 msgid "Off-topic"
 msgstr ""
 
-#: mobilito_app/models.py:249
+#: mobilito_app/models.py:257
 msgid "Other"
 msgstr ""
 
@@ -469,11 +644,25 @@ msgstr ""
 #: templates/includes/unvalidated_banner.html:26
 #, python-format
 msgid ""
-"Please confirm your email address using the link we sent to "
-"<strong>%(email)s</strong>. Until then, your observations are visible only "
-"to you."
+"Please confirm your email address, <strong>%(email)s</strong>, so that what "
+"you record counts."
 msgstr ""
 
-#: templates/includes/unvalidated_banner.html:37
-msgid "Send the link again"
+#: templates/includes/unvalidated_banner.html:31
+#, python-format
+msgid ""
+"Carry on: what you record will count once you open the link we sent to "
+"<strong>%(email)s</strong>."
+msgstr ""
+
+#: templates/includes/unvalidated_banner.html:41
+msgid "Send me a link"
+msgstr ""
+
+#: templates/includes/unvalidated_banner.html:41
+msgid "Send it again"
+msgstr ""
+
+#: templates/includes/unvalidated_banner.html:45
+msgid "Not your address?"
 msgstr ""
