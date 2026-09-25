@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+{% comment %}Translators: reports can be positive. Avoid « Signaler un problème »; e.g. « Partager un aménagement ».{% endcomment %}
+{% block title %}{% trans "Report a street feature" %} · Mobilito{% endblock %}
+
+{% block extra_head %}
+  {% include "core/includes/map_assets.html" %}
+  <link rel="stylesheet" href="{% static 'mobilito_app/css/report.css' %}">
+  <script src="{% static 'mobilito_app/js/report_form.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 40rem;">
+  <form method="post" action="{% url 'reports_submit' %}"
+        enctype="multipart/form-data" novalidate data-report-form
+        data-max-photos="{{ max_photos }}"
+        data-max-photo-bytes="{{ max_photo_bytes }}"
+        data-msg-too-many="{% blocktranslate with n=max_photos %}At most {{ n }} photos: the extra ones were left out.{% endblocktranslate %}"
+        data-msg-too-big="{% blocktranslate with mb=max_photo_mb %}Left out: larger than {{ mb }} MB.{% endblocktranslate %}"
+        data-msg-count="{% trans 'Photos added: %(n)s.' %}"
+        data-msg-photo-alt="{% trans 'Photo %(n)s' %}"
+        data-msg-remove="{% trans 'Remove photo %(n)s' %}"
+        data-msg-need-location="{% trans 'Tap “Confirm location” first.' %}"
+        data-msg-need-perspective="{% trans 'Choose how you usually pass here.' %}"
+        data-msg-need-photo="{% trans 'Add at least one photo.' %}"
+        data-msg-sending="{% trans 'Sending your photos… This can take a minute on mobile data. Keep this page open.' %}"
+        data-msg-stalled="{% trans 'Still sending. If your connection dropped, open the report form again: your text and choices are kept, but photos need adding again.' %}">
+    {% csrf_token %}
+    {{ form.submission_id }}
+
+    {% if form.errors %}
+      <div class="alert alert-warning" role="alert" tabindex="-1" data-report-errors>
+        {% comment %}Translators: non-breaking space before the colon in French.{% endcomment %}
+        <p class="fw-semibold mb-1">{% trans "Almost there:" %}</p>
+        <ul class="mb-0">
+          {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+          {% if form.lat.errors or form.lon.errors %}<li>{% trans "Tap “Confirm location” first." %}</li>{% endif %}
+          {% for error in form.perspective.errors %}<li>{{ error }}</li>{% endfor %}
+          {% for error in form.description.errors %}<li>{{ error }}</li>{% endfor %}
+          {% for error in form.tags.errors %}<li>{{ error }}</li>{% endfor %}
+          <li>{% trans "Please add your photos again: we can't keep them when something needs fixing." %}</li>
+        </ul>
+      </div>
+    {% endif %}
+
+    <h1 class="h3 mb-1">{% trans "Report a street feature" %}</h1>
+    <p class="mb-3">
+      {% trans "Something that helps you get around, or something in the way: both are useful." %}
+    </p>
+
+    <h2 class="h5 mb-2">{% trans "1. Where is it?" %}</h2>
+    {% include "core/includes/map_widget.html" with map=map %}
+    <p class="small text-danger mb-0" data-need="location" role="status"></p>
+
+    <fieldset class="mt-4" data-section="perspective">
+      <legend class="h5">{% trans "2. How do you usually pass here?" %}</legend>
+      <div class="mobilito-choice-grid">
+        {% for value, label, icons in perspectives %}
+          <input type="radio" class="btn-check" name="perspective"
+                 id="perspective-{{ value }}" value="{{ value }}" autocomplete="off"
+                 {% if form.perspective.value == value %}checked{% endif %}>
+          <label class="btn btn-outline-primary mobilito-choice" for="perspective-{{ value }}">
+            <span aria-hidden="true">{% for icon in icons %}<i class="bi {{ icon }}"></i>{% endfor %}</span>
+            <span>{{ label }}</span>
+          </label>
+        {% endfor %}
+      </div>
+      <p class="small text-danger mb-0 mt-1" data-need="perspective" role="status"></p>
+    </fieldset>
+
+    <fieldset class="mt-4" data-section="photos">
+      <legend class="h5">{% trans "3. Photos" %}</legend>
+      <p class="form-text mt-0">
+        {% blocktranslate trimmed with n=max_photos %}
+          At least one, up to {{ n }}: ideally one wide shot so people
+          recognise the place, and one close-up of the detail. Avoid
+          faces and number plates if you can.
+        {% endblocktranslate %}
+      </p>
+      {% if form.errors %}
+        <p class="text-danger fw-semibold">{% trans "Add your photos again here." %}</p>
+      {% endif %}
+      <input type="file" id="report-photos" name="photos" accept="image/*"
+             multiple class="mobilito-photo-input" data-photo-input>
+      <label class="btn btn-outline-primary btn-lg w-100" for="report-photos">
+        <i class="bi bi-camera" aria-hidden="true"></i>
+        {% trans "Add photos" %}
+      </label>
+      <div class="mobilito-photo-previews mt-2" data-photo-previews></div>
+      <p class="small mt-1 mb-0" data-photo-status role="status"></p>
+      <p class="small text-danger mb-0" data-need="photos" role="status"></p>
+    </fieldset>
+
+    <div class="mt-4">
+      <label for="{{ form.description.id_for_label }}" class="form-label h5">
+        {% trans "4. What's here?" %}
+        <span class="fw-normal text-body-secondary small">{% trans "(optional)" %}</span>
+      </label>
+      {{ form.description }}
+      <div class="form-text" id="report-description-help">
+        {% trans "What helps or gets in the way, and for whom. It helps a lot." %}
+      </div>
+    </div>
+
+    <fieldset class="mt-4">
+      <legend class="h5">
+        {% trans "5. What kind of thing is it?" %}
+        <span class="fw-normal text-body-secondary small">{% trans "(optional)" %}</span>
+      </legend>
+      <div id="report-tags">
+        {% include "mobilito_app/reports/tags.html" %}
+      </div>
+    </fieldset>
+
+    {% include "includes/honeypot.html" with field=form.hp_field %}
+    <button type="submit" class="btn btn-success btn-lg w-100 mt-4" data-report-submit>
+      <i class="bi bi-send" aria-hidden="true"></i>
+      {% trans "Send report" %}
+    </button>
+    <p class="small mt-2 mb-0" data-sending role="status"></p>
+  </form>
+</div>
+{% endblock %}

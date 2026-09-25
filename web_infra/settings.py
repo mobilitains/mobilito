@@ -274,6 +274,12 @@ PHOTO_MAX_PIXELS = {
 }
 PHOTO_JPEG_QUALITY = 85
 PHOTO_MAX_PER_REPORT = 6
+# Django refuses (400) a request carrying more files than this before
+# parsing them all to disk; the view gives the friendly message for
+# 7 to 10.
+DATA_UPLOAD_MAX_NUMBER_FILES = PHOTO_MAX_PER_REPORT + 4
+# Infrastructure reports per IP (roadmap Phase 6, §16).
+RATE_LIMIT_REPORT_SUBMIT = (20, 3600)
 
 # Media storage. Photos go to Cloudflare R2 (S3-compatible, §20.11)
 # when its bucket is configured, else to MEDIA_ROOT on local disk.

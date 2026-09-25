@@ -57,6 +57,9 @@ def map_widget_config(
     gps: bool = False,
     pins_url: str = "",
     confirm_url: str = "",
+    confirm_extra_include: str = "",
+    confirm_extra_params: tuple = (),
+    confirmed: dict | None = None,
 ) -> dict:
     """Build the context for one map widget.
 
@@ -74,6 +77,14 @@ def map_widget_config(
     pins_url, if given, is a GeoJSON endpoint whose features carry
     a `summary_url` property, loaded into the bottom sheet when a
     pin is tapped.
+
+    confirm_extra_include (a CSS selector) and confirm_extra_params
+    (field names) add fields of the enclosing page to the "Confirm
+    location" request, for flows whose confirmation view needs them.
+
+    confirmed ({"form": bound LocationConfirmForm, "result":
+    GeocodeResult or None}) shows an already confirmed position, e.g.
+    when a form comes back with errors; the map centres on it.
     """
     if not WIDGET_ID_RE.fullmatch(widget_id):
         raise ValueError(f"Invalid map widget id: {widget_id!r}")
@@ -84,6 +95,27 @@ def map_widget_config(
         "crosshair": crosshair,
         "gps": gps,
         "confirm_url": confirm_url or reverse("location_confirm"),
+        "confirm_include": ", ".join(
+            filter(
+                None,
+                [
+                    f"[data-mobilito-map='{widget_id}'] [data-map-field]",
+                    confirm_extra_include,
+                ],
+            )
+        ),
+        "confirm_params": ",".join(
+            [
+                "widget",
+                "map-lat",
+                "map-lon",
+                "map-device_lat",
+                "map-device_lon",
+                "map-device_accuracy",
+                *confirm_extra_params,
+            ]
+        ),
+        "confirmed": confirmed,
         "use_device_location": uses_device_location(request),
         # Everything the JS module needs, emitted with json_script.
         "js": {
@@ -95,5 +127,6 @@ def map_widget_config(
             "tileUrl": settings.MAP_TILE_URL,
             "tileAttribution": settings.MAP_TILE_ATTRIBUTION,
             "useDeviceLocation": uses_device_location(request),
+            "confirmed": bool(confirmed),
         },
     }

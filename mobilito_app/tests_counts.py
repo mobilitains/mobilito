@@ -65,7 +65,7 @@ class CountFlowTestCase(TestCase):
     def setUp(self):
         cache.clear()
         patcher = mock.patch(
-            "mobilito_app.counts.reverse_geocode", return_value=NANTES
+            "core.locations.reverse_geocode", return_value=NANTES
         )
         patcher.start()
         self.addCleanup(patcher.stop)

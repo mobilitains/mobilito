@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 14:01+0000\n"
+"POT-Creation-Date: 2026-09-25 14:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -363,12 +363,12 @@ msgstr ""
 msgid "Leave this field empty"
 msgstr ""
 
-#: core/images.py:97
+#: core/images.py:100
 #, python-format
 msgid "“%(name)s” isn't a photo we can read (JPEG or PNG work best)."
 msgstr ""
 
-#: core/images.py:110
+#: core/images.py:113
 #, python-format
 msgid "“%(name)s” is too large (at most %(mb)s MB per photo)."
 msgstr ""
@@ -521,33 +521,45 @@ msgid ""
 "location” again."
 msgstr ""
 
-#: mobilito_app/counts.py:66
+#: mobilito_app/counts.py:65
 #: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:29
 msgid "Pedestrians"
 msgstr ""
 
-#: mobilito_app/counts.py:69
+#: mobilito_app/counts.py:68
 #: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:36
 msgid "Bikes"
 msgstr ""
 
-#: mobilito_app/counts.py:70
+#: mobilito_app/counts.py:69
 #: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:45
 msgid "Cars"
 msgstr ""
 
-#: mobilito_app/counts.py:71 mobilito_app/models.py:40
+#: mobilito_app/counts.py:70 mobilito_app/models.py:40
 #: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:52
 msgid "Public transit"
 msgstr ""
 
-#: mobilito_app/counts.py:462
+#: mobilito_app/counts.py:451
 msgid "Count discarded."
 msgstr ""
 
-#: mobilito_app/forms.py:28
+#: mobilito_app/forms.py:33
 #: mobilito_app/templates/mobilito_app/counts/new.html:47
+#: mobilito_app/templates/mobilito_app/reports/new.html:45
+#: mobilito_app/templates/mobilito_app/reports/new.html:59
 msgid "Tap “Confirm location” first."
+msgstr ""
+
+#: mobilito_app/forms.py:101 mobilito_app/forms.py:102
+#: mobilito_app/templates/mobilito_app/reports/new.html:46
+msgid "Choose how you usually pass here."
+msgstr ""
+
+#: mobilito_app/forms.py:120 mobilito_app/forms.py:121
+#: mobilito_app/reports.py:278
+msgid "Choose tags from the list shown."
 msgstr ""
 
 #: mobilito_app/models.py:37 mobilito_app/models.py:141
@@ -562,64 +574,98 @@ msgstr ""
 msgid "Car"
 msgstr ""
 
-#: mobilito_app/models.py:143
+#: mobilito_app/models.py:143 mobilito_app/reports.py:114
 msgid "Both"
 msgstr ""
 
-#: mobilito_app/models.py:168
+#: mobilito_app/models.py:171
 msgid "Photo"
 msgstr ""
 
-#: mobilito_app/models.py:213
+#: mobilito_app/models.py:216
 msgid "Active"
 msgstr ""
 
-#: mobilito_app/models.py:214
+#: mobilito_app/models.py:217
 msgid "Deprecated"
 msgstr ""
 
-#: mobilito_app/models.py:229
+#: mobilito_app/models.py:232
 msgid "ISO 3166-1 alpha-2 code. Blank means universal."
 msgstr ""
 
-#: mobilito_app/models.py:244
+#: mobilito_app/models.py:247
 msgid "Me too"
 msgstr ""
 
-#: mobilito_app/models.py:245
+#: mobilito_app/models.py:248
 msgid "Progress"
 msgstr ""
 
-#: mobilito_app/models.py:246
+#: mobilito_app/models.py:249
 msgid "Degradation"
 msgstr ""
 
-#: mobilito_app/models.py:247
+#: mobilito_app/models.py:250
 msgid "Resolved"
 msgstr ""
 
-#: mobilito_app/models.py:248
+#: mobilito_app/models.py:251
 msgid "Additional issue"
 msgstr ""
 
-#: mobilito_app/models.py:284
+#: mobilito_app/models.py:287
 msgid "Email"
 msgstr ""
 
-#: mobilito_app/models.py:322
+#: mobilito_app/models.py:325
 msgid "Inappropriate"
 msgstr ""
 
-#: mobilito_app/models.py:323
+#: mobilito_app/models.py:326
 msgid "Spam"
 msgstr ""
 
-#: mobilito_app/models.py:324
+#: mobilito_app/models.py:327
 msgid "Off-topic"
 msgstr ""
 
-#: mobilito_app/models.py:325
+#: mobilito_app/models.py:328
 msgid "Other"
+msgstr ""
+
+#: mobilito_app/reports.py:112
+msgid "On foot"
+msgstr ""
+
+#: mobilito_app/reports.py:113
+msgid "By bike"
+msgstr ""
+
+#: mobilito_app/reports.py:184
+msgid ""
+"You had already sent this form, so nothing new was saved. Here is that "
+"report. To report something else, tap “Report something else”."
+msgstr ""
+
+#: mobilito_app/reports.py:252
+msgid ""
+"You've sent a lot of reports in a short time. Please wait a while and try "
+"again."
+msgstr ""
+
+#: mobilito_app/reports.py:282
+#: mobilito_app/templates/mobilito_app/reports/new.html:47
+msgid "Add at least one photo."
+msgstr ""
+
+#: mobilito_app/reports.py:286
+#, python-format
+msgid "At most %(n)s photos, please."
+msgstr ""
+
+#: mobilito_app/reports.py:322
+msgid "Thank you! Your report has been sent."
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/counts/count.html:31
@@ -713,6 +759,7 @@ msgid "What went by"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/counts/detail.html:39
+#: mobilito_app/templates/mobilito_app/reports/detail.html:44
 #, python-format
 msgid "Near %(lat)s, %(lon)s"
 msgstr ""
@@ -761,6 +808,7 @@ msgid "Do another count here"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/counts/detail.html:99
+#: mobilito_app/templates/mobilito_app/reports/detail.html:96
 msgid "Back to the start"
 msgstr ""
 
@@ -769,7 +817,7 @@ msgid "Link to share this count:"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/counts/new.html:25
-#: mobilito_app/templates/mobilito_app/home.html:50
+#: mobilito_app/templates/mobilito_app/home.html:49
 msgid "Count what goes by"
 msgstr ""
 
@@ -845,35 +893,199 @@ msgid ""
 "pedestrian."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:56
+#. Translators: reports can be positive. Avoid « Signaler un problème »; e.g. « Partager un aménagement ».
+#: mobilito_app/templates/mobilito_app/home.html:55
+#: mobilito_app/templates/mobilito_app/reports/new.html:26
+#: mobilito_app/templates/mobilito_app/reports/new.html:68
 msgid "Report a street feature"
 msgstr ""
 
 #. Translators: reports can be positive. Avoid a grade like « bon ou mauvais »; e.g. « ce qui aide, ce qui gêne ».
-#: mobilito_app/templates/mobilito_app/home.html:58
+#: mobilito_app/templates/mobilito_app/home.html:57
 msgid "good or bad"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:64
+#: mobilito_app/templates/mobilito_app/home.html:63
 msgid "Your observations"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:66
+#: mobilito_app/templates/mobilito_app/home.html:65
 msgid "Browse the map"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:72
+#: mobilito_app/templates/mobilito_app/home.html:71
 msgid ""
 "Document how people move through your streets: count what goes by, and "
 "report the infrastructure that helps or hinders it."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:77
+#: mobilito_app/templates/mobilito_app/home.html:76
 msgid "Browse observations"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:80
+#: mobilito_app/templates/mobilito_app/home.html:79
 msgid "Make an observation"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:25
+msgid "Street feature report"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:42
+msgid "Street feature"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:54
+msgid "Seen on foot"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:55
+msgid "Seen by bike"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:56
+msgid "Seen on foot and by bike"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:62
+msgid ""
+"Once you've opened the link we sent you by email, we'll check your report "
+"and then show it to others."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:64
+msgid "Your report will be visible to others once it has been reviewed."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:73
+#, python-format
+msgid "Photo %(n)s"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:75
+msgid "(opens in a new tab)"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:94
+msgid "Report something else"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:101
+msgid "Link to share this report:"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:40
+#, python-format
+msgid "At most %(n)s photos: the extra ones were left out."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:41
+#, python-format
+msgid "Left out: larger than %(mb)s MB."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:42
+#, python-format
+msgid "Photos added: %%(n)s."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:43
+#, python-format
+msgid "Photo %%(n)s"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:44
+#, python-format
+msgid "Remove photo %%(n)s"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:48
+msgid ""
+"Sending your photos… This can take a minute on mobile data. Keep this page "
+"open."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:49
+msgid ""
+"Still sending. If your connection dropped, open the report form again: your "
+"text and choices are kept, but photos need adding again."
+msgstr ""
+
+#. Translators: non-breaking space before the colon in French.
+#: mobilito_app/templates/mobilito_app/reports/new.html:56
+msgid "Almost there:"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:63
+msgid ""
+"Please add your photos again: we can't keep them when something needs fixing."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:70
+msgid ""
+"Something that helps you get around, or something in the way: both are "
+"useful."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:73
+msgid "1. Where is it?"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:78
+msgid "2. How do you usually pass here?"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:94
+msgid "3. Photos"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:96
+#, python-format
+msgid ""
+"At least one, up to %(n)s: ideally one wide shot so people recognise the "
+"place, and one close-up of the detail. Avoid faces and number plates if you "
+"can."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:103
+msgid "Add your photos again here."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:109
+msgid "Add photos"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:118
+msgid "4. What's here?"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:119
+#: mobilito_app/templates/mobilito_app/reports/new.html:130
+msgid "(optional)"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:123
+msgid "What helps or gets in the way, and for whom. It helps a lot."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:129
+msgid "5. What kind of thing is it?"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:140
+msgid "Send report"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/tags.html:30
+msgid "Confirm the location to see the tags that apply there."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/tags.html:33
+msgid "Tick any that fit."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/reports/tags.html:54
+msgid "No tags for this area yet."
 msgstr ""
 
 #: templates/404.html:26 templates/404.html:30

@@ -158,6 +158,9 @@ class InfrastructureObservation(Observation):
         choices=ModerationState.choices,
         default=ModerationState.UNREVIEWED,
     )
+    # Generated with the form, so that the same form sent twice (Back
+    # then Send, a retry after a dropped connection) makes one report.
+    client_submission_id = models.UUIDField(null=True, blank=True, unique=True)
 
     def __str__(self) -> str:
         return f"Infrastructure observation {self.pk} at {self.location}"

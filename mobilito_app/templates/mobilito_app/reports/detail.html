@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+{% block title %}{% trans "Street feature report" %} · Mobilito{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'mobilito_app/css/report.css' %}">
+  {% if is_owner %}
+    {# Clears the form's saved draft: this report is safely stored. #}
+    <script src="{% static 'mobilito_app/js/report_form.js' %}" defer></script>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 40rem;"{% if is_owner %} data-report-sent{% endif %}>
+  <h1 class="h3 mb-1">
+    {% with location=report.location %}
+      {% if location.user_entered_address or location.reverse_geocoded_address %}
+        {% firstof location.user_entered_address location.reverse_geocoded_address %}
+      {% else %}
+        {% trans "Street feature" %}
+        <small class="d-block fs-6 fw-normal text-body-secondary">
+          {% blocktranslate trimmed with lat=location.point.y|floatformat:"5u" lon=location.point.x|floatformat:"5u" %}
+            Near {{ lat }}, {{ lon }}
+          {% endblocktranslate %}
+        </small>
+      {% endif %}
+    {% endwith %}
+  </h1>
+  <p class="text-body-secondary">
+    {{ report.created_at|date:"DATETIME_FORMAT" }}
+    &middot;
+    {% if report.observer_perspective == "ped" %}{% trans "Seen on foot" %}
+    {% elif report.observer_perspective == "bike" %}{% trans "Seen by bike" %}
+    {% else %}{% trans "Seen on foot and by bike" %}{% endif %}
+  </p>
+
+  {% if is_owner and not published %}
+    <div class="alert alert-secondary">
+      {% if pending_validation %}
+        {% trans "Once you've opened the link we sent you by email, we'll check your report and then show it to others." %}
+      {% else %}
+        {% trans "Your report will be visible to others once it has been reviewed." %}
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="mobilito-report-photos mb-3">
+    {% for item in media %}
+      <a href="{% url 'reports_photo' report.pk item.pk %}" target="_blank" rel="noopener">
+        <img src="{% url 'reports_photo' report.pk item.pk %}"
+             alt="{% blocktranslate with n=forloop.counter %}Photo {{ n }}{% endblocktranslate %}"
+             loading="lazy">
+        <span class="visually-hidden">{% trans "(opens in a new tab)" %}</span>
+      </a>
+    {% endfor %}
+  </div>
+
+  {% if report.description %}
+    <p class="mobilito-report-description">{{ report.description|linebreaksbr }}</p>
+  {% endif %}
+
+  {% if tags %}
+    <ul class="list-inline mb-3">
+      {% for tag in tags %}
+        <li class="list-inline-item"><span class="badge text-bg-light border">{{ tag.label }}</span></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <div class="d-grid gap-2 mb-3">
+    <a href="{% url 'reports_new' %}" class="btn btn-primary btn-lg">
+      {% trans "Report something else" %}
+    </a>
+    <a href="{% url 'home' %}" class="btn btn-link">{% trans "Back to the start" %}</a>
+  </div>
+
+  {% if published %}
+    <p class="small">
+      {% trans "Link to share this report:" %}<br>
+      <a href="{{ share_url }}" class="text-break">{{ share_url }}</a>
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

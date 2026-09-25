@@ -24,6 +24,11 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from core.forms import HoneypotFormMixin
+from mobilito_app.models import (
+    InfrastructureTag,
+    ObserverPerspective,
+    TagStatus,
+)
 
 CONFIRM_FIRST = _("Tap “Confirm location” first.")
 
@@ -55,3 +60,64 @@ class CountStartForm(HoneypotFormMixin, forms.Form):
     device_accuracy = forms.FloatField(required=False, min_value=0)
     address = forms.CharField(required=False, max_length=255, strip=True)
     origin = forms.IntegerField(required=False, widget=forms.HiddenInput)
+
+
+class ReportForm(HoneypotFormMixin, forms.Form):
+    """An infrastructure report (§9.2). Photos come as request.FILES.
+
+    lat/lon, device_* and address come from the map widget's
+    confirmation fragment, as for counts. submission_id is made with
+    the page (see reports.new_report) and keeps a re-sent form from
+    making a second report.
+    """
+
+    # Read by the view (reports._submission_id), which ignores a value
+    # that isn't a UUID: a bad key must never block the form.
+    submission_id = forms.CharField(
+        required=False, max_length=64, widget=forms.HiddenInput
+    )
+
+    lat = forms.FloatField(
+        min_value=-90,
+        max_value=90,
+        error_messages={"required": CONFIRM_FIRST},
+        widget=forms.HiddenInput,
+    )
+    lon = forms.FloatField(
+        min_value=-180,
+        max_value=180,
+        error_messages={"required": CONFIRM_FIRST},
+        widget=forms.HiddenInput,
+    )
+    device_lat = forms.FloatField(required=False, min_value=-90, max_value=90)
+    device_lon = forms.FloatField(
+        required=False, min_value=-180, max_value=180
+    )
+    device_accuracy = forms.FloatField(required=False, min_value=0)
+    address = forms.CharField(required=False, max_length=255, strip=True)
+    perspective = forms.ChoiceField(
+        choices=ObserverPerspective.choices,
+        error_messages={
+            "required": _("Choose how you usually pass here."),
+            "invalid_choice": _("Choose how you usually pass here."),
+        },
+    )
+    description = forms.CharField(
+        required=False,
+        max_length=2000,
+        widget=forms.Textarea(
+            attrs={
+                "rows": 4,
+                "class": "form-control",
+                "aria-describedby": "report-description-help",
+            }
+        ),
+    )
+    tags = forms.ModelMultipleChoiceField(
+        queryset=InfrastructureTag.objects.filter(status=TagStatus.ACTIVE),
+        required=False,
+        error_messages={
+            "invalid_choice": _("Choose tags from the list shown."),
+            "invalid_pk_value": _("Choose tags from the list shown."),
+        },
+    )

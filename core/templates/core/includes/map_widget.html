@@ -115,9 +115,9 @@ The map itself needs JavaScript (Leaflet).
     <input type="hidden" name="map-device_accuracy" data-map-field="device_accuracy">
     <button type="button" class="btn btn-primary btn-lg w-100 mt-2"
             hx-post="{{ map.confirm_url }}"
-            hx-include="[data-mobilito-map='{{ map.id }}'] [data-map-field]"
+            hx-include="{{ map.confirm_include }}"
             hx-vals='{"widget": "{{ map.id }}"}'
-            hx-params="widget,map-lat,map-lon,map-device_lat,map-device_lon,map-device_accuracy"
+            hx-params="{{ map.confirm_params }}"
             hx-target="#{{ map.id }}-confirmed" hx-swap="innerHTML"
             hx-disabled-elt="this"
             hx-indicator="#{{ map.id }}-confirm-spinner"
@@ -132,7 +132,7 @@ The map itself needs JavaScript (Leaflet).
          data-map-confirmed
          data-msg-moved="{% trans 'You moved the map. Tap “Confirm location” again.' %}"
          data-msg-located="{% trans 'The map moved to where you are. Check the target and tap “Confirm location” again.' %}"
-         data-msg-failed="{% trans 'We couldn’t confirm the location. Check your connection and try again.' %}"></div>
+         data-msg-failed="{% trans 'We couldn’t confirm the location. Check your connection and try again.' %}">{% if map.confirmed %}{% include "core/partials/location_confirmed.html" with form=map.confirmed.form result=map.confirmed.result widget=map.id %}{% endif %}</div>
   {% endif %}
 
   <div class="offcanvas offcanvas-bottom mobilito-bottom-sheet" tabindex="-1"

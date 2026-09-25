@@ -22,7 +22,7 @@ License along with mobilito.  If not, see
 
 from django.urls import path
 
-from mobilito_app import counts
+from mobilito_app import counts, reports
 
 urlpatterns = [
     path("counts/new/", counts.new_count, name="counts_new"),
@@ -32,4 +32,17 @@ urlpatterns = [
     path("counts/<int:pk>/event/", counts.record_event, name="counts_event"),
     path("counts/<int:pk>/finish/", counts.finish, name="counts_finish"),
     path("counts/<int:pk>/discard/", counts.discard, name="counts_discard"),
+    path("reports/new/", reports.new_report, name="reports_new"),
+    path(
+        "reports/new/location/",
+        reports.confirm_location,
+        name="reports_location",
+    ),
+    path("reports/new/submit/", reports.submit_report, name="reports_submit"),
+    path("reports/<int:pk>/", reports.detail, name="reports_detail"),
+    path(
+        "reports/<int:pk>/photos/<int:media_id>/",
+        reports.photo,
+        name="reports_photo",
+    ),
 ]

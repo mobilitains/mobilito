@@ -96,17 +96,11 @@ def _observer_key(observer) -> str:
     return f"attempt:{observer.attempt.pk}"
 
 
-@observer_required
-@require_POST
-def location_confirm(request):
-    """Reverse-geocode the confirmed crosshair position (Phase 4).
+def confirm_location_context(request) -> dict:
+    """Validate a posted crosshair position and reverse-geocode it.
 
-    Returns an HTML fragment (not JSON, per the §8.2 layering
-    policy) with the suggested address for the user to check and
-    edit, plus the confirmed coordinates as hidden fields, for the
-    form enclosing the map to submit. Invalid input still returns
-    200: htmx 2 doesn't swap error responses, and the fragment
-    carries its own error message.
+    Shared by the plain confirmation below and flows that add to it
+    (the report form's tag refresh).
     """
     widget = request.POST.get("widget", "map")
     if not WIDGET_ID_RE.fullmatch(widget):
@@ -128,4 +122,20 @@ def location_confirm(request):
         context["result"] = reverse_geocode(
             form.cleaned_data["lat"], form.cleaned_data["lon"], get_language()
         )
+    return context
+
+
+@observer_required
+@require_POST
+def location_confirm(request):
+    """Reverse-geocode the confirmed crosshair position (Phase 4).
+
+    Returns an HTML fragment (not JSON, per the §8.2 layering
+    policy) with the suggested address for the user to check and
+    edit, plus the confirmed coordinates as hidden fields, for the
+    form enclosing the map to submit. Invalid input still returns
+    200: htmx 2 doesn't swap error responses, and the fragment
+    carries its own error message.
+    """
+    context = confirm_location_context(request)
     return render(request, "core/partials/location_confirmed.html", context)

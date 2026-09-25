@@ -44,14 +44,13 @@ from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import get_language
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy
 from django.views.decorators.http import require_GET, require_POST
 
 from authentication.provisional import get_observer, observer_required
 from core.geo import distance_meters, edge_point, make_point
-from core.geocoding import reverse_geocode
+from core.locations import new_location_fields
 from core.lifecycle import submission_state
 from core.maps import map_widget_config, uses_device_location
 from core.models import Location, LocationEvidence, PublicationState
@@ -254,17 +253,7 @@ def _new_location_fields(point, address, origin):
         <= settings.LOCATION_EQUIVALENCE_RADIUS_MODAL_SHARE_METERS
     ):
         return None
-    suggestion = reverse_geocode(point.y, point.x, get_language())
-    suggested = suggestion.address if suggestion else ""
-    return {
-        "point": point,
-        "user_entered_address": address if address != suggested else "",
-        "reverse_geocoded_address": suggested,
-        "country": suggestion.country if suggestion else "",
-        "region": suggestion.region if suggestion else "",
-        "department": suggestion.department if suggestion else "",
-        "commune": suggestion.commune if suggestion else "",
-    }
+    return new_location_fields(point, address)
 
 
 @observer_required

@@ -476,6 +476,36 @@ describe('GPS', () => {
     );
   });
 
+  test('a fix leaves an already confirmed location alone', () => {
+    // Error re-render: the server sent the confirmation back.
+    const { L } = fakeLeaflet();
+    const component = buildWidget({ ...gpsConfig, confirmed: true });
+    const confirmed = component.querySelector('[data-map-confirmed]');
+    confirmed.innerHTML = '<input name="lat" value="47.2184">';
+    const widget = initMapWidget(component, {
+      L,
+      geolocation: fakeGeolocation(fix),
+    });
+    expect(widget.map.center).toEqual({ lat: 47.2184, lng: -1.5536 });
+    expect(confirmed.querySelector('[name=lat]')).not.toBeNull();
+  });
+
+  test('an already confirmed location hides the confirm button', () => {
+    const { L } = fakeLeaflet();
+    const component = buildWidget({ ...BASE_CONFIG, confirmed: true });
+    component.querySelector('[data-map-confirmed]').innerHTML =
+      '<input name="lat" value="47.2184">';
+    initMapWidget(component, { L });
+    expect(component.querySelector('[data-map-confirm]').hidden).toBe(true);
+  });
+
+  test('an unconfirmed map shows the confirm button', () => {
+    const { L } = fakeLeaflet();
+    const component = buildWidget(BASE_CONFIG);
+    initMapWidget(component, { L });
+    expect(component.querySelector('[data-map-confirm]').hidden).toBe(false);
+  });
+
   test('tapping the button always recentres', () => {
     const { L } = fakeLeaflet();
     const geolocation = fakeGeolocation(fix);

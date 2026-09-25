@@ -272,6 +272,9 @@ License along with mobilito.  If not, see
       applyDevice(event.detail);
     });
 
+    // Rendered already confirmed (a form back with errors).
+    showButton(!confirmed.querySelector('input[name="lat"]'));
+
     confirmed.addEventListener('htmx:afterSwap', function () {
       const isConfirmed = !!confirmed.querySelector('input[name="lat"]');
       if (isConfirmed && button && doc.activeElement === button) {
@@ -319,7 +322,9 @@ License along with mobilito.  If not, see
     const checkbox = component.querySelector('[data-map-device-location]');
     const status = component.querySelector('[data-map-gps-status]');
     let haveFix = false;
-    let movedByUser = false;
+    // A location already confirmed (an error re-render) counts as
+    // picked: a GPS fix mustn't move the map and undo it.
+    let movedByUser = Boolean(config.confirmed);
 
     map.on('movestart', function () {
       if (isUserMove()) {

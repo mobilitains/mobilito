@@ -170,6 +170,10 @@ More complex than modal share due to photo handling and the ontology (§9.2, §2
 - Form state persistence in `sessionStorage` so partial drafts survive accidental navigation (§18).
 - Photo preview before upload.
 
+**Follow-ups (noted in review, not yet done):**
+- Shrink photos in the browser (canvas / `createImageBitmap`, ~2048px JPEG) before upload. Up to 6 × 20 MB goes up raw today and the server shrinks it to 2048px anyway; shrinking first would cut uploads 10–20× on mobile data. Keep the server-side processing as the real check.
+- `InfrastructureTag.family` is shown as a group heading but isn't translated (only `label` and `description` are registered with modeltranslation). Register it, or make families a small translated model, before tags are seeded in both languages.
+
 ---
 
 ## Phase 7 — Observation browsing
