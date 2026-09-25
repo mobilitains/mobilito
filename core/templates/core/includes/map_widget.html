@@ -1,0 +1,151 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+{% comment %}
+Reusable map component (roadmap Phase 4). Build `map` with
+core.maps.map_widget_config(); include it with
+  {% include "core/includes/map_widget.html" with map=map %}
+and put {% include "core/includes/map_assets.html" %} in the page's
+extra_head block.
+
+Deliberately contains no <form>: it is meant to sit inside an
+observation's own form (nested forms are invalid HTML). htmx adds
+an enclosing form's fields to every request, so the widget's
+controls limit what they send with hx-params. Its
+controls talk to the server with htmx (the CSRF header comes from
+hx-headers on <body>). Its live fields are named "map-*" so they
+never clash with the enclosing form's; after "Confirm location" the
+swapped-in fragment supplies the real lat/lon/device_*/address
+fields, and moving the map again removes them until re-confirmed.
+The map itself needs JavaScript (Leaflet).
+{% endcomment %}
+<div class="mobilito-map-component" data-mobilito-map="{{ map.id }}">
+  {{ map.js|json_script:map.config_id }}
+  {% if map.crosshair %}
+    <p id="{{ map.id }}-instructions" class="mb-2">
+      {% trans "Drag the map until the pink target is on the spot." %}
+    </p>
+  {% endif %}
+  <div class="mobilito-map-frame">
+    <div id="{{ map.id }}" class="mobilito-map" role="region"
+         aria-label="{% trans 'Map. Use the arrow keys to move it.' %}"
+         {% if map.crosshair %}aria-describedby="{{ map.id }}-instructions"{% endif %}>
+      <p class="mobilito-map-fallback p-3" data-map-fallback>
+        {% trans "The map couldn't load. Check your connection and reload the page." %}
+      </p>
+    </div>
+    {% if map.crosshair %}
+      <svg class="mobilito-crosshair" viewBox="0 0 48 48" aria-hidden="true">
+        {% comment %}
+        Each shape twice: a wide dark stroke under a bright one, so
+        the target stands out on any map colours, even in sunlight.
+        {% endcomment %}
+        <g class="mobilito-crosshair-under">
+          <circle cx="24" cy="24" r="10"/>
+          <path d="M24 0v14M24 34v14M0 24h14M34 24h14"/>
+        </g>
+        <g class="mobilito-crosshair-over">
+          <circle cx="24" cy="24" r="10"/>
+          <path d="M24 0v14M24 34v14M0 24h14M34 24h14"/>
+        </g>
+        <circle cx="24" cy="24" r="2.5" class="mobilito-crosshair-dot"/>
+      </svg>
+    {% endif %}
+    {% if map.gps %}
+      <button type="button" class="btn btn-light mobilito-gps-button"
+              data-map-gps
+              {% if not map.use_device_location %}hidden{% endif %}
+              aria-label="{% trans 'Go to my location' %}"
+              title="{% trans 'Go to my location' %}">
+        <i class="bi bi-cursor-fill" aria-hidden="true"></i>
+      </button>
+    {% endif %}
+  </div>
+
+  {% if map.gps %}
+    <div class="form-check mt-2" data-map-requires-js hidden>
+      <input class="form-check-input" type="checkbox"
+             id="{{ map.id }}-use-device-location"
+             name="use_device_location" data-map-device-location
+             hx-post="{% url 'set_device_location' %}" hx-trigger="change"
+             hx-swap="none" hx-params="use_device_location"
+             aria-describedby="{{ map.id }}-use-device-location-help"
+             {% if map.use_device_location %}checked{% endif %}>
+      <label class="form-check-label" for="{{ map.id }}-use-device-location">
+        {% trans "Use device location" %}
+      </label>
+      <div id="{{ map.id }}-use-device-location-help" class="form-text mt-0">
+        {% trans "We'll remember this choice." %}
+      </div>
+    </div>
+    {% comment %}
+    Always present so screen readers announce changes; the JS
+    fills it (and empties it) using the messages below.
+    {% endcomment %}
+    <div role="status" aria-live="polite" data-map-gps-status
+         data-msg-off="{% trans 'Your observation will be marked “location not checked”, which makes it less useful to local authorities.' %}"
+         data-msg-denied="{% trans 'Your browser is blocking location. You can allow it in your browser settings, or place the target by hand. Until then, your observation will be marked “location not checked”.' %}"
+         data-msg-unavailable="{% trans 'We couldn’t get your position. Tap the arrow button at the top right of the map to try again, or place the target by hand.' %}"></div>
+  {% endif %}
+
+  {% if map.crosshair %}
+    <input type="hidden" name="map-lat" data-map-field="lat">
+    <input type="hidden" name="map-lon" data-map-field="lon">
+    <input type="hidden" name="map-device_lat" data-map-field="device_lat">
+    <input type="hidden" name="map-device_lon" data-map-field="device_lon">
+    <input type="hidden" name="map-device_accuracy" data-map-field="device_accuracy">
+    <button type="button" class="btn btn-primary btn-lg w-100 mt-2"
+            hx-post="{{ map.confirm_url }}"
+            hx-include="[data-mobilito-map='{{ map.id }}'] [data-map-field]"
+            hx-vals='{"widget": "{{ map.id }}"}'
+            hx-params="widget,map-lat,map-lon,map-device_lat,map-device_lon,map-device_accuracy"
+            hx-target="#{{ map.id }}-confirmed" hx-swap="innerHTML"
+            hx-disabled-elt="this"
+            hx-indicator="#{{ map.id }}-confirm-spinner"
+            data-map-confirm data-map-requires-js hidden>
+      <span id="{{ map.id }}-confirm-spinner"
+            class="spinner-border spinner-border-sm htmx-indicator me-2"
+            aria-hidden="true"></span>
+      {% trans "Confirm location" %}
+    </button>
+    <div id="{{ map.id }}-confirmed" class="mt-3" aria-live="polite"
+         data-map-confirmed
+         data-msg-moved="{% trans 'You moved the map. Tap “Confirm location” again.' %}"
+         data-msg-located="{% trans 'The map moved to where you are. Check the target and tap “Confirm location” again.' %}"
+         data-msg-failed="{% trans 'We couldn’t confirm the location. Check your connection and try again.' %}"></div>
+  {% endif %}
+
+  <div class="offcanvas offcanvas-bottom mobilito-bottom-sheet" tabindex="-1"
+       id="{{ map.id }}-sheet" aria-labelledby="{{ map.id }}-sheet-title"
+       data-bs-backdrop="false" data-bs-scroll="true" data-map-sheet
+       data-msg-loading="{% trans 'Loading…' %}"
+       data-msg-failed="{% trans 'We couldn’t load this observation. Close this panel and try again.' %}">
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title h5" id="{{ map.id }}-sheet-title">
+        {% trans "Observation" %}
+      </h2>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+              aria-label="{% trans 'Close' %}"></button>
+    </div>
+    <div class="offcanvas-body" data-map-sheet-body></div>
+  </div>
+</div>

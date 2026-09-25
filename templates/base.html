@@ -36,7 +36,11 @@ License along with mobilito.  If not, see
     crossorigin="anonymous">
   {% block extra_head %}{% endblock %}
 </head>
-<body>
+{% comment %}
+hx-headers: htmx requests that aren't whole-form submissions (e.g.
+the map widget's buttons) still need Django's CSRF token.
+{% endcomment %}
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
   {% include "includes/nav.html" %}
   <main class="container py-4">
     {% unvalidated_banner %}

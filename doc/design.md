@@ -231,7 +231,7 @@ The map uses the **crosshair/centre-of-map pattern**:
 - A fixed crosshair is overlaid at the centre of the screen. The reported observation location is always the crosshair = the map centre.
 - To set location: pan the map until the crosshair is over the correct spot, then tap **Confirm location**. No long-press, no separate mode.
 - Existing observation pins are distinct coloured markers. Tapping a pin opens a **bottom sheet** (a panel sliding up from the bottom of the screen, leaving the map visible behind it) showing the observation summary. This is handled by the pin's touch target, not the map canvas, so it does not conflict with panning or crosshair positioning.
-- A floating bullseye/target icon anchored to the top-right of the map snaps back to the device's current GPS position.
+- A floating "my location" button (arrow icon, deliberately unlike the crosshair so the two aren't confused) anchored to the top-right of the map snaps back to the device's current GPS position.
 
 #### Selecting an existing observation
 
@@ -679,7 +679,7 @@ S3-compatible object storage (AWS S3 or Cloudflare R2; to be decided). All media
 
 ### 21.3 Authenticated user — modal share (Scenario A/MS)
 
-1. Show map centred on device location. Fixed crosshair marks the observation point. User pans to adjust; a bullseye button re-reads GPS.
+1. Show map centred on device location. Fixed crosshair marks the observation point. User pans to adjust; a "my location" button re-reads GPS.
 2. Reverse-geocode pinned location; display editable address.
 3. Display four counting buttons (ped / bike / car / TC).
 4. User taps buttons; each tap is timestamped.

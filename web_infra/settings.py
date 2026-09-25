@@ -186,6 +186,41 @@ MODELTRANSLATION_DEFAULT_LANGUAGE = "fr"
 LOCATION_EQUIVALENCE_RADIUS_INFRASTRUCTURE_METERS = 3
 LOCATION_EQUIVALENCE_RADIUS_MODAL_SHARE_METERS = 50
 
+# Reverse geocoding (roadmap Phase 4, core/geocoding.py). Swap the
+# provider here, e.g. to "core.geocoding.MapboxGeocoder" (which also
+# needs MAPBOX_ACCESS_TOKEN), without touching views.
+GEOCODING_BACKEND = os.environ.get(
+    "GEOCODING_BACKEND", "core.geocoding.NominatimGeocoder"
+)
+NOMINATIM_URL = os.environ.get(
+    "NOMINATIM_URL", "https://nominatim.openstreetmap.org/reverse"
+)
+MAPBOX_ACCESS_TOKEN = os.environ.get("MAPBOX_ACCESS_TOKEN", "")
+# Paid Mapbox feature: required before results may be stored.
+MAPBOX_PERMANENT = os.environ.get("MAPBOX_PERMANENT", "") == "1"
+# Nominatim's usage policy requires a User-Agent identifying the app
+# with a reachable contact; set a contact email in production.
+GEOCODING_USER_AGENT = os.environ.get(
+    "GEOCODING_USER_AGENT",
+    "Mobilito/0.1 (+https://github.com/mobilitains/mobilito)",
+)
+GEOCODING_TIMEOUT_SECONDS = 5
+# How long a user waits for Nominatim's 1 request/second slot before
+# we give up and let them type the address instead.
+GEOCODING_MAX_WAIT_SECONDS = 2
+GEOCODING_CACHE_SECONDS = 30 * 24 * 3600
+RATE_LIMIT_LOCATION_CONFIRM = (30, 60)
+
+# Map defaults (roadmap Phase 4): where the map opens when there is
+# no better information. Nantes, where Mobilito starts.
+MAP_DEFAULT_CENTER = (47.2184, -1.5536)  # (lat, lon)
+MAP_DEFAULT_ZOOM = 13
+MAP_TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+MAP_TILE_ATTRIBUTION = (
+    '&copy; <a href="https://www.openstreetmap.org/copyright">'
+    "OpenStreetMap</a> contributors"
+)
+
 # Static and media files
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"

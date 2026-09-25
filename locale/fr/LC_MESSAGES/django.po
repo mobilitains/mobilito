@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 08:13+0000\n"
+"POT-Creation-Date: 2026-09-25 08:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -226,6 +226,108 @@ msgstr ""
 
 #: core/models.py:55
 msgid "Flagged for review"
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:45
+msgid "Drag the map until the pink target is on the spot."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:50
+msgid "Map. Use the arrow keys to move it."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:53
+msgid "The map couldn't load. Check your connection and reload the page."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:78
+#: core/templates/core/includes/map_widget.html:79
+msgid "Go to my location"
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:95
+msgid "Use device location"
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:98
+msgid "We'll remember this choice."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:107
+msgid ""
+"Your observation will be marked “location not checked”, which makes it less "
+"useful to local authorities."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:108
+msgid ""
+"Your browser is blocking location. You can allow it in your browser "
+"settings, or place the target by hand. Until then, your observation will be "
+"marked “location not checked”."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:109
+msgid ""
+"We couldn’t get your position. Tap the arrow button at the top right of the "
+"map to try again, or place the target by hand."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:130
+msgid "Confirm location"
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:134
+msgid "You moved the map. Tap “Confirm location” again."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:135
+msgid ""
+"The map moved to where you are. Check the target and tap “Confirm location” "
+"again."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:136
+msgid "We couldn’t confirm the location. Check your connection and try again."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:142
+msgid "Loading…"
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:143
+msgid "We couldn’t load this observation. Close this panel and try again."
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:146
+msgid "Observation"
+msgstr ""
+
+#: core/templates/core/includes/map_widget.html:149
+msgid "Close"
+msgstr ""
+
+#: core/templates/core/partials/location_confirmed.html:31
+msgid "Location confirmed."
+msgstr ""
+
+#: core/templates/core/partials/location_confirmed.html:44
+msgid "Address or name of this spot"
+msgstr ""
+
+#: core/templates/core/partials/location_confirmed.html:52
+msgid "Check this and correct it if needed."
+msgstr ""
+
+#: core/templates/core/partials/location_confirmed.html:54
+msgid ""
+"No address suggestion available. Type one, or give the spot a name people "
+"would recognise."
+msgstr ""
+
+#: core/templates/core/partials/location_confirmed.html:60
+msgid ""
+"We couldn't read that position. Move the map slightly and tap “Confirm "
+"location” again."
 msgstr ""
 
 #: mobilito_app/models.py:31 mobilito_app/models.py:76

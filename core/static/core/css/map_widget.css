@@ -1,0 +1,105 @@
+/*
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+*/
+
+.mobilito-map-frame {
+  position: relative;
+}
+
+.mobilito-map {
+  /* Leave room below for the checkbox and Confirm button, even on
+     small phones: a map filling the whole screen can't be scrolled
+     past with one finger (a swipe pans it instead). */
+  height: 60vh;
+  height: min(60svh, calc(100svh - 20rem));
+  min-height: 14rem;
+  border-radius: 0.375rem;
+}
+
+.mobilito-map-fallback {
+  color: #6c757d;
+}
+
+/* Leaflet's zoom buttons default to 30px; make them finger-sized
+   (§17). */
+.mobilito-map-component .leaflet-bar a {
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+  font-size: 22px;
+}
+
+/* Fixed at the map centre; the map moves underneath it (§9.2). */
+.mobilito-crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  pointer-events: none;
+  z-index: 500;
+  fill: none;
+}
+
+/* Dark outline under a bright stroke: readable on any tile colour
+   and in sunlight. */
+.mobilito-crosshair-under {
+  stroke: #212529;
+  stroke-width: 6;
+}
+
+.mobilito-crosshair-over {
+  stroke: #ff3ea5;
+  stroke-width: 3;
+}
+
+.mobilito-crosshair-dot {
+  fill: #ff3ea5;
+  stroke: #212529;
+  stroke-width: 1.5;
+}
+
+.mobilito-gps-button {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 1000;
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.4rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.mobilito-bottom-sheet.offcanvas-bottom {
+  height: auto;
+  max-height: 60vh;
+}
+
+/* htmx shows .htmx-indicator only while its request is in flight. */
+.mobilito-map-component .htmx-indicator {
+  display: none;
+}
+
+.mobilito-map-component .htmx-request .htmx-indicator,
+.mobilito-map-component .htmx-request.htmx-indicator {
+  display: inline-block;
+}

@@ -49,3 +49,19 @@ class HoneypotFormMixin(forms.Form):
 
     def is_bot(self) -> bool:
         return bool(self.cleaned_data.get(self.HONEYPOT_FIELD))
+
+
+class LocationConfirmForm(forms.Form):
+    """Position posted by the map widget's "Confirm location" button.
+
+    lat/lon are the crosshair (map centre). The device_* fields are
+    the last GPS fix, if any, kept as separate evidence (§11.1).
+    """
+
+    lat = forms.FloatField(min_value=-90, max_value=90)
+    lon = forms.FloatField(min_value=-180, max_value=180)
+    device_lat = forms.FloatField(required=False, min_value=-90, max_value=90)
+    device_lon = forms.FloatField(
+        required=False, min_value=-180, max_value=180
+    )
+    device_accuracy = forms.FloatField(required=False, min_value=0)

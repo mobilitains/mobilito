@@ -20,12 +20,18 @@ along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 from django.contrib import admin
 from django.urls import include, path
 
-from core.views import set_language
+from core.views import location_confirm, set_device_location, set_language
 from mobilito_app.views import home
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("authentication.urls")),
     path("language/", set_language, name="set_language"),
+    path(
+        "preferences/device-location/",
+        set_device_location,
+        name="set_device_location",
+    ),
+    path("location/confirm/", location_confirm, name="location_confirm"),
     path("", home, name="home"),
 ]
