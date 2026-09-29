@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-29 19:21+0000\n"
+"POT-Creation-Date: 2026-09-29 20:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -571,8 +571,16 @@ msgstr ""
 msgid "Public transit"
 msgstr ""
 
-#: mobilito_app/counts.py:451
+#: mobilito_app/counts.py:483
 msgid "Count discarded."
+msgstr ""
+
+#: mobilito_app/counts.py:561
+msgid "Count thrown away."
+msgstr ""
+
+#: mobilito_app/counts.py:581
+msgid "Count saved."
 msgstr ""
 
 #: mobilito_app/forms.py:33
@@ -590,6 +598,50 @@ msgstr ""
 #: mobilito_app/forms.py:120 mobilito_app/forms.py:121
 #: mobilito_app/reports.py:278
 msgid "Choose tags from the list shown."
+msgstr ""
+
+#: mobilito_app/mine.py:52
+msgid "Waiting to be checked"
+msgstr ""
+
+#: mobilito_app/mine.py:53
+msgid "Others will see it once it has been checked."
+msgstr ""
+
+#: mobilito_app/mine.py:56
+msgid "Not visible to others"
+msgstr ""
+
+#: mobilito_app/mine.py:58
+msgid "Not sent yet"
+msgstr ""
+
+#: mobilito_app/mine.py:61
+msgid "Open the link we emailed you"
+msgstr ""
+
+#: mobilito_app/mine.py:62
+msgid "Once you have, it will be checked, then shown to others."
+msgstr ""
+
+#: mobilito_app/mine.py:66
+msgid "Visible to everyone"
+msgstr ""
+
+#: mobilito_app/mine.py:71
+msgid "Still counting"
+msgstr ""
+
+#: mobilito_app/mine.py:72
+msgid "Open it to carry on counting."
+msgstr ""
+
+#: mobilito_app/mine.py:76
+msgid "Not finished"
+msgstr ""
+
+#: mobilito_app/mine.py:77
+msgid "Open it to decide what to do with it."
 msgstr ""
 
 #: mobilito_app/models.py:37 mobilito_app/models.py:141
@@ -700,12 +752,14 @@ msgstr ""
 
 #: mobilito_app/templates/mobilito_app/browse/here.html:34
 #: mobilito_app/templates/mobilito_app/browse/list.html:67
+#: mobilito_app/templates/mobilito_app/browse/mine.html:65
 #: mobilito_app/templates/mobilito_app/counts/summary.html:27
 msgid "Count"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/browse/here.html:37
 #: mobilito_app/templates/mobilito_app/browse/list.html:93
+#: mobilito_app/templates/mobilito_app/browse/mine.html:80
 #, python-format
 msgid "%(total)s counted"
 msgid_plural "%(total)s counted"
@@ -725,6 +779,7 @@ msgstr[1] ""
 
 #: mobilito_app/templates/mobilito_app/browse/here.html:57
 #: mobilito_app/templates/mobilito_app/browse/list.html:70
+#: mobilito_app/templates/mobilito_app/browse/mine.html:68
 #: mobilito_app/templates/mobilito_app/reports/detail.html:42
 #: mobilito_app/templates/mobilito_app/reports/summary.html:27
 msgid "Street feature"
@@ -814,19 +869,23 @@ msgid "On the map"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/browse/list.html:122
+#: mobilito_app/templates/mobilito_app/browse/mine.html:96
 msgid "Pages"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/browse/list.html:125
+#: mobilito_app/templates/mobilito_app/browse/mine.html:99
 msgid "Previous page"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/browse/list.html:128
+#: mobilito_app/templates/mobilito_app/browse/mine.html:102
 #, python-format
 msgid "Page %(n)s of %(total)s"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/browse/list.html:131
+#: mobilito_app/templates/mobilito_app/browse/mine.html:105
 msgid "Next page"
 msgstr ""
 
@@ -861,6 +920,64 @@ msgstr ""
 
 #: mobilito_app/templates/mobilito_app/browse/map.html:42
 msgid "Several together: tap to see them"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:25
+#: mobilito_app/templates/mobilito_app/browse/mine.html:29
+#: mobilito_app/templates/mobilito_app/home.html:62
+msgid "Your observations"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:32
+msgid ""
+"This shows what you’ve recorded since you gave your email address in this "
+"browser."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:34
+msgid "Sign in to see everything you’ve recorded."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:36
+msgid "Open the link we emailed you to see everything you’ve recorded."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:42
+#, python-format
+msgid "You’ve made %(total)s observation."
+msgid_plural "You’ve made %(total)s observations."
+msgstr[0] ""
+msgstr[1] ""
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:48
+#, python-format
+msgid "%(visible)s is visible to everyone."
+msgid_plural "%(visible)s are visible to everyone."
+msgstr[0] ""
+msgstr[1] ""
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:111
+msgid "Nothing here yet."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:112
+msgid ""
+"What you count or report will be listed here, including what others can’t "
+"see yet."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:114
+#: mobilito_app/templates/mobilito_app/counts/new.html:25
+#: mobilito_app/templates/mobilito_app/home.html:49
+msgid "Count what goes by"
+msgstr ""
+
+#. Translators: reports can be positive. Avoid « Signaler un problème »; e.g. « Partager un aménagement ».
+#: mobilito_app/templates/mobilito_app/browse/mine.html:115
+#: mobilito_app/templates/mobilito_app/home.html:55
+#: mobilito_app/templates/mobilito_app/reports/new.html:26
+#: mobilito_app/templates/mobilito_app/reports/new.html:68
+msgid "Report a street feature"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/counts/count.html:31
@@ -995,11 +1112,6 @@ msgstr ""
 msgid "Link to share this count:"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/new.html:25
-#: mobilito_app/templates/mobilito_app/home.html:49
-msgid "Count what goes by"
-msgstr ""
-
 #: mobilito_app/templates/mobilito_app/counts/new.html:33
 #: mobilito_app/templates/mobilito_app/home.html:32
 msgid "You have a count in progress."
@@ -1031,6 +1143,70 @@ msgstr[1] ""
 
 #: mobilito_app/templates/mobilito_app/counts/new.html:65
 msgid "Start counting"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:29
+msgid "An unfinished count"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:33
+msgid "This count wasn’t finished"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:36
+#, python-format
+msgid "Started %(date)s"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:38
+msgid ""
+"It’s too late to carry on counting: adding to it now would mix two different "
+"times."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:41
+msgid "Sending what your phone saved while it was offline…"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:42
+msgid ""
+"Your phone still has some of this count saved. Reload this page once you "
+"have a connection, to send it before choosing."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:43
+msgid ""
+"We couldn’t take what your phone saved just now. Try reloading this page in "
+"a few minutes, before choosing."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:46
+#, python-format
+msgid ""
+"%(taps)s counted before it stopped. You can keep the count as it was then."
+msgid_plural ""
+"%(taps)s counted before it stopped. You can keep the count as it was then."
+msgstr[0] ""
+msgstr[1] ""
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:53
+msgid "Nothing was counted, so there is nothing to keep."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:60
+msgid "Keep what was counted"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:66
+msgid "Or, if it was a mistake:"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:68
+msgid "Throw it away"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:72
+msgid "Decide later"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/counts/summary.html:38
@@ -1077,37 +1253,26 @@ msgid ""
 "pedestrian."
 msgstr ""
 
-#. Translators: reports can be positive. Avoid « Signaler un problème »; e.g. « Partager un aménagement ».
-#: mobilito_app/templates/mobilito_app/home.html:55
-#: mobilito_app/templates/mobilito_app/reports/new.html:26
-#: mobilito_app/templates/mobilito_app/reports/new.html:68
-msgid "Report a street feature"
-msgstr ""
-
 #. Translators: reports can be positive. Avoid a grade like « bon ou mauvais »; e.g. « ce qui aide, ce qui gêne ».
 #: mobilito_app/templates/mobilito_app/home.html:57
 msgid "good or bad"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:63
-msgid "Your observations"
-msgstr ""
-
-#: mobilito_app/templates/mobilito_app/home.html:65
+#: mobilito_app/templates/mobilito_app/home.html:64
 msgid "Browse the map"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:71
+#: mobilito_app/templates/mobilito_app/home.html:70
 msgid ""
 "Document how people move through your streets: count what goes by, and "
 "report the infrastructure that helps or hinders it."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:75
+#: mobilito_app/templates/mobilito_app/home.html:74
 msgid "Browse observations"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/home.html:78
+#: mobilito_app/templates/mobilito_app/home.html:77
 msgid "Make an observation"
 msgstr ""
 

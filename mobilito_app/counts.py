@@ -38,7 +38,7 @@ from datetime import timezone as dt_timezone
 from django.conf import settings
 from django.contrib import messages
 from django.db import IntegrityError, transaction
-from django.db.models import ProtectedError
+from django.db.models import Count, ProtectedError
 from django.http import Http404, HttpResponse, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
@@ -77,6 +77,29 @@ CLOCK_TOLERANCE = timedelta(minutes=5)
 
 # Totals above this are not a real count.
 MAX_TOTAL = 1_000_000
+
+
+def is_stale(session) -> bool:
+    """Open, and too old to carry on counting (§18 resume window).
+
+    A count left open for days mustn't take new taps or be finished
+    "now": it would claim to have lasted days. It can only be kept as
+    it stood at its last tap, or thrown away.
+    """
+    return session.finished_at is None and timezone.now() > count_deadline(
+        session
+    )
+
+
+def count_deadline(session):
+    """Latest moment a count can still take taps or end.
+
+    Judged by when a tap was made, not when it arrives: taps queued
+    offline (count.js) and sent later still count.
+    """
+    return session.started_at + timedelta(
+        hours=settings.MODAL_SHARE_RESUME_HOURS
+    )
 
 
 def open_session(observer):
@@ -263,6 +286,22 @@ def count(request, pk):
     session = _own_session(request, pk)
     if not session.is_open:
         return redirect("counts_detail", pk=session.pk)
+    if is_stale(session):
+        return render(
+            request,
+            "mobilito_app/counts/stale.html",
+            {
+                "session": session,
+                "taps": session.events.count(),
+                # For count_rescue.js: taps still queued on the phone.
+                "rescue": {
+                    "sessionId": session.pk,
+                    "eventUrl": reverse("counts_event", args=[session.pk]),
+                    "finishUrl": reverse("counts_finish", args=[session.pk]),
+                    "csrfToken": get_token(request),
+                },
+            },
+        )
     config = {
         "sessionId": session.pk,
         "startedAt": int(session.started_at.timestamp() * 1000),
@@ -358,12 +397,16 @@ def record_event(request, pk):
             )
             if session is None:
                 return JsonResponse({"error": "finished"}, status=409)
+            when = _client_time(
+                data.get("client_timestamp"), session, timezone.now()
+            )
+            if when > count_deadline(session):
+                # Tapped into a count left open for too long.
+                return JsonResponse({"error": "finished"}, status=409)
             ModalShareCountEvent.objects.create(
                 session=session,
                 mode=data["mode"],
-                timestamp=_client_time(
-                    data.get("client_timestamp"), session, timezone.now()
-                ),
+                timestamp=when,
                 point=point,
                 client_event_id=event_id,
             )
@@ -410,6 +453,17 @@ def finish(request, pk):
                 ],
             )
         )
+        if session.finished_at > count_deadline(session):
+            # Finished from a page left open for too long (a finish
+            # queued offline within the window keeps its own time):
+            # it ended at its last tap in time, with those taps as
+            # its totals (the phone's may include later ones). As for
+            # close_stale, nothing counted in time means nothing to
+            # keep: refused for good (the phone then forgets it).
+            if not _taps_in_time(session).exists():
+                return JsonResponse({"error": "invalid"}, status=400)
+            _apply_tap_totals(session)
+            session.finished_at = _end_of_stale(session)
         session.publication_state = submission_state(session.user)
         session.integrity_hash = session.compute_integrity_hash()
         session.save()
@@ -424,6 +478,42 @@ def finish(request, pk):
 def discard(request, pk):
     """Throw away an unfinished count (the "short session" choice)."""
     session = _own_session(request, pk)
+    if not _delete_open(session):
+        return JsonResponse({"error": "finished"}, status=409)
+    messages.info(request, _("Count discarded."))
+    return JsonResponse({"redirect": reverse("home")})
+
+
+def _taps_in_time(session):
+    """Taps within the count's window (taps stored before the
+    deadline was enforced could be later)."""
+    return session.events.filter(timestamp__lte=count_deadline(session))
+
+
+def _apply_tap_totals(session):
+    """Totals from the taps in time, for a count closed after its
+    window (the phone's own totals never arrived, or ran on)."""
+    totals = {str(mode): 0 for mode in ModalShareSession.TOTAL_FIELDS}
+    for row in _taps_in_time(session).values("mode").annotate(n=Count("pk")):
+        totals[row["mode"]] = row["n"]
+    for mode, field in ModalShareSession.TOTAL_FIELDS.items():
+        setattr(session, field, totals[str(mode)])
+
+
+def _end_of_stale(session):
+    """When a count left open too long ended: its last tap in time,
+    never before its start."""
+    last_tap = (
+        _taps_in_time(session)
+        .order_by("-timestamp")
+        .values_list("timestamp", flat=True)
+        .first()
+    )
+    return max(filter(None, [last_tap, session.started_at]))
+
+
+def _delete_open(session) -> bool:
+    """Delete an unfinished count; False if it was finished meanwhile."""
     with transaction.atomic():
         session = (
             ModalShareSession.objects.select_for_update()
@@ -432,7 +522,7 @@ def discard(request, pk):
             .first()
         )
         if session is None:
-            return JsonResponse({"error": "finished"}, status=409)
+            return False
         location = session.location
         session.delete()
         try:
@@ -448,8 +538,48 @@ def discard(request, pk):
                     location.delete()
         except ProtectedError:
             pass
-    messages.info(request, _("Count discarded."))
-    return JsonResponse({"redirect": reverse("home")})
+    return True
+
+
+@observer_required
+@require_POST
+def close_stale(request, pk):
+    """Keep or throw away a count left open too long (a plain form).
+
+    Kept, it ends at its last tap, with the totals of the taps the
+    server received (the phone's own totals never arrived).
+    """
+    session = _own_session(request, pk)
+    if not session.is_open:
+        return redirect("counts_detail", pk=session.pk)
+    if not is_stale(session):
+        return redirect("counts_count", pk=session.pk)
+    if request.POST.get("action") == "discard":
+        if not _delete_open(session):
+            # Finished meanwhile (an old tab): it was kept after all.
+            return redirect("counts_detail", pk=session.pk)
+        messages.info(request, _("Count thrown away."))
+        return redirect("my_observations")
+    with transaction.atomic():
+        session = (
+            ModalShareSession.objects.select_for_update()
+            .filter(pk=session.pk, finished_at__isnull=True)
+            .first()
+        )
+        if session is None:
+            return redirect("counts_detail", pk=pk)
+        if not _taps_in_time(session).exists():
+            # Nothing was counted: nothing to keep.
+            return redirect("counts_count", pk=session.pk)
+        _apply_tap_totals(session)
+        session.finished_at = _end_of_stale(session)
+        session.publication_state = submission_state(session.user)
+        session.integrity_hash = session.compute_integrity_hash()
+        session.save()
+    # Moderators can't otherwise tell it from a normal finish.
+    logger.info("Count %s: kept after being left open", session.pk)
+    messages.success(request, _("Count saved."))
+    return redirect("counts_detail", pk=session.pk)
 
 
 def totals_bars(session) -> dict:

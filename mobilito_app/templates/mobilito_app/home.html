@@ -57,9 +57,8 @@ License along with mobilito.  If not, see
       </a>
     </div>
   </div>
-  {# /observations/mine/ lands later in Phase 7. #}
   <p class="text-center">
-    <a href="/observations/mine/">{% trans "Your observations" %}</a>
+    <a href="{% url 'my_observations' %}">{% trans "Your observations" %}</a>
     &middot;
     <a href="{% url 'map' %}">{% trans "Browse the map" %}</a>
   </p>

@@ -436,7 +436,7 @@ def map_page(request):
     )
 
 
-def _describe_count(count):
+def describe_count(count):
     """What a list shows of a count, and tells repeat ones apart."""
     count.total = sum(count.totals().values())
     count.minutes = round(
@@ -471,7 +471,7 @@ def observations_here(request):
         .filter(pk__in=_ids(request.GET.get("report", "")))
     )
     for count in counts:
-        _describe_count(count)
+        describe_count(count)
     items = sorted(
         [("count", c, c.started_at) for c in counts]
         + [("report", r, r.created_at) for r in reports],
@@ -526,7 +526,7 @@ def _objects(page_rows):
         if item is None:
             continue  # unpublished since the page was counted
         if row["kind"] == "count":
-            _describe_count(item)
+            describe_count(item)
         items.append(
             {
                 "kind": row["kind"],
