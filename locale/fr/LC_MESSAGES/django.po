@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-29 20:35+0000\n"
+"POT-Creation-Date: 2026-09-29 20:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -551,35 +551,35 @@ msgstr ""
 msgid "Near %(lat)s, %(lon)s"
 msgstr ""
 
-#: mobilito_app/counts.py:65
+#: mobilito_app/counts.py:68
 #: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:29
 msgid "Pedestrians"
 msgstr ""
 
-#: mobilito_app/counts.py:68
+#: mobilito_app/counts.py:71
 #: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:36
 msgid "Bikes"
 msgstr ""
 
-#: mobilito_app/counts.py:69
+#: mobilito_app/counts.py:72
 #: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:45
 msgid "Cars"
 msgstr ""
 
-#: mobilito_app/counts.py:70 mobilito_app/models.py:40
+#: mobilito_app/counts.py:73 mobilito_app/models.py:40
 #: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:52
 msgid "Public transit"
 msgstr ""
 
-#: mobilito_app/counts.py:483
+#: mobilito_app/counts.py:487
 msgid "Count discarded."
 msgstr ""
 
-#: mobilito_app/counts.py:561
+#: mobilito_app/counts.py:565
 msgid "Count thrown away."
 msgstr ""
 
-#: mobilito_app/counts.py:581
+#: mobilito_app/counts.py:585
 msgid "Count saved."
 msgstr ""
 
@@ -1092,23 +1092,23 @@ msgstr ""
 msgid "Nothing was counted this time."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/detail.html:64
+#: mobilito_app/templates/mobilito_app/counts/detail.html:66
 msgid ""
 "The phone's own position was some distance from this spot when the count "
 "started."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/detail.html:71
+#: mobilito_app/templates/mobilito_app/counts/detail.html:73
 #: mobilito_app/templates/mobilito_app/counts/summary.html:41
 msgid "Do another count here"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/detail.html:74
+#: mobilito_app/templates/mobilito_app/counts/detail.html:76
 #: mobilito_app/templates/mobilito_app/reports/detail.html:94
 msgid "Back to the start"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/counts/detail.html:80
+#: mobilito_app/templates/mobilito_app/counts/detail.html:82
 msgid "Link to share this count:"
 msgstr ""
 
@@ -1287,6 +1287,54 @@ msgid "%(total)s person or vehicle counted in all."
 msgid_plural "%(total)s people and vehicles counted in all."
 msgstr[0] ""
 msgstr[1] ""
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:31
+msgid "At this spot over time"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:34
+msgid ""
+"This is the only count here so far. Count here again on another day or at "
+"another time to see how things change."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:38
+msgid ""
+"Each bar is one count, split by what went by. Counts last different lengths "
+"of time, so the bars compare proportions, not totals. Counts within a short "
+"walk of here are included."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:53
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:88
+msgid "this count"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:60
+msgid "Nothing counted"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:67
+msgid "Show the numbers"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:70
+msgid "Counts at this spot, oldest first."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:73
+msgid "When"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/partials/counted_in.html:23
+#, python-format
+msgid "%(total)s counted in under a minute"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/partials/counted_in.html:23
+#, python-format
+msgid "%(total)s counted in %(minutes)s min"
+msgstr ""
 
 #: mobilito_app/templates/mobilito_app/reports/detail.html:25
 msgid "Street feature report"

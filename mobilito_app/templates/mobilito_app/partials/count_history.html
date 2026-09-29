@@ -1,0 +1,98 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+{% comment %}
+Counts at one spot over time (design §9.1 "Time evolution"). Takes
+`history` (counts.history) and `mode_labels`. Each count is one
+100% bar of its modes' shares, since counts last different times;
+the total and duration sit beside it, and a table gives every
+number.
+{% endcomment %}
+<section class="mb-4" aria-labelledby="history-title">
+  <h2 class="h5" id="history-title">{% trans "At this spot over time" %}</h2>
+  {% if history|length < 2 %}
+    <p class="text-body-secondary">
+      {% trans "This is the only count here so far. Count here again on another day or at another time to see how things change." %}
+    </p>
+  {% else %}
+    <p class="small text-body-secondary mb-2">
+      {% trans "Each bar is one count, split by what went by. Counts last different lengths of time, so the bars compare proportions, not totals. Counts within a short walk of here are included." %}
+    </p>
+    {# For the eye only: the table below carries every number. #}
+    <ul class="list-inline small mb-2" aria-hidden="true">
+      {% for mode, label in mode_labels %}
+        <li class="list-inline-item"><span class="mobilito-swatch mobilito-bar-{{ mode }}"></span>{{ label }}</li>
+      {% endfor %}
+    </ul>
+    <div class="mobilito-history" aria-hidden="true">
+      {% for row in history %}
+        <div class="mobilito-history-row{% if row.is_this %} mobilito-history-this{% endif %}">
+          <span class="mobilito-history-date">
+            {# Weekday and time: traffic depends on both. #}
+            {{ row.count.started_at|date:"D j N" }}{% if row.count.started_at.year != now_year %} {{ row.count.started_at|date:"Y" }}{% endif %}
+            <span class="d-block small text-body-secondary">{{ row.count.started_at|time:"TIME_FORMAT" }}</span>
+            {% if row.is_this %}<span class="d-block small fw-semibold">{% trans "this count" %}</span>{% endif %}
+          </span>
+          {% if row.total %}
+            <span class="mobilito-history-bar">
+              {% for part in row.modes %}{% if part.count %}<span class="mobilito-bar-{{ part.mode }}" style="flex-grow: {{ part.count }};"></span>{% endif %}{% endfor %}
+            </span>
+          {% else %}
+            <span class="small text-body-secondary">{% trans "Nothing counted" %}</span>
+          {% endif %}
+          <span class="mobilito-history-total">{% include "mobilito_app/partials/counted_in.html" %}</span>
+        </div>
+      {% endfor %}
+    </div>
+    <details class="mt-2">
+      <summary>{% trans "Show the numbers" %}</summary>
+      <div class="table-responsive">
+        <table class="table table-sm small mt-2">
+          <caption class="caption-top">{% trans "Counts at this spot, oldest first." %}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{% trans "When" %}</th>
+              {% for mode, label in mode_labels %}<th scope="col" class="text-end">{{ label }}</th>{% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in history %}
+              <tr>
+                <th scope="row" class="fw-normal">
+                  {% if row.is_this %}
+                    <strong>{{ row.count.started_at|date:"D j N" }}{% if row.count.started_at.year != now_year %} {{ row.count.started_at|date:"Y" }}{% endif %}</strong>
+                  {% else %}
+                    <a href="{% url 'counts_detail' row.count.pk %}">{{ row.count.started_at|date:"D j N" }}{% if row.count.started_at.year != now_year %} {{ row.count.started_at|date:"Y" }}{% endif %}</a>
+                  {% endif %}
+                  <span class="d-block text-body-secondary">{{ row.count.started_at|time:"TIME_FORMAT" }}</span>
+                  <span class="d-block">{% include "mobilito_app/partials/counted_in.html" %}</span>
+                  {% if row.is_this %}<span class="d-block">({% trans "this count" %})</span>{% endif %}
+                </th>
+                {% for part in row.modes %}<td class="text-end">{{ part.count }}<span class="d-block text-body-secondary">{{ part.percent }}%</span></td>{% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </details>
+  {% endif %}
+</section>

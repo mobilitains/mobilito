@@ -37,6 +37,7 @@ from datetime import timezone as dt_timezone
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.gis.measure import D
 from django.db import IntegrityError, transaction
 from django.db.models import Count, ProtectedError
 from django.http import Http404, HttpResponse, JsonResponse
@@ -61,6 +62,8 @@ from mobilito_app.models import Mode, ModalShareCountEvent, ModalShareSession
 logger = logging.getLogger(__name__)
 
 # Plural labels, as on the counting buttons and the results.
+# Always in this order: the bars and tables line up with the legend.
+MODES = ("ped", "bike", "car", "tc")
 MODE_LABELS = {
     "ped": gettext_lazy("Pedestrians"),
     # "Bikes", not "Cyclists": scooters and skateboards count here too
@@ -267,9 +270,10 @@ def _new_location_fields(point, address, origin):
     """Fields for a new Location, or None to reuse the origin's.
 
     "Do another count here" (§9.1) links repeat counts through one
-    Location, which is what the time-series view aggregates. A new
-    spot, or one moved beyond the modal share equivalence radius,
-    gets its own Location.
+    Location. A new spot, or one moved beyond the modal share
+    equivalence radius, gets its own Location. (The time-series view,
+    history(), goes by that radius rather than the Location, so
+    independent counts on the same stretch are compared too.)
     """
     if origin is not None and (
         distance_meters(origin.location.point, point)
@@ -593,9 +597,67 @@ def totals_bars(session) -> dict:
             "count": totals[mode],
             "percent": round(100 * totals[mode] / total) if total else 0,
         }
-        for mode in ("ped", "bike", "car", "tc")
+        for mode in MODES
     ]
     return {"bars": bars, "total": total}
+
+
+# Most counts shown in a spot's history (the latest ones).
+HISTORY_MAX = 12
+
+
+def history(session) -> list:
+    """Counts at this spot over time (§9.1 "Time evolution").
+
+    Published, finished counts within the modal share equivalence
+    radius (§11.4: counts a few metres apart on one stretch of road
+    see the same traffic), plus this one whatever its state or age
+    (only its owner, or anyone once published, gets here). Oldest
+    first: this one and the latest others, HISTORY_MAX in all. Each
+    as shares of its total, since counts last different times.
+    """
+    radius = D(m=settings.LOCATION_EQUIVALENCE_RADIUS_MODAL_SHARE_METERS)
+    others = (
+        ModalShareSession.objects.filter(
+            publication_state=PublicationState.PUBLISHED,
+            finished_at__isnull=False,
+            location__point__dwithin=(session.location.point, radius),
+        )
+        .exclude(pk=session.pk)
+        # Nothing counted: no shares to compare.
+        .exclude(total_pedestrian=0, total_cyclist=0, total_car=0, total_tc=0)
+        .order_by("-started_at", "-pk")[: HISTORY_MAX - 1]
+    )
+    # This count always, however old.
+    nearby = sorted(
+        [*others, session], key=lambda count: (count.started_at, count.pk)
+    )
+    rows = []
+    for count in nearby:
+        totals = count.totals()
+        total = sum(totals.values())
+        rows.append(
+            {
+                "count": count,
+                "is_this": count.pk == session.pk,
+                "total": total,
+                "minutes": round(
+                    (count.finished_at - count.started_at).total_seconds() / 60
+                ),
+                "modes": [
+                    {
+                        "mode": mode,
+                        "label": MODE_LABELS[mode],
+                        "count": totals[mode],
+                        "percent": (
+                            round(100 * totals[mode] / total) if total else 0
+                        ),
+                    }
+                    for mode in MODES
+                ],
+            }
+        )
+    return rows
 
 
 @require_GET
@@ -612,6 +674,9 @@ def detail(request, pk):
         {
             "session": session,
             **totals_bars(session),
+            "history": history(session),
+            "now_year": timezone.now().year,
+            "mode_labels": [(mode, MODE_LABELS[mode]) for mode in MODES],
             "is_owner": is_owner,
             "published": session.publication_state
             == PublicationState.PUBLISHED,

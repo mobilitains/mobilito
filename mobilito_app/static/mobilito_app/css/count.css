@@ -190,10 +190,69 @@ License along with mobilito.  If not, see
   height: 100%;
 }
 
-.mobilito-bar-ped { background: #198754; }
-.mobilito-bar-bike { background: #0d6efd; }
-.mobilito-bar-car { background: #6c757d; }
-.mobilito-bar-tc { background: #fd7e14; }
+/* Mode colours, one per mode in this fixed order (ped, bike, car,
+   tc), checked for colour-blind separation and against the page
+   (dataviz validator). Never used alone: every bar has its mode's
+   name beside it, or a legend and a table. */
+.mobilito-bar-ped { background: #1baf7a; }
+.mobilito-bar-bike { background: #2a78d6; }
+.mobilito-bar-car { background: #4a3aa7; }
+.mobilito-bar-tc { background: #eb6834; }
+
+/* A spot's counts over time: one 100% bar per count. */
+
+.mobilito-history-row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr 6.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.mobilito-history-bar {
+  display: flex;
+  /* 2px of page between segments, so neighbouring modes stay apart. */
+  gap: 2px;
+  height: 1.5rem;
+}
+
+.mobilito-history-bar > span {
+  flex-basis: 0;
+  /* A tiny share still shows. */
+  min-width: 2px;
+}
+
+.mobilito-history-bar > span:first-child {
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.mobilito-history-bar > span:last-child {
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.mobilito-history-bar > span:only-child {
+  border-radius: 0.25rem;
+}
+
+.mobilito-history-this .mobilito-history-bar {
+  outline: 2px solid #212529;
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.mobilito-history-total {
+  font-size: 0.875rem;
+  text-align: right;
+}
+
+.mobilito-swatch {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 0.2rem;
+  margin-right: 0.3rem;
+  vertical-align: -0.1rem;
+}
 
 @media (max-width: 380px) {
   .mobilito-bar-row {

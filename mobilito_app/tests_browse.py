@@ -28,12 +28,12 @@ from unittest import mock
 from django.core.cache import cache
 from django.test import TestCase, override_settings
 from django.urls import reverse
-from django.utils import timezone
+from django.utils import dateformat, timezone
 
 from authentication.models import MobilitoUser
 from core.geo import make_point
 from core.models import Location, PublicationState
-from mobilito_app import browse
+from mobilito_app import browse, counts
 from mobilito_app.browse import (
     HERE_MAX,
     LIST_PAGE_SIZE,
@@ -614,3 +614,99 @@ class MapPageTests(BrowseTestCase):
 
     def test_home_links_here(self):
         self.assertContains(self.client.get(reverse("home")), reverse("map"))
+
+
+class HistoryTests(BrowseTestCase):
+    """Counts at one spot over time, on a count's page (§9.1)."""
+
+    def detail(self, session):
+        return self.client.get(reverse("counts_detail", args=[session.pk]))
+
+    def test_published_counts_nearby_oldest_first(self):
+        older = count_at(47.2100, -1.5500, total_cyclist=3, total_car=1)
+        ModalShareSession.objects.filter(pk=older.pk).update(
+            started_at=older.started_at - timedelta(days=30)
+        )
+        this = count_at(47.2101, -1.5501, total_cyclist=1, total_car=3)
+        count_at(47.2200, -1.5500, total_car=9)  # a kilometre away
+        count_at(
+            47.2100, -1.5500, state=PublicationState.SANDBOXED, total_car=7
+        )
+        count_at(47.2100, -1.5500, finished=False)
+        response = self.detail(this)
+        rows = response.context["history"]
+        self.assertEqual([r["count"].pk for r in rows], [older.pk, this.pk])
+        self.assertEqual([r["is_this"] for r in rows], [False, True])
+        shares = {m["mode"]: m["percent"] for m in rows[0]["modes"]}
+        self.assertEqual(shares, {"ped": 0, "bike": 75, "car": 25, "tc": 0})
+        self.assertContains(response, "At this spot over time")
+        self.assertContains(response, "this count")
+        self.assertContains(response, "Show the numbers")
+        self.assertContains(response, "75%")
+
+    def test_owner_sees_own_unpublished_count_in_the_history(self):
+        user = MobilitoUser.objects.create_user("me@example.com")
+        count_at(47.2100, -1.5500, total_car=2)
+        mine = count_at(
+            47.2100,
+            -1.5500,
+            state=PublicationState.PENDING_MODERATION,
+            user=user,
+            total_car=1,
+        )
+        self.client.force_login(user)
+        rows = self.detail(mine).context["history"]
+        self.assertEqual(len(rows), 2)
+        self.assertTrue(rows[-1]["is_this"])
+
+    def test_a_single_count_explains_itself(self):
+        response = self.detail(count_at(47.21, -1.55, total_car=1))
+        self.assertContains(response, "only count here so far")
+        self.assertNotContains(response, "Show the numbers")
+
+    def test_the_latest_are_shown_and_always_this_one(self):
+        first = count_at(47.21, -1.55)
+        ModalShareSession.objects.filter(pk=first.pk).update(
+            started_at=first.started_at - timedelta(days=365)
+        )
+        for _ in range(counts.HISTORY_MAX + 2):
+            count_at(47.21, -1.55, total_car=1)
+        rows = self.detail(first).context["history"]
+        self.assertEqual(len(rows), counts.HISTORY_MAX)
+        self.assertEqual(rows[0]["count"].pk, first.pk)
+        self.assertTrue(rows[0]["is_this"])
+        # An earlier year's date shows its year; this year's don't.
+        response = self.detail(first)
+        old = rows[0]["count"].started_at
+        recent = rows[-1]["count"].started_at
+        self.assertContains(
+            response, f'{dateformat.format(old, "D j N")} {old.year}'
+        )
+        self.assertNotContains(
+            response, f'{dateformat.format(recent, "D j N")} {recent.year}'
+        )
+
+    def test_radius_boundary(self):
+        # About 40 m and 60 m north (the radius is 50 m).
+        this = count_at(47.2100, -1.5500, total_car=1)
+        near = count_at(47.2100 + 0.00036, -1.5500, total_car=1)
+        count_at(47.2100 + 0.00054, -1.5500, total_car=1)
+        rows = self.detail(this).context["history"]
+        self.assertEqual({r["count"].pk for r in rows}, {this.pk, near.pk})
+
+    def test_counts_with_nothing_counted(self):
+        this = count_at(47.21, -1.55)  # nothing counted
+        count_at(47.21, -1.55)  # another one: left out
+        other = count_at(47.21, -1.55, total_car=2)
+        response = self.detail(this)
+        rows = response.context["history"]
+        self.assertEqual([r["count"].pk for r in rows], [this.pk, other.pk])
+        self.assertContains(response, "Nothing counted")
+
+    def test_very_short_counts(self):
+        this = count_at(47.21, -1.55, total_car=2)
+        ModalShareSession.objects.filter(pk=this.pk).update(
+            finished_at=this.started_at + timedelta(seconds=20)
+        )
+        count_at(47.21, -1.55, total_car=1)
+        self.assertContains(self.detail(this), "2 counted in under a minute")

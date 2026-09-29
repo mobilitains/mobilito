@@ -58,6 +58,8 @@ License along with mobilito.  If not, see
   {% include "mobilito_app/partials/count_bars.html" with caption_id="bars-caption" %}
   {% endif %}
 
+  {% include "mobilito_app/partials/count_history.html" %}
+
   {% if session.location_mismatch %}
     <p class="small text-body-secondary">
       <i class="bi bi-info-circle" aria-hidden="true"></i>
