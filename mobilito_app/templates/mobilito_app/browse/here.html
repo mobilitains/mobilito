@@ -39,11 +39,15 @@ License along with mobilito.  If not, see
               {{ total }} counted
             {% endblocktranslate %}
             ·
-            {% blocktranslate trimmed count minutes=item.minutes %}
-              {{ minutes }} minute
-            {% plural %}
-              {{ minutes }} minutes
-            {% endblocktranslate %}
+            {% if item.minutes < 1 %}
+              {% trans "under a minute" %}
+            {% else %}
+              {% blocktranslate trimmed count minutes=item.minutes %}
+                {{ minutes }} minute
+              {% plural %}
+                {{ minutes }} minutes
+              {% endblocktranslate %}
+            {% endif %}
           </span>
         </a>
       {% else %}

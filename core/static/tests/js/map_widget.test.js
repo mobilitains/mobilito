@@ -799,6 +799,27 @@ describe('pins', () => {
     );
   });
 
+  test('the list link follows the map', async () => {
+    const { L } = fakeLeaflet();
+    const component = buildWidget({ ...BASE_CONFIG, pinsUrl: '/api/pins' });
+    const link = document.createElement('a');
+    link.setAttribute('href', '/observations/');
+    link.setAttribute('data-map-list-link', 'map');
+    document.body.appendChild(link);
+    const widget = initMapWidget(component, {
+      L,
+      fetch: fakeFetch(geojson),
+    });
+    await widget.pinsLoaded;
+    expect(link.getAttribute('href')).toBe(
+      '/observations/?lat=47.21840&lon=-1.55360&zoom=13'
+    );
+    L.drag(widget.map, 47.3, -1.6);
+    expect(link.getAttribute('href')).toBe(
+      '/observations/?lat=47.30000&lon=-1.60000&zoom=13'
+    );
+  });
+
   test('says when there is nothing here', async () => {
     const { L } = fakeLeaflet();
     const empty = { type: 'FeatureCollection', features: [] };

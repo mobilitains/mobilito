@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 16:54+0000\n"
+"POT-Creation-Date: 2026-09-29 19:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -699,62 +699,167 @@ msgid "Thank you! Your report has been sent."
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/browse/here.html:34
+#: mobilito_app/templates/mobilito_app/browse/list.html:67
 #: mobilito_app/templates/mobilito_app/counts/summary.html:27
 msgid "Count"
 msgstr ""
 
 #: mobilito_app/templates/mobilito_app/browse/here.html:37
+#: mobilito_app/templates/mobilito_app/browse/list.html:93
 #, python-format
 msgid "%(total)s counted"
 msgid_plural "%(total)s counted"
 msgstr[0] ""
 msgstr[1] ""
 
-#: mobilito_app/templates/mobilito_app/browse/here.html:43
+#: mobilito_app/templates/mobilito_app/browse/here.html:44
+msgid "under a minute"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/here.html:46
 #, python-format
 msgid "%(minutes)s minute"
 msgid_plural "%(minutes)s minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: mobilito_app/templates/mobilito_app/browse/here.html:53
+#: mobilito_app/templates/mobilito_app/browse/here.html:57
+#: mobilito_app/templates/mobilito_app/browse/list.html:70
 #: mobilito_app/templates/mobilito_app/reports/detail.html:42
 #: mobilito_app/templates/mobilito_app/reports/summary.html:27
 msgid "Street feature"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/browse/here.html:62
+#: mobilito_app/templates/mobilito_app/browse/here.html:66
 #, python-format
 msgid "Showing the latest %(n)s."
 msgid_plural "Showing the latest %(n)s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: mobilito_app/templates/mobilito_app/browse/here.html:70
+#: mobilito_app/templates/mobilito_app/browse/here.html:74
 msgid "These observations aren’t shown any more."
 msgstr ""
 
+#: mobilito_app/templates/mobilito_app/browse/list.html:25
+#: mobilito_app/templates/mobilito_app/browse/list.html:29
+msgid "What people have seen: list"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:33
+msgid "Newest first."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:35
+msgid "Nearest first, from the middle of the map."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:37
+msgid ""
+"Nearest first, from roughly where you are (worked out from your internet "
+"connection, not your phone’s location)."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:39
+#, python-format
+msgid "%(total)s in all."
+msgid_plural "%(total)s in all."
+msgstr[0] ""
+msgstr[1] ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:48
+msgid "Show nearest first"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:50
+msgid "Show newest first"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:54
+msgid "Show them on the map"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:80
+msgid "less than 1 km away"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:82
+#, python-format
+msgid "about %(km)s km away"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:85
+#, python-format
+msgid "%(metres)s m away"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:87
+#, python-format
+msgid "%(km)s km away"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:100
+msgid "in under a minute"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:102
+#, python-format
+msgid "in %(minutes)s minute"
+msgid_plural "in %(minutes)s minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:114
+msgid "On the map"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:122
+msgid "Pages"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:125
+msgid "Previous page"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:128
+#, python-format
+msgid "Page %(n)s of %(total)s"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:131
+msgid "Next page"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:137
+msgid "Nothing to show yet."
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:138
+msgid "Be the first to count or report something."
+msgstr ""
+
 #: mobilito_app/templates/mobilito_app/browse/map.html:25
-msgid "Map"
-msgstr ""
-
 #: mobilito_app/templates/mobilito_app/browse/map.html:33
-msgid "What people have seen"
+msgid "What people have seen: map"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/browse/map.html:34
+#: mobilito_app/templates/mobilito_app/browse/map.html:35
 msgid "Tap a dot to see what someone saw there."
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/browse/map.html:36
+#: mobilito_app/templates/mobilito_app/browse/map.html:37
+msgid "See them as a list"
+msgstr ""
+
+#: mobilito_app/templates/mobilito_app/browse/map.html:40
 msgid "Counts of what goes by"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/browse/map.html:37
+#: mobilito_app/templates/mobilito_app/browse/map.html:41
 msgid "Street features"
 msgstr ""
 
-#: mobilito_app/templates/mobilito_app/browse/map.html:38
+#: mobilito_app/templates/mobilito_app/browse/map.html:42
 msgid "Several together: tap to see them"
 msgstr ""
 

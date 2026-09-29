@@ -23,6 +23,8 @@ License along with mobilito.  If not, see
 import math
 from datetime import timedelta
 
+from unittest import mock
+
 from django.core.cache import cache
 from django.test import TestCase, override_settings
 from django.urls import reverse
@@ -31,8 +33,10 @@ from django.utils import timezone
 from authentication.models import MobilitoUser
 from core.geo import make_point
 from core.models import Location, PublicationState
+from mobilito_app import browse
 from mobilito_app.browse import (
     HERE_MAX,
+    LIST_PAGE_SIZE,
     MAX_CELLS_PER_SIDE,
     Viewport,
     mercator,
@@ -408,6 +412,172 @@ class HereTests(BrowseTestCase):
     def test_nothing_left_to_show(self):
         response = self.client.get(reverse("observations_here"))
         self.assertContains(response, "aren’t shown any more")
+
+
+class ListTests(BrowseTestCase):
+    def get(self, **params):
+        return self.client.get(reverse("observations"), params)
+
+    def test_nearest_first_from_a_point(self):
+        far = report_at(47.30, -1.55, description="Far one")
+        near = count_at(47.2101, -1.5501, total_car=4)
+        report_at(
+            47.21,
+            -1.55,
+            state=PublicationState.SANDBOXED,
+            description="Not yet",
+        )
+        response = self.get(lat="47.21", lon="-1.55")
+        items = [entry["item"] for entry in response.context["items"]]
+        self.assertEqual(items, [near, far])
+        self.assertContains(response, "4 counted")
+        self.assertContains(response, "Far one")
+        self.assertNotContains(response, "Not yet")
+        self.assertContains(response, "m away")
+        self.assertContains(response, "km away")
+        self.assertContains(response, "from the middle of the map")
+        self.assertContains(
+            response, reverse("map") + "?lat=47.210000&amp;lon=-1.550000"
+        )
+        self.assertContains(response, "in 15 minutes")
+        self.assertContains(response, "2 in all.")
+
+    def test_newest_first_on_request_or_without_a_point(self):
+        older = report_at(47.21, -1.55)
+        newer = report_at(47.30, -1.55)
+        for params in (
+            {},
+            {"lat": "47.21", "lon": "-1.55", "order": "newest"},
+        ):
+            with self.subTest(params=params):
+                response = self.get(**params)
+                items = [e["item"] for e in response.context["items"]]
+                self.assertEqual(items, [newer, older])
+                self.assertContains(response, "Newest first.")
+                self.assertNotContains(response, "km away")
+
+    def test_near_the_visitor_from_the_network(self):
+        report_at(47.21, -1.55)
+        response = self.client.get(
+            reverse("observations"),
+            HTTP_CF_IPLATITUDE="47.2",
+            HTTP_CF_IPLONGITUDE="-1.5",
+        )
+        self.assertContains(response, "roughly where you are")
+        # A rough position: no false precision.
+        self.assertContains(response, "about 4 km away")
+        self.assertNotContains(response, " m away")
+
+    def test_close_to_a_rough_position_and_short_counts(self):
+        count = count_at(47.2001, -1.5001)
+        ModalShareSession.objects.filter(pk=count.pk).update(
+            finished_at=count.started_at + timedelta(seconds=20)
+        )
+        response = self.client.get(
+            reverse("observations"),
+            HTTP_CF_IPLATITUDE="47.2",
+            HTTP_CF_IPLONGITUDE="-1.5",
+        )
+        self.assertContains(response, "less than 1 km away")
+        self.assertContains(response, "in under a minute")
+
+    def test_only_published_finished_counts(self):
+        count_at(47.21, -1.55, finished=False)
+        count_at(47.21, -1.55, state=PublicationState.PENDING_MODERATION)
+        self.assertContains(self.get(), "Nothing to show yet.")
+
+    def test_newest_first_mixes_kinds_by_their_own_dates(self):
+        report = report_at(47.21, -1.55)
+        count = count_at(47.21, -1.55)
+        ModalShareSession.objects.filter(pk=count.pk).update(
+            started_at=report.created_at - timedelta(days=1),
+            finished_at=report.created_at - timedelta(days=1),
+        )
+        later = count_at(47.21, -1.55)
+        ModalShareSession.objects.filter(pk=later.pk).update(
+            started_at=report.created_at + timedelta(hours=1),
+            finished_at=report.created_at + timedelta(hours=2),
+        )
+        # Counts by when they started, reports by when they were sent.
+        items = [e["item"].pk for e in self.get().context["items"]]
+        self.assertEqual(items, [later.pk, report.pk, count.pk])
+
+    def test_ties_never_repeat_across_pages(self):
+        # Small tables often come back in a stable order anyway; the
+        # view's total ordering (…, kind, -pk) is what guarantees it.
+        first = report_at(47.21, -1.55)
+        for _ in range(LIST_PAGE_SIZE):
+            InfrastructureObservation.objects.create(
+                location=first.location,
+                observer_perspective="ped",
+                publication_state=PUBLISHED,
+            )
+        InfrastructureObservation.objects.update(created_at=first.created_at)
+        seen = []
+        for page in ("1", "2"):
+            response = self.get(lat="47.21", lon="-1.55", page=page)
+            seen += [e["item"].pk for e in response.context["items"]]
+        self.assertEqual(len(seen), LIST_PAGE_SIZE + 1)
+        self.assertEqual(len(set(seen)), LIST_PAGE_SIZE + 1)
+
+    def test_newest_order_survives_paging(self):
+        for i in range(LIST_PAGE_SIZE + 1):
+            report_at(47.21 + i * 0.001, -1.55)
+        response = self.get(lat="47.21", lon="-1.55", order="newest")
+        self.assertContains(response, "order=newest&amp;page=2")
+
+    def test_zoom_goes_back_to_the_map(self):
+        report_at(47.21, -1.55)
+        response = self.get(lat="47.21", lon="-1.55", zoom="15")
+        self.assertContains(
+            response,
+            reverse("map") + "?lat=47.210000&amp;lon=-1.550000&amp;zoom=15",
+        )
+
+    def test_an_item_unpublished_meanwhile_is_left_out(self):
+        report_at(47.21, -1.55, description="Gone")
+        kept = report_at(47.22, -1.55, description="Kept")
+        real = browse.published_reports
+
+        def fewer():
+            return real().filter(pk=kept.pk)
+
+        # The page's rows are read first; one of them is unpublished
+        # before the objects are fetched.
+        rows = list(browse._list_rows(real(), "report", "created_at", None))
+        with mock.patch.object(browse, "published_reports", fewer):
+            items = browse._objects(rows)
+        self.assertEqual([e["item"] for e in items], [kept])
+
+    def test_pages_keep_the_point_and_order(self):
+        for i in range(LIST_PAGE_SIZE + 1):
+            report_at(47.21 + i * 0.001, -1.55)
+        response = self.get(lat="47.21", lon="-1.55")
+        self.assertEqual(len(response.context["items"]), LIST_PAGE_SIZE)
+        self.assertContains(
+            response, "lat=47.210000&amp;lon=-1.550000&amp;page=2"
+        )
+        last = self.get(lat="47.21", lon="-1.55", page="2")
+        self.assertEqual(len(last.context["items"]), 1)
+        # Out-of-range or silly pages show a real page.
+        self.assertEqual(self.get(page="x").status_code, 200)
+        self.assertEqual(self.get(page="999").status_code, 200)
+
+    def test_links_to_detail_and_map(self):
+        report = report_at(47.21, -1.55)
+        response = self.get()
+        self.assertContains(
+            response, reverse("reports_detail", args=[report.pk])
+        )
+        self.assertContains(response, "lat=47.210000&amp;lon=-1.550000")
+
+    def test_empty(self):
+        self.assertContains(self.get(), "Nothing to show yet.")
+
+    def test_map_links_here(self):
+        self.assertContains(
+            self.client.get(reverse("map")), reverse("observations")
+        )
 
 
 class MapPageTests(BrowseTestCase):

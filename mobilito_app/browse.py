@@ -27,6 +27,7 @@ License along with mobilito.  If not, see
 # centre.
 #
 # /map/  full-page map
+# /observations/  the same, as a list (no JavaScript needed)
 # /api/observations.geojson  its pins (and clusters)
 
 import math
@@ -35,17 +36,27 @@ from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.gis.db.models import GeometryField
-from django.contrib.gis.db.models.functions import Transform
+from django.contrib.gis.db.models.functions import Distance, Transform
 from django.contrib.gis.geos import Polygon
 from django.core.cache import cache
-from django.db.models import Avg, Count, FloatField, Func, Min
+from django.core.paginator import Paginator
+from django.db.models import (
+    Avg,
+    CharField,
+    Count,
+    F,
+    FloatField,
+    Func,
+    Min,
+    Value,
+)
 from django.db.models.functions import Cast, Floor
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.http import require_GET
 
-from core.geo import edge_point
+from core.geo import edge_point, make_point
 from core.maps import map_widget_config
 from core.models import PublicationState
 from mobilito_app.models import InfrastructureObservation, ModalShareSession
@@ -425,6 +436,14 @@ def map_page(request):
     )
 
 
+def _describe_count(count):
+    """What a list shows of a count, and tells repeat ones apart."""
+    count.total = sum(count.totals().values())
+    count.minutes = round(
+        (count.finished_at - count.started_at).total_seconds() / 60
+    )
+
+
 def _ids(value: str) -> list[int]:
     """Ids from "1,2,3"; anything else (from a crafted URL) ignored."""
     return [
@@ -452,11 +471,7 @@ def observations_here(request):
         .filter(pk__in=_ids(request.GET.get("report", "")))
     )
     for count in counts:
-        # What tells repeat counts at one spot apart in the list.
-        count.total = sum(count.totals().values())
-        count.minutes = round(
-            (count.finished_at - count.started_at).total_seconds() / 60
-        )
+        _describe_count(count)
     items = sorted(
         [("count", c, c.started_at) for c in counts]
         + [("report", r, r.created_at) for r in reports],
@@ -469,5 +484,109 @@ def observations_here(request):
         {
             "items": [(kind, item) for kind, item, _ in items],
             "cut": (_ids(request.GET.get("total", "")) or [0])[0] > len(items),
+        },
+    )
+
+
+LIST_PAGE_SIZE = 20
+
+
+def _list_rows(queryset, kind, when, point):
+    fields = {
+        "kind": Value(kind, output_field=CharField()),
+        "when": F(when),
+    }
+    if point is not None:
+        fields["distance"] = Distance("location__point", point)
+    return queryset.annotate(**fields).values("kind", "pk", *fields.keys())
+
+
+def _objects(page_rows):
+    """The page's counts and reports, in the page's order."""
+    wanted = {"count": [], "report": []}
+    for row in page_rows:
+        wanted[row["kind"]].append(row["pk"])
+    found = {
+        ("count", c.pk): c
+        for c in published_counts()
+        .select_related("location")
+        .filter(pk__in=wanted["count"])
+    }
+    found.update(
+        {
+            ("report", r.pk): r
+            for r in published_reports()
+            .select_related("location")
+            .filter(pk__in=wanted["report"])
+        }
+    )
+    items = []
+    for row in page_rows:
+        item = found.get((row["kind"], row["pk"]))
+        if item is None:
+            continue  # unpublished since the page was counted
+        if row["kind"] == "count":
+            _describe_count(item)
+        items.append(
+            {
+                "kind": row["kind"],
+                "item": item,
+                "distance": row.get("distance"),
+            }
+        )
+    return items
+
+
+@require_GET
+def observation_list(request):
+    """Published observations, nearest first (§9.3), as a plain list.
+
+    Works without JavaScript, and is how keyboard and screen reader
+    users reach what the map shows. Near ?lat=&lon= (the map's
+    centre, when linked from it), else near the visitor per the
+    network edge, else newest first; ?order=newest asks for newest
+    first anyway.
+    """
+    lat = _float(request.GET.get("lat"), -90, 90)
+    lon = _float(request.GET.get("lon"), -180, 180)
+    zoom = _float(request.GET.get("zoom"), 0, MAX_ZOOM)
+    point, near = None, None
+    # Only parsed values go back into links.
+    keep = {}
+    if lat is not None and lon is not None:
+        point, near = make_point(lat, lon), "map"
+        keep = {"lat": f"{lat:.6f}", "lon": f"{lon:.6f}"}
+        if zoom is not None:
+            keep["zoom"] = str(int(zoom))
+    else:
+        point = edge_point(request)
+        near = "you" if point is not None else None
+    newest = request.GET.get("order") == "newest" or point is None
+    rows = _list_rows(published_counts(), "count", "started_at", point).union(
+        _list_rows(published_reports(), "report", "created_at", point),
+        all=True,
+    )
+    # A total order, so paging never repeats or skips a row.
+    rows = (
+        rows.order_by("-when", "kind", "-pk")
+        if newest
+        else rows.order_by("distance", "-when", "kind", "-pk")
+    )
+    page = Paginator(rows, LIST_PAGE_SIZE).get_page(request.GET.get("page"))
+    order = {"order": "newest"} if newest and point is not None else {}
+    return render(
+        request,
+        "mobilito_app/browse/list.html",
+        {
+            "page": page,
+            "items": _objects(page.object_list),
+            "near": near,
+            "newest": newest,
+            "can_sort_by_distance": point is not None,
+            "query": urlencode({**keep, **order}),
+            "nearest_query": urlencode(keep),
+            "newest_query": urlencode({**keep, "order": "newest"}),
+            # Back to the same view of the map, when there is one.
+            "map_query": urlencode(keep),
         },
     )

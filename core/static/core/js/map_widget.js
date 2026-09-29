@@ -675,7 +675,33 @@ License along with mobilito.  If not, see
       return layer.getLayers ? layer.getLayers().length > 0 : false;
     }
 
+    // A link to the list view follows the map, so the list starts
+    // from what the user was looking at.
+    const listLink = component.ownerDocument.querySelector(
+      '[data-map-list-link="' + component.getAttribute('data-mobilito-map') + '"]'
+    );
+    const listBase = listLink && listLink.getAttribute('href').split('?')[0];
+
+    function updateListLink() {
+      if (!listLink) {
+        return;
+      }
+      const centre = map.getCenter().wrap();
+      listLink.setAttribute(
+        'href',
+        listBase +
+          '?lat=' +
+          centre.lat.toFixed(5) +
+          '&lon=' +
+          centre.lng.toFixed(5) +
+          '&zoom=' +
+          Math.round(map.getZoom())
+      );
+    }
+
     let timer = null;
+    map.on('moveend', updateListLink);
+    updateListLink();
     map.on('moveend', function () {
       clearTimeout(timer);
       timer = setTimeout(loadPins, PIN_RELOAD_DELAY_MS);

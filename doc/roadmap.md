@@ -185,6 +185,7 @@ Public, requires no authentication (§9.3, §21.1).
 - `GET /observations/<id>/` — full detail: photos, text, tags, history, me-too count, share button.
 - GeoJSON API endpoint (`/api/observations.geojson`) used by the map: returns published observations within a bounding box. Cached (e.g. 60 s) to handle multiple simultaneous viewers.
 - Own observations list for authenticated users: `/observations/mine/` — shows all their observations including those not yet published, with their current state in plain language.
+- **Follow-up (list view cost):** `/observations/` orders every published observation by distance (sphere `ST_Distance` over a UNION of both kinds, then OFFSET paging), which can't use the spatial index. Fine for thousands of rows; before ~10⁵, bound it (e.g. per-kind KNN `<->` with a LIMIT of page × size, or an `ST_DWithin` radius with a "nothing nearer" message).
 - **Location time-series view** (§9.1): for a given `Location`, aggregate and chart modal share counts across all sessions linked to it over time. This is listed as a required "must support" capability in Core Features, not a nice-to-have — give it its own view (e.g. on the location/observation detail page) rather than letting it fall out of scope.
 
 ---

@@ -26,6 +26,7 @@ from mobilito_app import browse, counts, reports
 
 urlpatterns = [
     path("map/", browse.map_page, name="map"),
+    path("observations/", browse.observation_list, name="observations"),
     path("map/here/", browse.observations_here, name="observations_here"),
     path(
         "api/observations.geojson",

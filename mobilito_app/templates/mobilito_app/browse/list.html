@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+
+{% block title %}{% trans "What people have seen: list" %} · Mobilito{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 40rem;">
+  <h1 class="h4 mb-1">{% trans "What people have seen: list" %}</h1>
+  {% if page.object_list %}
+  <p class="text-body-secondary mb-2">
+    {% if newest %}
+      {% trans "Newest first." %}
+    {% elif near == "map" %}
+      {% trans "Nearest first, from the middle of the map." %}
+    {% else %}
+      {% trans "Nearest first, from roughly where you are (worked out from your internet connection, not your phone’s location)." %}
+    {% endif %}
+    {% blocktranslate trimmed count total=page.paginator.count %}
+      {{ total }} in all.
+    {% plural %}
+      {{ total }} in all.
+    {% endblocktranslate %}
+  </p>
+  <p class="mb-3">
+    {% if can_sort_by_distance %}
+      {% if newest %}
+        <a href="?{{ nearest_query }}">{% trans "Show nearest first" %}</a>
+      {% else %}
+        <a href="?{{ newest_query }}">{% trans "Show newest first" %}</a>
+      {% endif %}
+      <span aria-hidden="true">·</span>
+    {% endif %}
+    <a href="{% url 'map' %}{% if map_query %}?{{ map_query }}{% endif %}">{% trans "Show them on the map" %}</a>
+  </p>
+
+    {# role: Safari drops list semantics from unstyled lists. #}
+    <ul class="list-unstyled mb-3" role="list">
+      {% for entry in items %}
+        {% with kind=entry.kind item=entry.item %}
+          <li class="card mb-2">
+            {# The whole card opens the observation (stretched link). #}
+            <div class="card-body py-3 position-relative">
+              <h2 class="h6 mb-1">
+                {% if kind == "count" %}
+                  <i class="bi bi-bar-chart-fill text-primary" aria-hidden="true"></i>
+                  <a href="{% url 'counts_detail' item.pk %}" class="stretched-link">{% trans "Count" %}<span aria-hidden="true"> · </span><span class="visually-hidden">, </span>{% include "core/partials/place_name.html" with location=item.location %}</a>
+                {% else %}
+                  <i class="bi bi-signpost-split text-warning" aria-hidden="true"></i>
+                  <a href="{% url 'reports_detail' item.pk %}" class="stretched-link">{% trans "Street feature" %}<span aria-hidden="true"> · </span><span class="visually-hidden">, </span>{% include "core/partials/place_name.html" with location=item.location %}</a>
+                {% endif %}
+              </h2>
+              <p class="small text-body-secondary mb-1">
+                {% if kind == "count" %}{{ item.started_at|date:"DATETIME_FORMAT" }}{% else %}{{ item.created_at|date:"DATETIME_FORMAT" }}{% endif %}
+                {% if entry.distance is not None and not newest %}
+                  <span aria-hidden="true">·</span><span class="visually-hidden">, </span>
+                  {% if near == "you" %}
+                    {# The network's idea of where you are is rough: no metres. #}
+                    {% if entry.distance.km < 1 %}
+                      {% trans "less than 1 km away" %}
+                    {% else %}
+                      {% blocktranslate trimmed with km=entry.distance.km|floatformat:"0g" %}about {{ km }} km away{% endblocktranslate %}
+                    {% endif %}
+                  {% elif entry.distance.m < 999.5 %}
+                    {% blocktranslate trimmed with metres=entry.distance.m|floatformat:0 %}{{ metres }} m away{% endblocktranslate %}
+                  {% else %}
+                    {% blocktranslate trimmed with km=entry.distance.km|floatformat:"1g" %}{{ km }} km away{% endblocktranslate %}
+                  {% endif %}
+                {% endif %}
+              </p>
+              {% if kind == "count" %}
+                <p class="mb-1">
+                  {% blocktranslate trimmed count total=item.total %}
+                    {{ total }} counted
+                  {% plural %}
+                    {{ total }} counted
+                  {% endblocktranslate %}
+                  <span aria-hidden="true">·</span>
+                  {% if item.minutes < 1 %}
+                    {% trans "in under a minute" %}
+                  {% else %}
+                    {% blocktranslate trimmed count minutes=item.minutes %}
+                      in {{ minutes }} minute
+                    {% plural %}
+                      in {{ minutes }} minutes
+                    {% endblocktranslate %}
+                  {% endif %}
+                </p>
+              {% elif item.description %}
+                <p class="mb-1">{{ item.description|truncatewords:25 }}</p>
+              {% endif %}
+              {# Above the stretched link, so it stays its own link. #}
+              <a href="{% url 'map' %}?lat={{ item.location.point.y|floatformat:'6u' }}&amp;lon={{ item.location.point.x|floatformat:'6u' }}&amp;zoom=18"
+                 class="d-inline-block py-2 pe-2 position-relative" style="z-index: 2;">{% trans "On the map" %}<span class="visually-hidden">: {% include "core/partials/place_name.html" with location=item.location %}</span></a>
+            </div>
+          </li>
+        {% endwith %}
+      {% endfor %}
+    </ul>
+
+    {% if page.has_other_pages %}
+      <nav aria-label="{% trans 'Pages' %}">
+        <ul class="pagination justify-content-center">
+          {% if page.has_previous %}
+            <li class="page-item"><a class="page-link" href="?{% if query %}{{ query }}&amp;{% endif %}page={{ page.previous_page_number }}">{% trans "Previous page" %}</a></li>
+          {% endif %}
+          <li class="page-item active" aria-current="page"><span class="page-link">
+            {% blocktranslate trimmed with n=page.number total=page.paginator.num_pages %}Page {{ n }} of {{ total }}{% endblocktranslate %}
+          </span></li>
+          {% if page.has_next %}
+            <li class="page-item"><a class="page-link" href="?{% if query %}{{ query }}&amp;{% endif %}page={{ page.next_page_number }}">{% trans "Next page" %}</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% else %}
+    <p class="lead">{% trans "Nothing to show yet." %}</p>
+    <p><a href="{% url 'home' %}">{% trans "Be the first to count or report something." %}</a></p>
+  {% endif %}
+</div>
+{% endblock %}
