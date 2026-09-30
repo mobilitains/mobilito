@@ -35,7 +35,7 @@ python -m venv venv
 . venv/bin/activate
 pip install -r requirements.txt
 pip install "GDAL==$(gdal-config --version)"
-# Under Python 3.12+, also override flake8-django's pinned astroid<3.0
+# Also override flake8-django's pinned astroid<3.0
 # (see docker/Dockerfile for why) before running flake8 locally:
 pip install "astroid==3.3.11"
 
@@ -120,7 +120,7 @@ Draft → Submitted → Pending validation → Pending moderation → Published 
 
 - Line length: 79 characters (both black and flake8).
 - Flake8 ignores D100–D107 (missing docstrings) and excludes `migrations/`, `settings.py`, and `venv/`.
-- Production target: Ubuntu 22.04, Python 3.10+.
+- Production target: Ubuntu 26.04 LTS (Python 3.14, PostgreSQL 18, PostGIS 3.6, GDAL 3.12). The Docker dev image is built on `ubuntu:26.04` to match.
 - After any model changes: run `makemigrations`, commit the generated migration file.
 - License: AGPL-3.0-or-later (see `LICENSE`). Every new source file must start with the copyright/license header from `copyright-template.txt`, copied verbatim (adjust only the author line if a file has a different author). Generated files (`migrations/`) are exempt.
 

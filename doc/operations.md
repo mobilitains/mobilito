@@ -41,8 +41,8 @@ One Django test, or one module:
 ```
 
 CI (`.github/workflows/django.yml`) runs the migration check,
-`compilemessages` and the Django tests on Python 3.10 and 3.12 for pushes and pull requests to
-`main`. It doesn't run the linters or the JS tests yet.
+`compilemessages` and the Django tests on Python 3.14 for pushes
+and pull requests to `main`. It doesn't run the linters or the JS tests yet.
 
 Project policy (see [CLAUDE.md](../CLAUDE.md)): run the full suite
 before calling a change done, and never commit with failing tests.
@@ -77,6 +77,10 @@ superuser's email and password).
 - `./docker/docker-manage.sh sh` opens a shell in a long-lived dev
   container; `down` stops everything; `-b up` rebuilds the image
   from scratch (after changing `requirements.txt`, say).
+- The database lives in the `docker_postgres18_data` volume. Before
+  the move to PostgreSQL 18 it was `docker_postgres_data`; nothing
+  uses that any more, and `docker volume rm docker_postgres_data`
+  deletes it once you're sure you don't need its contents.
 
 ### Without Docker
 
@@ -247,7 +251,7 @@ decided or built:
   (gunicorn/uwsgi isn't in `requirements.txt`), no systemd units or
   production Docker image. `docker-manage.sh build` builds the *dev*
   image, which runs `runserver`. The production target is Ubuntu
-  22.04 with Python 3.10+.
+  26.04 LTS (Python 3.14, PostgreSQL 18, PostGIS 3.6, GDAL 3.12).
 - **Static files.** `collectstatic` writes to `staticfiles/`, but
   nothing serves it yet (nginx, or add WhiteNoise).
 - **TLS** between Cloudflare and the origin (e.g. a Cloudflare origin

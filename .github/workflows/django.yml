@@ -8,16 +8,16 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     strategy:
       max-parallel: 4
       matrix:
-        # Ubuntu 22.04 LTS (production target) uses Python 3.10.
-        python-version: ["3.10", "3.12"]
+        # Ubuntu 26.04 LTS (production target) uses Python 3.14.
+        python-version: ["3.14"]
 
     services:
       postgres:
-        image: postgis/postgis:15-3.4
+        image: postgis/postgis:18-3.6
         env:
           POSTGRES_DB: mobilito_test
           POSTGRES_USER: mobilito

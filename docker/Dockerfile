@@ -1,10 +1,18 @@
-FROM python:3.12-slim-bookworm
+# Same OS as production (Ubuntu 26.04 LTS), so dev uses the
+# distribution's Python 3.14 and GDAL rather than different builds.
+FROM ubuntu:26.04
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    VIRTUAL_ENV=/opt/venv \
+    PATH=/opt/venv/bin:$PATH
 
 # GeoDjango system dependencies + C++ compiler for GDAL Python bindings
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-dev \
+    python3-venv \
     build-essential \
     binutils \
     libproj-dev \
@@ -12,6 +20,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgdal-dev \
     gettext \
     && rm -rf /var/lib/apt/lists/*
+
+# The system Python is externally managed (PEP 668); install into a
+# venv, which also puts `python` and `pip` on PATH.
+RUN python3 -m venv "$VIRTUAL_ENV"
 
 WORKDIR /app
 

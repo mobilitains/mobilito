@@ -8,7 +8,7 @@ detail is in [doc/operations.md](doc/operations.md).
 ## 1. Decisions
 
 - [ ] **Hosting.** Where does v1-preview run? (Production target
-      in CLAUDE.md: Ubuntu 22.04, Python 3.10+.) A single small VM
+      in CLAUDE.md: Ubuntu 26.04 LTS.) A single small VM
       with PostGIS, gunicorn and nginx is enough for a preview.
       Once you've chosen, I can add the app server, static-file
       serving and systemd/cron config.
@@ -28,8 +28,8 @@ detail is in [doc/operations.md](doc/operations.md).
 
 ## 2. Provisioning
 
-- [ ] **Server/VM** with PostgreSQL 15 + PostGIS 3, GDAL, Python
-      3.10+, gettext.
+- [ ] **Server/VM** with Ubuntu 26.04 LTS: its PostgreSQL 18,
+      PostGIS 3.6, GDAL, Python 3.14 and gettext packages.
 - [ ] **AWS SES**: verify the sending domain, set up SPF/DKIM/DMARC,
       request production access (out of the sandbox, or you can only
       mail verified addresses), create SMTP credentials. Set
@@ -83,7 +83,7 @@ detail is in [doc/operations.md](doc/operations.md).
 
 `./docker/docker-manage.sh test`: lint, about 400 Django tests
 (98% coverage) and about 120 JS tests. CI runs the Django tests on
-Python 3.10 and 3.12.
+Python 3.14.
 
 ### 4.2 Smoke test on the deployed preview (you, ~30 minutes)
 
