@@ -108,9 +108,24 @@ class NewReportTests(ReportTestCase):
             response, f'hx-post="{reverse("reports_location")}"'
         )
         self.assertContains(response, 'name="perspective"', count=3)
+        self.assertContains(
+            response, "Are you reporting this as a pedestrian or a cyclist?"
+        )
+        for label in ("Pedestrian", "Cyclist", "Both"):
+            self.assertContains(response, f"<span>{label}</span>")
         self.assertContains(response, 'name="photos"')
         self.assertContains(response, 'enctype="multipart/form-data"')
         self.assertContains(response, "Confirm the location to see the tags")
+
+    def test_required_steps_say_so_and_give_their_limits(self):
+        response = self.client.get(reverse("reports_new"))
+        self.assertContains(response, "(required)", count=3)
+        self.assertContains(response, "(optional)", count=2)
+        mb = settings.PHOTO_MAX_UPLOAD_BYTES // (1024 * 1024)
+        self.assertContains(response, f"each up to {mb} MB")
+        self.assertContains(response, "data-still-needed")
+        for key in ("", "-location", "-perspective", "-photos"):
+            self.assertContains(response, f'data-msg-todo{key}="')
 
     def test_home_links_here(self):
         response = self.client.get(reverse("home"))
@@ -202,7 +217,9 @@ class SubmitReportTests(ReportTestCase):
     def test_perspective_required(self):
         response = self.submit(perspective="")
         self.assertContains(
-            response, "Choose how you usually pass here", status_code=400
+            response,
+            "Choose whether you are reporting this as a pedestrian",
+            status_code=400,
         )
 
     def test_tag_from_another_country_is_refused(self):

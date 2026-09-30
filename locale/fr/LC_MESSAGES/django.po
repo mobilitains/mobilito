@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobilito\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-30 10:55+0200\n"
+"POT-Creation-Date: 2026-09-30 11:06+0200\n"
 "PO-Revision-Date: 2026-09-30 09:30+0200\n"
 "Last-Translator: Claude (machine draft, needs native review)\n"
 "Language-Team: French\n"
@@ -892,47 +892,49 @@ msgstr "Comptage enregistré."
 #: mobilito_app/forms.py:34
 #: mobilito_app/templates/mobilito_app/counts/new.html:47
 #: mobilito_app/templates/mobilito_app/reports/new.html:45
-#: mobilito_app/templates/mobilito_app/reports/new.html:59
+#: mobilito_app/templates/mobilito_app/reports/new.html:63
 msgid "Tap “Confirm location” first."
 msgstr "Appuyez d'abord sur « Confirmer l'emplacement »."
 
-#: mobilito_app/forms.py:102 mobilito_app/forms.py:103
+#: mobilito_app/forms.py:36
 #: mobilito_app/templates/mobilito_app/reports/new.html:46
-msgid "Choose how you usually pass here."
-msgstr "Indiquez comment vous passez habituellement ici."
+msgid ""
+"Choose whether you are reporting this as a pedestrian, a cyclist, or both."
+msgstr ""
+"Indiquez si vous signalez ceci en tant que piéton, cycliste ou les deux."
 
-#: mobilito_app/forms.py:121 mobilito_app/forms.py:122
+#: mobilito_app/forms.py:125 mobilito_app/forms.py:126
 #: mobilito_app/reports.py:283
 msgid "Choose tags from the list shown."
 msgstr "Choisissez des mots-clés dans la liste affichée."
 
-#: mobilito_app/forms.py:132
+#: mobilito_app/forms.py:136
 msgid "Offensive or inappropriate"
 msgstr "Choquant ou inapproprié"
 
-#: mobilito_app/forms.py:135
+#: mobilito_app/forms.py:139
 msgid "Shows a face, a number plate or personal details"
 msgstr ""
 "Montre un visage, une plaque d'immatriculation ou des informations "
 "personnelles"
 
-#: mobilito_app/forms.py:137
+#: mobilito_app/forms.py:141
 msgid "Advertising or spam"
 msgstr "Publicité ou spam"
 
-#: mobilito_app/forms.py:138
+#: mobilito_app/forms.py:142
 msgid "Nothing to do with streets or travel"
 msgstr "Sans rapport avec la rue ou les déplacements"
 
-#: mobilito_app/forms.py:139
+#: mobilito_app/forms.py:143
 msgid "Something else"
 msgstr "Autre chose"
 
-#: mobilito_app/forms.py:146 mobilito_app/forms.py:147
+#: mobilito_app/forms.py:150 mobilito_app/forms.py:151
 msgid "Choose what the problem is."
 msgstr "Indiquez quel est le problème."
 
-#: mobilito_app/forms.py:157
+#: mobilito_app/forms.py:161
 msgid "Gives someone's personal details"
 msgstr "Donne des informations personnelles sur quelqu'un"
 
@@ -991,10 +993,12 @@ msgid "Open it to decide what to do with it."
 msgstr "Ouvrez-le pour décider quoi en faire."
 
 #: mobilito_app/models.py:38 mobilito_app/models.py:145
+#: mobilito_app/reports.py:117
 msgid "Pedestrian"
 msgstr "Piéton"
 
 #: mobilito_app/models.py:39 mobilito_app/models.py:146
+#: mobilito_app/reports.py:118
 msgid "Cyclist"
 msgstr "Cycliste"
 
@@ -1070,14 +1074,6 @@ msgstr "Autre"
 #: mobilito_app/templates/mobilito_app/moderation/flag_form.html:33
 msgid "Thank you. We'll take a look at what you reported."
 msgstr "Merci. Nous allons examiner ce que vous avez signalé."
-
-#: mobilito_app/reports.py:117
-msgid "On foot"
-msgstr "À pied"
-
-#: mobilito_app/reports.py:118
-msgid "By bike"
-msgstr "À vélo"
 
 #: mobilito_app/reports.py:189
 msgid ""
@@ -1343,7 +1339,7 @@ msgstr "Compter ce qui passe"
 #: mobilito_app/templates/mobilito_app/browse/mine.html:115
 #: mobilito_app/templates/mobilito_app/home.html:55
 #: mobilito_app/templates/mobilito_app/reports/new.html:26
-#: mobilito_app/templates/mobilito_app/reports/new.html:68
+#: mobilito_app/templates/mobilito_app/reports/new.html:72
 msgid "Report a street feature"
 msgstr "Partager un aménagement"
 
@@ -1951,6 +1947,23 @@ msgid "Remove photo %%(n)s"
 msgstr "Retirer la photo %%(n)s"
 
 #: mobilito_app/templates/mobilito_app/reports/new.html:48
+#, python-format
+msgid "To send, you still need to: %%(items)s."
+msgstr "Pour envoyer, il reste à : %%(items)s."
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:49
+msgid "confirm the location (step 1)"
+msgstr "confirmer l'emplacement (étape 1)"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:50
+msgid "choose pedestrian, cyclist or both (step 2)"
+msgstr "choisir piéton, cycliste ou les deux (étape 2)"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:51
+msgid "add a photo (step 3)"
+msgstr "ajouter une photo (étape 3)"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:52
 msgid ""
 "Sending your photos… This can take a minute on mobile data. Keep this page "
 "open."
@@ -1958,7 +1971,7 @@ msgstr ""
 "Envoi de vos photos… Cela peut prendre une minute en données mobiles. Gardez "
 "cette page ouverte."
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:49
+#: mobilito_app/templates/mobilito_app/reports/new.html:53
 msgid ""
 "Still sending. If your connection dropped, open the report form again: your "
 "text and choices are kept, but photos need adding again."
@@ -1967,18 +1980,18 @@ msgstr ""
 "votre texte et vos choix sont gardés, mais il faudra rajouter les photos."
 
 #. Translators: non-breaking space before the colon in French.
-#: mobilito_app/templates/mobilito_app/reports/new.html:56
+#: mobilito_app/templates/mobilito_app/reports/new.html:60
 msgid "Almost there:"
 msgstr "Presque fini :"
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:63
+#: mobilito_app/templates/mobilito_app/reports/new.html:67
 msgid ""
 "Please add your photos again: we can't keep them when something needs fixing."
 msgstr ""
 "Merci de rajouter vos photos : nous ne pouvons pas les garder quand quelque "
 "chose est à corriger."
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:70
+#: mobilito_app/templates/mobilito_app/reports/new.html:74
 msgid ""
 "Something that helps you get around, or something in the way: both are "
 "useful."
@@ -1986,55 +1999,61 @@ msgstr ""
 "Quelque chose qui vous aide à vous déplacer, ou quelque chose qui gêne : les "
 "deux sont utiles."
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:73
+#: mobilito_app/templates/mobilito_app/reports/new.html:78
 msgid "1. Where is it?"
 msgstr "1. Où est-ce ?"
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:78
-msgid "2. How do you usually pass here?"
-msgstr "2. Comment passez-vous habituellement ici ?"
+#: mobilito_app/templates/mobilito_app/reports/new.html:79
+#: mobilito_app/templates/mobilito_app/reports/new.html:87
+#: mobilito_app/templates/mobilito_app/reports/new.html:106
+msgid "(required)"
+msgstr "(obligatoire)"
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:94
+#: mobilito_app/templates/mobilito_app/reports/new.html:86
+msgid "2. Are you reporting this as a pedestrian or a cyclist?"
+msgstr "2. Vous faites ce signalement en tant que piéton ou cycliste ?"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:105
 msgid "3. Photos"
 msgstr "3. Photos"
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:96
+#: mobilito_app/templates/mobilito_app/reports/new.html:109
 #, python-format
 msgid ""
-"At least one, up to %(n)s: ideally one wide shot so people recognise the "
-"place, and one close-up of the detail. Avoid faces and number plates if you "
-"can."
+"At least one, up to %(n)s, each up to %(mb)s MB. Ideally one wide shot so "
+"people recognise the place, and one close-up of the detail. Avoid faces and "
+"number plates if you can."
 msgstr ""
-"Au moins une, jusqu'à %(n)s : idéalement une vue d'ensemble pour qu'on "
-"reconnaisse l'endroit, et un gros plan sur le détail. Évitez si possible les "
-"visages et les plaques d'immatriculation."
+"Au moins une, jusqu'à %(n)s, de %(mb)s Mo maximum chacune. Idéalement une "
+"vue d'ensemble pour qu'on reconnaisse l'endroit, et un gros plan sur le "
+"détail. Évitez si possible les visages et les plaques d'immatriculation."
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:103
+#: mobilito_app/templates/mobilito_app/reports/new.html:116
 msgid "Add your photos again here."
 msgstr "Rajoutez vos photos ici."
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:109
+#: mobilito_app/templates/mobilito_app/reports/new.html:122
 msgid "Add photos"
 msgstr "Ajouter des photos"
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:118
+#: mobilito_app/templates/mobilito_app/reports/new.html:131
 msgid "4. What's here?"
 msgstr "4. Qu'y a-t-il ici ?"
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:119
-#: mobilito_app/templates/mobilito_app/reports/new.html:130
+#: mobilito_app/templates/mobilito_app/reports/new.html:132
+#: mobilito_app/templates/mobilito_app/reports/new.html:143
 msgid "(optional)"
 msgstr "(facultatif)"
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:123
+#: mobilito_app/templates/mobilito_app/reports/new.html:136
 msgid "What helps or gets in the way, and for whom. It helps a lot."
 msgstr "Ce qui aide ou ce qui gêne, et pour qui. Cela aide beaucoup."
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:129
+#: mobilito_app/templates/mobilito_app/reports/new.html:142
 msgid "5. What kind of thing is it?"
 msgstr "5. De quoi s'agit-il ?"
 
-#: mobilito_app/templates/mobilito_app/reports/new.html:140
+#: mobilito_app/templates/mobilito_app/reports/new.html:156
 msgid "Send report"
 msgstr "Envoyer le signalement"
 

@@ -114,8 +114,8 @@ def _map(request, confirmed=None):
 
 # (value, label, icons)
 PERSPECTIVES = [
-    ("ped", gettext_lazy("On foot"), ["bi-person-walking"]),
-    ("bike", gettext_lazy("By bike"), ["bi-bicycle"]),
+    ("ped", gettext_lazy("Pedestrian"), ["bi-person-walking"]),
+    ("bike", gettext_lazy("Cyclist"), ["bi-bicycle"]),
     ("both", gettext_lazy("Both"), ["bi-person-walking", "bi-bicycle"]),
 ]
 

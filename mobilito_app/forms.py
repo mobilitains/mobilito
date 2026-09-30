@@ -32,6 +32,10 @@ from mobilito_app.models import (
 )
 
 CONFIRM_FIRST = _("Tap “Confirm location” first.")
+CHOOSE_PERSPECTIVE = _(
+    "Choose whether you are reporting this as a pedestrian, a cyclist, "
+    "or both."
+)
 
 
 class CountStartForm(HoneypotFormMixin, forms.Form):
@@ -99,8 +103,8 @@ class ReportForm(HoneypotFormMixin, forms.Form):
     perspective = forms.ChoiceField(
         choices=ObserverPerspective.choices,
         error_messages={
-            "required": _("Choose how you usually pass here."),
-            "invalid_choice": _("Choose how you usually pass here."),
+            "required": CHOOSE_PERSPECTIVE,
+            "invalid_choice": CHOOSE_PERSPECTIVE,
         },
     )
     description = forms.CharField(

@@ -33,6 +33,12 @@ License along with mobilito.  If not, see
  *   doesn't lose them. Photos can't be kept that way. The draft is
  *   cleared by the page shown once the report is saved
  *   ([data-report-sent]), not at submit: the upload can fail.
+ * - Readiness: the send button looks inactive (outlined) until the
+ *   location, perspective and a photo are given, with a note saying
+ *   what's still needed. It stays tappable, and isn't announced as
+ *   disabled: a tap says where to go next. The note is the button's
+ *   description, so screen readers hear it there, not on every
+ *   change.
  *
  * Dependencies are passed in (env) so Jest can test it.
  */
@@ -171,6 +177,7 @@ License along with mobilito.  If not, see
           syncInput();
           render();
           showStatus([]);
+          refresh();
           // Keep keyboard focus nearby: the next photo's remove
           // button, else the previous one, else the file input
           // (visually hidden, its label shows the focus).
@@ -293,17 +300,6 @@ License along with mobilito.  If not, see
       applyTags(readDraft());
     });
 
-    form.addEventListener('change', function (event) {
-      if (event.target.name === 'perspective') {
-        need('perspective', '');
-      }
-    });
-    doc.addEventListener('htmx:afterSwap', function () {
-      if (form.querySelector('[name="lat"]')) {
-        need('location', '');
-      }
-    });
-
     function missing() {
       // Checked here so nobody waits for an upload to learn this;
       // the server checks again.
@@ -322,7 +318,53 @@ License along with mobilito.  If not, see
 
     const button = form.querySelector('[data-report-submit]');
     const sending = form.querySelector('[data-sending]');
+    const todo = form.querySelector('[data-still-needed]');
     let stalled = null;
+
+    function refresh() {
+      const gaps = missing();
+      const gapped = gaps.map(function (gap) {
+        return gap[0];
+      });
+      // Clear a "missing" note once that part is done.
+      ['location', 'perspective', 'photos'].forEach(function (section) {
+        if (gapped.indexOf(section) === -1) {
+          need(section, '');
+        }
+      });
+      if (button) {
+        button.classList.toggle('btn-success', !gaps.length);
+        button.classList.toggle('btn-outline-success', !!gaps.length);
+      }
+      if (todo) {
+        const text = gaps.length
+          ? msg('todo').replace(
+              '%(items)s',
+              gapped
+                .map(function (section) {
+                  return msg('todo-' + section);
+                })
+                .join(', ')
+            )
+          : '';
+        if (todo.textContent !== text) {
+          todo.textContent = text;
+        }
+      }
+    }
+
+    refresh();
+    form.addEventListener('change', refresh);
+    // Confirming the location swaps inputs in; moving the map
+    // afterwards takes them out again.
+    const confirmed = form.querySelector('[data-map-confirmed]');
+    const view = doc.defaultView;
+    if (confirmed && view && view.MutationObserver) {
+      new view.MutationObserver(refresh).observe(confirmed, {
+        childList: true,
+        subtree: true,
+      });
+    }
 
     form.addEventListener('submit', function (event) {
       ['location', 'perspective', 'photos'].forEach(function (section) {
@@ -383,6 +425,7 @@ License along with mobilito.  If not, see
       files: function () {
         return files;
       },
+      refresh: refresh,
     };
   }
 

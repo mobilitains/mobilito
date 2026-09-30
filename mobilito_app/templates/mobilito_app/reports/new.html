@@ -43,8 +43,12 @@ License along with mobilito.  If not, see
         data-msg-photo-alt="{% trans 'Photo %(n)s' %}"
         data-msg-remove="{% trans 'Remove photo %(n)s' %}"
         data-msg-need-location="{% trans 'Tap “Confirm location” first.' %}"
-        data-msg-need-perspective="{% trans 'Choose how you usually pass here.' %}"
+        data-msg-need-perspective="{% trans 'Choose whether you are reporting this as a pedestrian, a cyclist, or both.' %}"
         data-msg-need-photo="{% trans 'Add at least one photo.' %}"
+        data-msg-todo="{% trans 'To send, you still need to: %(items)s.' %}"
+        data-msg-todo-location="{% trans 'confirm the location (step 1)' %}"
+        data-msg-todo-perspective="{% trans 'choose pedestrian, cyclist or both (step 2)' %}"
+        data-msg-todo-photos="{% trans 'add a photo (step 3)' %}"
         data-msg-sending="{% trans 'Sending your photos… This can take a minute on mobile data. Keep this page open.' %}"
         data-msg-stalled="{% trans 'Still sending. If your connection dropped, open the report form again: your text and choices are kept, but photos need adding again.' %}">
     {% csrf_token %}
@@ -70,12 +74,18 @@ License along with mobilito.  If not, see
       {% trans "Something that helps you get around, or something in the way: both are useful." %}
     </p>
 
-    <h2 class="h5 mb-2">{% trans "1. Where is it?" %}</h2>
+    <h2 class="h5 mb-2">
+      {% trans "1. Where is it?" %}
+      <span class="fw-normal text-body-secondary small">{% trans "(required)" %}</span>
+    </h2>
     {% include "core/includes/map_widget.html" with map=map %}
     <p class="small text-danger mb-0" data-need="location" role="status"></p>
 
     <fieldset class="mt-4" data-section="perspective">
-      <legend class="h5">{% trans "2. How do you usually pass here?" %}</legend>
+      <legend class="h5">
+        {% trans "2. Are you reporting this as a pedestrian or a cyclist?" %}
+        <span class="fw-normal text-body-secondary small">{% trans "(required)" %}</span>
+      </legend>
       <div class="mobilito-choice-grid">
         {% for value, label, icons in perspectives %}
           <input type="radio" class="btn-check" name="perspective"
@@ -91,10 +101,13 @@ License along with mobilito.  If not, see
     </fieldset>
 
     <fieldset class="mt-4" data-section="photos">
-      <legend class="h5">{% trans "3. Photos" %}</legend>
+      <legend class="h5">
+        {% trans "3. Photos" %}
+        <span class="fw-normal text-body-secondary small">{% trans "(required)" %}</span>
+      </legend>
       <p class="form-text mt-0">
-        {% blocktranslate trimmed with n=max_photos %}
-          At least one, up to {{ n }}: ideally one wide shot so people
+        {% blocktranslate trimmed with n=max_photos mb=max_photo_mb %}
+          At least one, up to {{ n }}, each up to {{ mb }} MB. Ideally one wide shot so people
           recognise the place, and one close-up of the detail. Avoid
           faces and number plates if you can.
         {% endblocktranslate %}
@@ -135,7 +148,10 @@ License along with mobilito.  If not, see
     </fieldset>
 
     {% include "includes/honeypot.html" with field=form.hp_field %}
-    <button type="submit" class="btn btn-success btn-lg w-100 mt-4" data-report-submit>
+    <p class="small text-body-secondary mt-4 mb-2" id="report-still-needed"
+       data-still-needed></p>
+    <button type="submit" class="btn btn-success btn-lg w-100"
+            aria-describedby="report-still-needed" data-report-submit>
       <i class="bi bi-send" aria-hidden="true"></i>
       {% trans "Send report" %}
     </button>

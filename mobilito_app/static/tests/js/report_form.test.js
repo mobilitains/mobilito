@@ -37,7 +37,9 @@ function build({
           data-msg-remove="REMOVE %(n)s" data-msg-sending="SENDING"
           data-msg-need-location="NEED LOCATION"
           data-msg-need-perspective="NEED PERSPECTIVE"
-          data-msg-need-photo="NEED PHOTO" data-msg-stalled="STALLED">
+          data-msg-need-photo="NEED PHOTO" data-msg-stalled="STALLED"
+          data-msg-todo="TODO %(items)s" data-msg-todo-location="LOC"
+          data-msg-todo-perspective="PERSP" data-msg-todo-photos="PHOTOS">
       ${errors ? '<div data-report-errors tabindex="-1">ERR</div>' : ''}
       <button type="button" data-map-confirm>Confirm</button>
       <div data-map-confirmed>
@@ -59,6 +61,7 @@ function build({
         .join('')}
       <textarea name="description">${description}</textarea>
       <div id="report-tags"></div>
+      <p data-still-needed></p>
       <button type="submit" data-report-submit></button>
       <p data-sending></p>
     </form>`;
@@ -100,7 +103,8 @@ function choose(form, ...files) {
     writable: true,
     configurable: true,
   });
-  input.dispatchEvent(new Event('change'));
+  // Like a real pick, the change bubbles up to the form.
+  input.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
 const photo = (name, size = 100) => ({ name, size, lastModified: 1 });
@@ -250,6 +254,105 @@ describe('submit', () => {
     window.dispatchEvent(new Event('pageshow'));
     expect(form.querySelector('[data-report-submit]').disabled).toBe(false);
     expect(text(form, '[data-sending]')).toBe('');
+  });
+});
+
+describe('readiness', () => {
+  // Outlined while something is missing, solid once ready.
+  const ready = (form) => {
+    const classes = form.querySelector('[data-report-submit]').classList;
+    expect(classes.contains('btn-success')).not.toBe(
+      classes.contains('btn-outline-success')
+    );
+    return classes.contains('btn-success')
+      ? 'btn-success'
+      : 'btn-outline-success';
+  };
+
+  test('the button looks inactive and says what is still needed', () => {
+    const form = build({ confirmed: false });
+    initReportForm(form, makeEnv());
+    expect(ready(form)).toBe('btn-outline-success');
+    expect(text(form, '[data-still-needed]')).toBe('TODO LOC, PERSP, PHOTOS');
+    choose(form, photo('a.jpg'));
+    expect(text(form, '[data-still-needed]')).toBe('TODO LOC, PERSP');
+  });
+
+  test('becomes active once everything is given', () => {
+    const form = build();
+    initReportForm(form, makeEnv());
+    choose(form, photo('a.jpg'));
+    const radio = form.querySelector('[value="both"]');
+    radio.checked = true;
+    radio.dispatchEvent(new Event('change', { bubbles: true }));
+    expect(ready(form)).toBe('btn-success');
+    expect(text(form, '[data-still-needed]')).toBe('');
+    expect(submit(form).defaultPrevented).toBe(false);
+  });
+
+  test('confirming the location counts', async () => {
+    const form = build({ confirmed: false, perspective: 'ped' });
+    initReportForm(form, makeEnv());
+    choose(form, photo('a.jpg'));
+    expect(text(form, '[data-still-needed]')).toBe('TODO LOC');
+    form.querySelector('[data-map-confirmed]').innerHTML =
+      '<input type="hidden" name="lat" value="1">';
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(ready(form)).toBe('btn-success');
+    expect(text(form, '[data-still-needed]')).toBe('');
+  });
+
+  test('a restored draft counts', () => {
+    const form = build();
+    const storage = memoryStorage({
+      [DRAFT_KEY]: JSON.stringify({ perspective: 'ped' }),
+    });
+    initReportForm(form, makeEnv(storage));
+    expect(text(form, '[data-still-needed]')).toBe('TODO PHOTOS');
+  });
+
+  test('removing the last photo makes it inactive again', () => {
+    const form = build({ perspective: 'ped' });
+    initReportForm(form, makeEnv());
+    choose(form, photo('a.jpg'));
+    expect(ready(form)).toBe('btn-success');
+    form.querySelector('.mobilito-photo-preview button').click();
+    expect(ready(form)).toBe('btn-outline-success');
+  });
+
+  test('moving the map after confirming makes it inactive again', async () => {
+    const form = build({ perspective: 'ped' });
+    initReportForm(form, makeEnv());
+    choose(form, photo('a.jpg'));
+    expect(ready(form)).toBe('btn-success');
+    form.querySelector('[data-map-confirmed]').innerHTML = '';
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(ready(form)).toBe('btn-outline-success');
+    expect(text(form, '[data-still-needed]')).toBe('TODO LOC');
+  });
+
+  test('only the parts done lose their "missing" note', async () => {
+    const form = build({ confirmed: false });
+    initReportForm(form, makeEnv());
+    submit(form);
+    const radio = form.querySelector('[value="ped"]');
+    radio.checked = true;
+    radio.dispatchEvent(new Event('change', { bubbles: true }));
+    expect(text(form, '[data-need="perspective"]')).toBe('');
+    expect(text(form, '[data-need="photos"]')).toBe('NEED PHOTO');
+    expect(text(form, '[data-need="location"]')).toBe('NEED LOCATION');
+    form.querySelector('[data-map-confirmed]').innerHTML =
+      '<input type="hidden" name="lat" value="1">';
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(text(form, '[data-need="location"]')).toBe('');
+    expect(text(form, '[data-need="photos"]')).toBe('NEED PHOTO');
+  });
+
+  test('an inactive button still explains itself when tapped', () => {
+    const form = build({ perspective: 'ped' });
+    initReportForm(form, makeEnv());
+    expect(submit(form).defaultPrevented).toBe(true);
+    expect(text(form, '[data-need="photos"]')).toBe('NEED PHOTO');
   });
 });
 
