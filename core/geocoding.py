@@ -38,6 +38,7 @@ from dataclasses import dataclass
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.module_loading import import_string
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger(__name__)
 
@@ -92,6 +93,9 @@ class NominatimGeocoder:
 
     # Results may be stored (ODbL, with attribution).
     cacheable = True
+    # The attribution, shown in the site footer and on /credits/.
+    credit = _("© OpenStreetMap contributors")
+    credit_url = "https://www.openstreetmap.org/copyright"
 
     THROTTLE_KEY = "geocoding:nominatim:throttle"
 
@@ -167,6 +171,8 @@ class MapboxGeocoder:
     """
 
     URL = "https://api.mapbox.com/search/geocode/v6/reverse"
+    credit = "© Mapbox © OpenStreetMap"
+    credit_url = "https://www.mapbox.com/about/maps/"
 
     @property
     def cacheable(self) -> bool:

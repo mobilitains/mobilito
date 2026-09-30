@@ -1,4 +1,4 @@
-"""
+{% comment %}
 Copyright 2024  Francais pour une Meilleure Mobilité
 
 Author(s): Jeff Abrahamson <jeff@p27.eu>.
@@ -18,4 +18,17 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public
 License along with mobilito.  If not, see
 <http://www.gnu.org/licenses/>.
-"""
+{% endcomment %}
+{% load i18n %}
+{% comment %}
+Site footer (see the site_footer tag): credit for the addresses we
+show, which come from OpenStreetMap (ODbL), and the source-code
+offer the AGPL asks of a network service.
+{% endcomment %}
+<footer class="container small text-body-secondary py-2 border-top">
+  <ul class="list-unstyled d-flex flex-wrap column-gap-3 m-0">
+    <li>{% trans "Addresses:" %} <a href="{{ address_credit_url }}" class="d-inline-block py-2">{{ address_credit }}</a></li>
+    <li><a href="{% url 'credits' %}" class="d-inline-block py-2">{% trans "Credits" %}</a></li>
+    <li><a href="{{ source_code_url }}" class="d-inline-block py-2">{% trans "Source code" %}</a></li>
+  </ul>
+</footer>

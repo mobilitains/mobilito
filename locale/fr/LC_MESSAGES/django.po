@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobilito\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-30 09:32+0200\n"
+"POT-Creation-Date: 2026-09-30 10:55+0200\n"
 "PO-Revision-Date: 2026-09-30 09:30+0200\n"
 "Last-Translator: Claude (machine draft, needs native review)\n"
 "Language-Team: French\n"
@@ -417,6 +417,10 @@ msgstr "Déconnexion effectuée."
 msgid "Leave this field empty"
 msgstr "Laissez ce champ vide"
 
+#: core/geocoding.py:97
+msgid "© OpenStreetMap contributors"
+msgstr "© les contributeurs d’OpenStreetMap"
+
 #: core/images.py:100
 #, python-format
 msgid "“%(name)s” isn't a photo we can read (JPEG or PNG work best)."
@@ -445,6 +449,14 @@ msgstr ""
 #: core/lifecycle.py:124
 msgid "Not a moderation outcome."
 msgstr "Ce n'est pas une décision de modération."
+
+#: core/maps.py:45
+msgid ""
+"&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> "
+"contributors"
+msgstr ""
+"&copy; les contributeurs d’<a href=\"https://www.openstreetmap.org/"
+"copyright\">OpenStreetMap</a>"
 
 #: core/models.py:38
 msgid "Draft"
@@ -485,6 +497,69 @@ msgstr "Validée"
 #: core/models.py:58
 msgid "Flagged for review"
 msgstr "Alerte à examiner"
+
+#: core/templates/core/credits.html:25 core/templates/core/credits.html:28
+#: templates/includes/footer.html:31
+msgid "Credits"
+msgstr "Crédits"
+
+#: core/templates/core/credits.html:30
+msgid "Maps and addresses"
+msgstr "Cartes et adresses"
+
+#: core/templates/core/credits.html:32
+msgid "Map:"
+msgstr "Carte :"
+
+#: core/templates/core/credits.html:33 templates/includes/footer.html:30
+msgid "Addresses:"
+msgstr "Adresses :"
+
+#: core/templates/core/credits.html:36
+msgid ""
+"OpenStreetMap is a map of the world made by volunteers. Its data is "
+"available under the <a href=\"https://opendatacommons.org/licenses/odbl/"
+"\">Open Database License</a>."
+msgstr ""
+"OpenStreetMap est une carte du monde faite par des bénévoles. Ses données "
+"sont disponibles sous la <a href=\"https://opendatacommons.org/licenses/odbl/"
+"\">Licence ouverte de base de données</a> (ODbL)."
+
+#: core/templates/core/credits.html:45
+msgid ""
+"Mobilito’s traffic counts grew out of a first prototype by Benjamin "
+"Mourgues, whose field trials shaped the counting screen."
+msgstr ""
+"Les comptages de Mobilito sont nés d’un premier prototype de Benjamin "
+"Mourgues, dont les essais sur le terrain ont façonné l’écran de comptage."
+
+#: core/templates/core/credits.html:51
+msgid ""
+"Mobilito is free software: you may use, study, share and improve it under "
+"the <a href=\"https://www.gnu.org/licenses/agpl-3.0.html\">GNU Affero "
+"General Public License</a>, version 3 or later. © Français pour une "
+"Meilleure Mobilité."
+msgstr ""
+"Mobilito est un logiciel libre : vous pouvez l’utiliser, l’étudier, le "
+"partager et l’améliorer selon les termes de la <a href=\"https://www.gnu.org/"
+"licenses/agpl-3.0.html\">Licence publique générale GNU Affero</a>, version 3 "
+"ou ultérieure. © Français pour une Meilleure Mobilité."
+
+#: core/templates/core/credits.html:57
+msgid "Get the source code."
+msgstr "Obtenir le code source."
+
+#: core/templates/core/credits.html:60
+msgid ""
+"Built with <a href=\"https://www.djangoproject.com/\">Django</a>, <a "
+"href=\"https://leafletjs.com/\">Leaflet</a>, <a href=\"https://"
+"getbootstrap.com/\">Bootstrap</a>, <a href=\"https://icons.getbootstrap.com/"
+"\">Bootstrap Icons</a> and <a href=\"https://htmx.org/\">htmx</a>."
+msgstr ""
+"Réalisé avec <a href=\"https://www.djangoproject.com/\">Django</a>, <a "
+"href=\"https://leafletjs.com/\">Leaflet</a>, <a href=\"https://"
+"getbootstrap.com/\">Bootstrap</a>, <a href=\"https://icons.getbootstrap.com/"
+"\">Bootstrap Icons</a> et <a href=\"https://htmx.org/\">htmx</a>."
 
 #: core/templates/core/includes/map_widget.html:45
 msgid "Drag the map until the pink target is on the spot."
@@ -1272,11 +1347,11 @@ msgstr "Compter ce qui passe"
 msgid "Report a street feature"
 msgstr "Partager un aménagement"
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:31
+#: mobilito_app/templates/mobilito_app/counts/count.html:32
 msgid "Counting"
 msgstr "Comptage"
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:44
+#: mobilito_app/templates/mobilito_app/counts/count.html:47
 msgid ""
 "No connection: your counts are saved on this phone and will be sent when the "
 "connection comes back."
@@ -1284,21 +1359,21 @@ msgstr ""
 "Pas de connexion : ce que vous comptez est gardé sur ce téléphone et sera "
 "envoyé quand la connexion reviendra."
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:45
+#: mobilito_app/templates/mobilito_app/counts/count.html:48
 msgid "Sending your counts…"
 msgstr "Envoi de ce que vous avez compté…"
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:46
+#: mobilito_app/templates/mobilito_app/counts/count.html:49
 msgid "Sending your count…"
 msgstr "Envoi de votre comptage…"
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:47
+#: mobilito_app/templates/mobilito_app/counts/count.html:50
 msgid "Waiting for a connection to send your count. Keep this page open."
 msgstr ""
 "En attente d'une connexion pour envoyer votre comptage. Gardez cette page "
 "ouverte."
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:48
+#: mobilito_app/templates/mobilito_app/counts/count.html:51
 msgid ""
 "Something went wrong sending your count. It is saved on this phone, and we "
 "will keep trying."
@@ -1306,59 +1381,59 @@ msgstr ""
 "Un problème est survenu à l'envoi de votre comptage. Il est gardé sur ce "
 "téléphone et nous continuerons d'essayer."
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:49
+#: mobilito_app/templates/mobilito_app/counts/count.html:52
 msgid "No connection: the count can’t be discarded yet. Try again in a moment."
 msgstr ""
 "Pas de connexion : le comptage ne peut pas encore être abandonné. Réessayez "
 "dans un instant."
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:50
+#: mobilito_app/templates/mobilito_app/counts/count.html:53
 msgid "The count couldn’t be discarded. Try again."
 msgstr "Le comptage n'a pas pu être abandonné. Réessayez."
 
 #. Translators: ends a modal share count.
-#: mobilito_app/templates/mobilito_app/counts/count.html:56
+#: mobilito_app/templates/mobilito_app/counts/count.html:59
 msgid "Finish"
 msgstr "Terminer"
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:59
+#: mobilito_app/templates/mobilito_app/counts/count.html:62
 msgid "Time counted"
 msgstr "Durée du comptage"
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:66
-#: mobilito_app/templates/mobilito_app/counts/count.html:67
+#: mobilito_app/templates/mobilito_app/counts/count.html:69
+#: mobilito_app/templates/mobilito_app/counts/count.html:70
 #: mobilito_app/templates/mobilito_app/counts/what_counts.html:42
 msgid "What counts as what?"
 msgstr "Comment classer ce qui passe ?"
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:90
+#: mobilito_app/templates/mobilito_app/counts/count.html:93
 msgid "One tap for each thing that goes by, not for each person in it."
 msgstr "Un appui par chose qui passe, pas par personne à bord."
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:97
+#: mobilito_app/templates/mobilito_app/counts/count.html:100
 msgid "Back to counting"
 msgstr "Revenir au comptage"
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:109
+#: mobilito_app/templates/mobilito_app/counts/count.html:112
 msgid "That was a short count. Keep counting?"
 msgstr "C'était un comptage court. Continuer à compter ?"
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:112
+#: mobilito_app/templates/mobilito_app/counts/count.html:115
 #, python-format
 msgid "Counts of at least %(minutes)s minute are more useful."
 msgid_plural "Counts of at least %(minutes)s minutes are more useful."
 msgstr[0] "Les comptages d'au moins %(minutes)s minute sont plus utiles."
 msgstr[1] "Les comptages d'au moins %(minutes)s minutes sont plus utiles."
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:126
+#: mobilito_app/templates/mobilito_app/counts/count.html:129
 msgid "Discard it"
 msgstr "L'abandonner"
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:129
+#: mobilito_app/templates/mobilito_app/counts/count.html:132
 msgid "Save it anyway"
 msgstr "L'enregistrer quand même"
 
-#: mobilito_app/templates/mobilito_app/counts/count.html:132
+#: mobilito_app/templates/mobilito_app/counts/count.html:135
 msgid "Keep counting"
 msgstr "Continuer à compter"
 
@@ -2009,6 +2084,10 @@ msgstr ""
 #: templates/admin/mobilito_app/observation_change_form.html:44
 msgid "Decision:"
 msgstr "Décision :"
+
+#: templates/includes/footer.html:32
+msgid "Source code"
+msgstr "Code source"
 
 #: templates/includes/nav.html:38
 msgid "Change language"

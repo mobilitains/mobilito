@@ -24,9 +24,11 @@ License along with mobilito.  If not, see
 /* Browse map (roadmap Phase 7). */
 
 .mobilito-browse-map .mobilito-map {
-  /* A browse page has nothing below the map to scroll to. */
+  /* Fill the screen without scrolling: 22rem covers the nav,
+     heading, intro and legend above the map and the footer (two
+     rows on a phone) below it. Retune if any of those grow. */
   height: 65vh;
-  height: calc(100svh - 16rem);
+  height: calc(100svh - 22rem);
   min-height: 18rem;
 }
 

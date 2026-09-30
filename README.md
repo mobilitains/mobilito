@@ -58,6 +58,17 @@ Issues and pull requests are welcome. Please read
 (tests, code style, licence headers, commits) for people and AI
 assistants alike.
 
+## Acknowledgements
+
+The modal share count grew out of a proof of concept by Benjamin
+Mourgues in [transport-nantes/tn_web](https://github.com/transport-nantes/tn_web).
+Its field trials shaped the counting screen and much of what
+Mobilito does.
+
+Maps and suggested addresses come from
+[OpenStreetMap](https://www.openstreetmap.org/copyright) and its
+contributors; see the app's credits page (`/credits/`) for more.
+
 ## Licence
 
 [GNU Affero General Public License v3.0 or later](LICENSE).

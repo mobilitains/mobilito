@@ -638,6 +638,69 @@ class SharedCacheCheckTests(TestCase):
         self.assertEqual(shared_cache_check(None), [])
 
 
+class CreditsTests(TestCase):
+    def test_footer_credits_openstreetmap_for_addresses(self):
+        response = self.client.get(reverse("home"))
+        self.assertContains(
+            response, 'href="https://www.openstreetmap.org/copyright"'
+        )
+        self.assertContains(response, "OpenStreetMap contributors")
+        self.assertContains(response, f'href="{reverse("credits")}"')
+        self.assertContains(response, f'href="{settings.SOURCE_CODE_URL}"')
+
+    @override_settings(GEOCODING_BACKEND="core.geocoding.MapboxGeocoder")
+    def test_footer_follows_geocoding_backend(self):
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, "© Mapbox © OpenStreetMap")
+
+    def test_credits_page(self):
+        response = self.client.get(reverse("credits"))
+        # The tile attribution is rendered as HTML, not escaped.
+        self.assertContains(
+            response,
+            '<li>Map: &copy; <a href="https://www.openstreetmap.org/'
+            'copyright">OpenStreetMap</a> contributors</li>',
+            html=True,
+        )
+        self.assertContains(response, "Open Database License")
+        # Credit for the proof of concept, without his email address.
+        self.assertContains(response, "Benjamin Mourgues")
+        self.assertNotContains(response, "@hotmail")
+        self.assertContains(response, "Français pour une Meilleure Mobilité")
+        self.assertContains(response, f'href="{settings.SOURCE_CODE_URL}"')
+
+    def test_credits_page_in_french(self):
+        response = self.client.get(
+            reverse("credits"), HTTP_ACCEPT_LANGUAGE="fr"
+        )
+        self.assertContains(response, '<h1 class="h3 mb-3">Crédits</h1>')
+        # The map's attribution is translated too.
+        self.assertContains(
+            response,
+            'les contributeurs d’<a href="https://www.openstreetmap.org/'
+            'copyright">OpenStreetMap</a>',
+        )
+
+    def test_not_found_page_has_footer(self):
+        response = self.client.get("/no-such-page/")
+        self.assertEqual(response.status_code, 404)
+        self.assertContains(response, "<footer", status_code=404)
+
+    @override_settings(GEOCODING_BACKEND="core.geocoding.NoSuchGeocoder")
+    def test_check_rejects_unloadable_backend(self):
+        from core.checks import geocoding_backend_check
+
+        errors = geocoding_backend_check(None)
+        self.assertEqual([e.id for e in errors], ["core.E002"])
+
+    @override_settings(GEOCODING_BACKEND="core.geocoding.GeocodeResult")
+    def test_check_rejects_backend_without_credit(self):
+        from core.checks import geocoding_backend_check
+
+        errors = geocoding_backend_check(None)
+        self.assertEqual([e.id for e in errors], ["core.E003"])
+
+
 class BaseTemplateCsrfTests(TestCase):
     def test_htmx_requests_carry_csrf_header(self):
         response = self.client.get(reverse("home"))

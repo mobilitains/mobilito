@@ -23,6 +23,7 @@ License along with mobilito.  If not, see
 from django import template
 from urllib.parse import urlencode
 
+from django.conf import settings
 from django.urls import reverse
 
 register = template.Library()
@@ -74,3 +75,20 @@ def unvalidated_banner(context):
             "next": next_url,
         }
     return empty
+
+
+@register.inclusion_tag("includes/footer.html")
+def site_footer():
+    """Attribution for the addresses we show (ODbL), and our source.
+
+    Addresses appear on many pages (lists, details), so their credit
+    goes on every page rather than beside each one.
+    """
+    from core.geocoding import get_geocoder
+
+    geocoder = get_geocoder()
+    return {
+        "address_credit": geocoder.credit,
+        "address_credit_url": geocoder.credit_url,
+        "source_code_url": settings.SOURCE_CODE_URL,
+    }

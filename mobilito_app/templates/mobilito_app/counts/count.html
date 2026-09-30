@@ -24,8 +24,9 @@ License along with mobilito.  If not, see
 {% comment %}
 The four-button counting screen (§9.1). The layout (2×2 square
 buttons, big icon, count below, finish at the top, no page chrome)
-follows the Mobilito proof of concept in transport-nantes/tn_web,
-the one part of its UX the field trials confirmed.
+follows Benjamin Mourgues's Mobilito proof of concept in
+transport-nantes/tn_web, the one part of its UX the field trials
+confirmed.
 {% endcomment %}
 
 {% block title %}{% trans "Counting" %} · Mobilito{% endblock %}
@@ -36,6 +37,8 @@ the one part of its UX the field trials confirmed.
 {% endblock %}
 
 {% block nav %}{% endblock %}
+{# Full-screen counting: no page chrome. #}
+{% block footer %}{% endblock %}
 {% block main_class %}mobilito-count-main{% endblock %}
 
 {% block content %}

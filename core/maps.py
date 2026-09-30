@@ -29,11 +29,27 @@ import re
 
 from django.conf import settings
 from django.urls import reverse
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext, gettext_noop
 
 # Widget ids end up in element ids, CSS selectors and JSON attributes.
 WIDGET_ID_RE = re.compile(r"[A-Za-z][A-Za-z0-9_-]{0,40}")
 
 DEVICE_LOCATION_SESSION_KEY = "use_device_location"
+
+
+# The default MAP_TILE_ATTRIBUTION, listed so makemessages picks it up
+# (settings can't use gettext). A replacement provider's attribution
+# simply shows untranslated.
+gettext_noop(
+    '&copy; <a href="https://www.openstreetmap.org/copyright">'
+    "OpenStreetMap</a> contributors"
+)
+
+
+def tile_attribution():
+    """The map tiles' attribution, as trusted HTML from settings."""
+    return mark_safe(gettext(settings.MAP_TILE_ATTRIBUTION))
 
 
 def uses_device_location(request) -> bool:
@@ -125,7 +141,7 @@ def map_widget_config(
             "gps": gps,
             "pinsUrl": pins_url,
             "tileUrl": settings.MAP_TILE_URL,
-            "tileAttribution": settings.MAP_TILE_ATTRIBUTION,
+            "tileAttribution": tile_attribution(),
             "useDeviceLocation": uses_device_location(request),
             "confirmed": bool(confirmed),
         },

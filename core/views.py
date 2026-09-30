@@ -27,8 +27,12 @@ from django_htmx.http import HttpResponseClientRedirect
 
 from authentication.provisional import observer_required
 from core.forms import LocationConfirmForm
-from core.geocoding import reverse_geocode
-from core.maps import DEVICE_LOCATION_SESSION_KEY, WIDGET_ID_RE
+from core.geocoding import get_geocoder, reverse_geocode
+from core.maps import (
+    DEVICE_LOCATION_SESSION_KEY,
+    WIDGET_ID_RE,
+    tile_attribution,
+)
 from core.ratelimit import client_ip, is_rate_limited
 
 
@@ -148,3 +152,22 @@ def location_confirm(request):
     """
     context = confirm_location_context(request)
     return render(request, "core/partials/location_confirmed.html", context)
+
+
+def credits_page(request):
+    """Credits and licences: map data, addresses and our own source.
+
+    Attribution for OpenStreetMap data (ODbL) and the source-code
+    offer the AGPL requires of a network service.
+    """
+    geocoder = get_geocoder()
+    return render(
+        request,
+        "core/credits.html",
+        {
+            "tile_attribution": tile_attribution(),
+            "address_credit": geocoder.credit,
+            "address_credit_url": geocoder.credit_url,
+            "source_code_url": settings.SOURCE_CODE_URL,
+        },
+    )

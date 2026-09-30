@@ -73,3 +73,37 @@ def sign_in_attempt_link_check(app_configs, **kwargs):
             )
         ]
     return []
+
+
+@register()
+def geocoding_backend_check(app_configs, **kwargs):
+    """GEOCODING_BACKEND must load and name its attribution.
+
+    Every page's footer credits the address provider, so a bad
+    backend would otherwise break the whole site, not just geocoding.
+    """
+    from core.geocoding import get_geocoder
+
+    try:
+        geocoder = get_geocoder()
+    except Exception as err:
+        return [
+            Error(
+                f"GEOCODING_BACKEND can't be loaded: {err}",
+                id="core.E002",
+            )
+        ]
+    missing = [
+        name
+        for name in ("credit", "credit_url")
+        if not getattr(geocoder, name, "")
+    ]
+    if missing:
+        return [
+            Error(
+                f"GEOCODING_BACKEND has no {' or '.join(missing)}.",
+                hint="Its attribution is shown on every page.",
+                id="core.E003",
+            )
+        ]
+    return []

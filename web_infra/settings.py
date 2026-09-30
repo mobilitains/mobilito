@@ -88,6 +88,11 @@ SIGN_IN_ATTEMPT_CONFIRMED_SESSION_HOURS = 24
 # Where people can write to us, shown e.g. to an author whose
 # observation was hidden. Blank shows nothing.
 CONTACT_EMAIL = os.environ.get("DJANGO_CONTACT_EMAIL", "")
+# AGPL §13: people using Mobilito over the network must be offered
+# its source. Point this at the code actually deployed.
+SOURCE_CODE_URL = os.environ.get(
+    "DJANGO_SOURCE_CODE_URL", "https://github.com/mobilitains/mobilito"
+)
 # Absolute base for links in emails sent outside a request (cron).
 SITE_URL = os.environ.get("DJANGO_SITE_URL", "http://localhost:8000")
 
@@ -263,6 +268,8 @@ MAP_CLUSTER_MAX_ZOOM = 17
 MAP_PINS_MAX = 1000
 MAP_PINS_CACHE_SECONDS = 60
 MAP_TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+# Rendered as HTML (core.maps.tile_attribution): keep it a constant,
+# never read from the environment.
 MAP_TILE_ATTRIBUTION = (
     '&copy; <a href="https://www.openstreetmap.org/copyright">'
     "OpenStreetMap</a> contributors"

@@ -275,8 +275,9 @@ class CountScreenTests(CountFlowTestCase):
         self.assertContains(
             response, reverse("counts_event", args=[session.pk])
         )
-        # Full screen: no nav, no confirmation banner.
+        # Full screen: no nav, no footer, no confirmation banner.
         self.assertNotContains(response, "navbar")
+        self.assertNotContains(response, "<footer")
         self.assertNotContains(response, "Please confirm your email")
 
     def test_other_people_get_404(self):
