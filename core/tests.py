@@ -701,6 +701,144 @@ class CreditsTests(TestCase):
         self.assertEqual([e.id for e in errors], ["core.E003"])
 
 
+def _hex_colours(path):
+    import re
+
+    with open(path, encoding="utf-8") as f:
+        return re.findall(
+            r"#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})\b", f.read()
+        )
+
+
+def _css_tokens():
+    import re
+
+    path = settings.BASE_DIR / "core/static/core/css/mobilitains.css"
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
+    tokens = dict(re.findall(r"--(mbl-[a-z0-9-]+):\s*(#[0-9a-f]{6});", text))
+    # Aliases (--mbl-kind-count: var(--mbl-chart-2)) resolve too.
+    for name, target in re.findall(
+        r"--(mbl-[a-z0-9-]+):\s*var\(--(mbl-[a-z0-9-]+)\);", text
+    ):
+        tokens[name] = tokens[target]
+    return tokens
+
+
+def _contrast(a, b):
+    """WCAG 2 contrast ratio between two #rrggbb colours."""
+
+    def luminance(colour):
+        channels = [c / 255 for c in bytes.fromhex(colour[1:])]
+        r, g, b = [
+            c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+            for c in channels
+        ]
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+    high, low = sorted((luminance(a), luminance(b)), reverse=True)
+    return (high + 0.05) / (low + 0.05)
+
+
+class BrandColourTests(TestCase):
+    """doc/colours.md: brand tokens only, and contrast first."""
+
+    def test_header_and_brand_stylesheet(self):
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, "core/css/mobilitains.css")
+        self.assertContains(response, "mbl-navbar")
+
+    def test_no_raw_colours_outside_the_tokens(self):
+        # Each exception carries a comment naming its token.
+        allowed = {
+            "core/static/core/css/mobilitains.css",
+            "core/static/core/js/map_widget.js",
+            "authentication/templates/authentication/email/" "magic_link.html",
+            "templates/500.html",
+        }
+        white = {"#fff", "#ffffff"}
+        offenders = {}
+        for app in ("core", "mobilito_app", "authentication", "templates"):
+            for path in (settings.BASE_DIR / app).rglob("*"):
+                relative = path.relative_to(settings.BASE_DIR).as_posix()
+                if (
+                    path.suffix not in (".css", ".js", ".html")
+                    or "/tests/" in relative
+                    or relative in allowed
+                ):
+                    continue
+                found = [
+                    c for c in _hex_colours(path) if c.lower() not in white
+                ]
+                if found:
+                    offenders[relative] = found
+        self.assertEqual(offenders, {})
+
+    def test_pairs_we_rely_on_meet_wcag_aa(self):
+        tokens = _css_tokens()
+        tokens["white"] = "#ffffff"
+        text = [  # 4.5:1
+            ("mbl-fonce", "white"),
+            ("mbl-marine", "white"),
+            ("mbl-marron", "white"),
+            ("mbl-marron", "mbl-gris-light"),
+            ("white", "mbl-marine"),
+            ("white", "mbl-marine-dark"),
+            ("mbl-fonce-dark", "mbl-bleu"),
+            ("mbl-fonce", "mbl-bleu"),
+            ("mbl-fonce-dark", "mbl-bleu-light"),
+            ("mbl-fonce-dark", "mbl-gris"),
+            ("white", "mbl-orange-dark"),
+            ("white", "mbl-orange-darker"),
+            ("mbl-orange-dark", "white"),
+            ("white", "mbl-marine-light"),  # disabled navy button
+            # Muted and error text inside tinted boxes (.alert).
+            ("mbl-marron-dark", "mbl-bleu-tint"),
+            ("mbl-marron-dark", "mbl-orange-tint"),
+            ("mbl-marron-dark", "mbl-gris"),
+            ("mbl-orange-darker", "mbl-orange-tint"),
+        ]
+        ui = [  # 3:1: edges, icons, pins
+            ("mbl-bleu-gris", "white"),
+            ("mbl-bleu-text", "white"),
+            ("mbl-kind-count", "white"),
+            ("mbl-kind-report", "white"),
+        ]
+        failures = [
+            (fg, bg, round(_contrast(tokens[fg], tokens[bg]), 2))
+            for pairs, floor in ((text, 4.5), (ui, 3.0))
+            for fg, bg in pairs
+            if _contrast(tokens[fg], tokens[bg]) < floor
+        ]
+        self.assertEqual(failures, [])
+
+    def test_literal_colours_match_their_tokens(self):
+        # Where a value has to be written out (see the exceptions
+        # above), it must still be a brand token's value.
+        values = {v.lower() for v in _css_tokens().values()}
+        values |= {"#fff", "#ffffff"}
+        for relative in (
+            "core/static/core/js/map_widget.js",
+            "authentication/templates/authentication/email/" "magic_link.html",
+            "templates/500.html",
+        ):
+            found = {
+                c.lower() for c in _hex_colours(settings.BASE_DIR / relative)
+            }
+            self.assertLessEqual(found, values, relative)
+
+    def test_map_pins_match_the_legend(self):
+        import re
+
+        tokens = _css_tokens()
+        path = settings.BASE_DIR / "core/static/core/js/map_widget.js"
+        with open(path, encoding="utf-8") as f:
+            js = f.read()
+        pins = dict(re.findall(r"(count|report): '(#[0-9a-f]{6})'", js))
+        self.assertEqual(pins["count"], tokens["mbl-kind-count"])
+        self.assertEqual(pins["report"], tokens["mbl-kind-report"])
+
+
 class BaseTemplateCsrfTests(TestCase):
     def test_htmx_requests_carry_csrf_header(self):
         response = self.client.get(reverse("home"))

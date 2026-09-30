@@ -673,7 +673,7 @@ describe('pins', () => {
       '/api/pins?bbox=' + encodeURIComponent('-2,47,-1,48') + '&zoom=13'
     );
     expect(created.layers[0].pins).toHaveLength(1);
-    expect(created.layers[0].pins[0].style.fillColor).toBe('#fd7e14');
+    expect(created.layers[0].pins[0].style.fillColor).toBe('#fa4616');
     // Each pin gets the tolerant canvas renderer.
     expect(created.layers[0].pins[0].style.renderer).toEqual({
       canvas: { tolerance: 10 },
@@ -940,7 +940,7 @@ describe('pins', () => {
   });
 
   test('unknown kinds get a neutral colour', () => {
-    expect(pinStyle({ properties: {} }).fillColor).toBe('#6c757d');
+    expect(pinStyle({ properties: {} }).fillColor).toBe('#7f6966');
   });
 });
 

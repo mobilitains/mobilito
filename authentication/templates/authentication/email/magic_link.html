@@ -19,9 +19,13 @@ You should have received a copy of the GNU Affero General Public
 License along with mobilito.  If not, see
 <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n %}<!DOCTYPE html>
+{% load i18n %}{% comment %}
+Mail clients ignore CSS variables, so the brand colours are written
+out: --mbl-fonce text, --mbl-marine button, --mbl-marron small print
+(core/static/core/css/mobilitains.css, doc/colours.md).
+{% endcomment %}<!DOCTYPE html>
 <html lang="{{ language }}">
-<body style="font-family: sans-serif; line-height: 1.5; color: #212529; background: #ffffff;">
+<body style="font-family: sans-serif; line-height: 1.5; color: #333f48; background: #ffffff;">
   <p>{% trans "Hello," %}</p>
   {% if drop_on %}
     <p>{% trans "You recorded an observation on Mobilito, but haven't confirmed your email address yet. Confirm it's you so that what you recorded counts:" %}</p>
@@ -31,7 +35,7 @@ License along with mobilito.  If not, see
     <p>{% trans "Use the button below to sign in to Mobilito:" %}</p>
   {% endif %}
   <p>
-    <a href="{{ link }}" style="display: inline-block; padding: 12px 24px; background: #0d6efd; color: #ffffff; text-decoration: none; border-radius: 6px;">{% if attempt %}{% trans "Confirm my email address" %}{% else %}{% trans "Sign in" %}{% endif %}</a>
+    <a href="{{ link }}" style="display: inline-block; padding: 12px 24px; background: #43526e; color: #ffffff; text-decoration: none; border-radius: 6px;">{% if attempt %}{% trans "Confirm my email address" %}{% else %}{% trans "Sign in" %}{% endif %}</a>
   </p>
   {% if drop_on %}
     <p>
@@ -59,11 +63,11 @@ License along with mobilito.  If not, see
       {% endblocktranslate %}
     {% endif %}
   </p>
-  <p style="color: #6c757d; font-size: 0.9em;">
+  <p style="color: #7f6966; font-size: 0.9em;">
     {% trans "If the button doesn't work, copy this address into your browser:" %}<br>
     <a href="{{ link }}" style="word-break: break-all;">{{ link }}</a>
   </p>
-  <p style="color: #6c757d; font-size: 0.9em;">
+  <p style="color: #7f6966; font-size: 0.9em;">
     {% if attempt %}
       {% trans "If you didn't ask for this, you can ignore this email: nothing will be kept." %}
     {% else %}

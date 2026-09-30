@@ -333,8 +333,8 @@ License along with mobilito.  If not, see
         }
       });
       if (button) {
-        button.classList.toggle('btn-success', !gaps.length);
-        button.classList.toggle('btn-outline-success', !!gaps.length);
+        button.classList.toggle('btn-contribute', !gaps.length);
+        button.classList.toggle('btn-outline-contribute', !!gaps.length);
       }
       if (todo) {
         const text = gaps.length

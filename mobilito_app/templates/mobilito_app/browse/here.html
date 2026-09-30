@@ -29,7 +29,7 @@ License along with mobilito.  If not, see
     {% for kind, item in items %}
       {% if kind == "count" %}
         <a href="{% url 'counts_detail' item.pk %}" class="list-group-item list-group-item-action py-3">
-          <i class="bi bi-bar-chart-fill text-primary" aria-hidden="true"></i>
+          <i class="bi bi-bar-chart-fill mbl-text-count" aria-hidden="true"></i>
           {% trans "Count" %}
           <span class="d-block small text-body-secondary">{{ item.started_at|date:"DATETIME_FORMAT" }}</span>
           <span class="d-block small">
@@ -52,7 +52,7 @@ License along with mobilito.  If not, see
         </a>
       {% else %}
         <a href="{% url 'reports_detail' item.pk %}" class="list-group-item list-group-item-action py-3">
-          <i class="bi bi-signpost-split text-warning" aria-hidden="true"></i>
+          <i class="bi bi-signpost-split mbl-text-report" aria-hidden="true"></i>
           {% trans "Street feature" %}
           <span class="d-block small text-body-secondary">{{ item.created_at|date:"DATETIME_FORMAT" }}</span>
           {% if item.description %}<span class="d-block small">{{ item.description|truncatewords:12 }}</span>{% endif %}

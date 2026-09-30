@@ -119,6 +119,7 @@ Draft → Submitted → Pending validation → Pending moderation → Published 
 ## Code style
 
 - Line length: 79 characters (both black and flake8).
+- Colours: only the tokens in `core/static/core/css/mobilitains.css` (or the Bootstrap classes it themes); see `doc/colours.md`. WCAG AA contrast overrides the brand guide.
 - Flake8 ignores D100–D107 (missing docstrings) and excludes `migrations/`, `settings.py`, and `venv/`.
 - Production target: Ubuntu 26.04 LTS (Python 3.14, PostgreSQL 18, PostGIS 3.6, GDAL 3.12). The Docker dev image is built on `ubuntu:26.04` to match.
 - After any model changes: run `makemigrations`, commit the generated migration file.

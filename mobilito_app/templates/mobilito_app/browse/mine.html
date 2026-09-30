@@ -61,10 +61,10 @@ License along with mobilito.  If not, see
             <div class="card-body py-3 position-relative">
               <h2 class="h6 mb-1">
                 {% if kind == "count" %}
-                  <i class="bi bi-bar-chart-fill text-primary" aria-hidden="true"></i>
+                  <i class="bi bi-bar-chart-fill mbl-text-count" aria-hidden="true"></i>
                   <a href="{% if item.finished_at %}{% url 'counts_detail' item.pk %}{% else %}{% url 'counts_count' item.pk %}{% endif %}" class="stretched-link">{% trans "Count" %}<span aria-hidden="true"> · </span><span class="visually-hidden">, </span>{% include "core/partials/place_name.html" with location=item.location %}</a>
                 {% else %}
-                  <i class="bi bi-signpost-split text-warning" aria-hidden="true"></i>
+                  <i class="bi bi-signpost-split mbl-text-report" aria-hidden="true"></i>
                   <a href="{% url 'reports_detail' item.pk %}" class="stretched-link">{% trans "Street feature" %}<span aria-hidden="true"> · </span><span class="visually-hidden">, </span>{% include "core/partials/place_name.html" with location=item.location %}</a>
                 {% endif %}
               </h2>
@@ -111,8 +111,8 @@ License along with mobilito.  If not, see
     <p>{% trans "Nothing here yet." %}</p>
     <p>{% trans "What you count or report will be listed here, including what others can’t see yet." %}</p>
     <div class="d-grid gap-2">
-      <a href="{% url 'counts_new' %}" class="btn btn-primary">{% trans "Count what goes by" %}</a>
-      <a href="{% url 'reports_new' %}" class="btn btn-primary">{% trans "Report a street feature" %}</a>
+      <a href="{% url 'counts_new' %}" class="btn btn-contribute">{% trans "Count what goes by" %}</a>
+      <a href="{% url 'reports_new' %}" class="btn btn-contribute">{% trans "Report a street feature" %}</a>
     </div>
   {% endif %}
 </div>

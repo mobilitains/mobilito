@@ -32,15 +32,16 @@ License along with mobilito.  If not, see
   min-height: 18rem;
 }
 
-/* Numbered cluster: several observations close together. */
+/* Numbered cluster: several observations close together. White
+   with a dark ring, so it looks like neither kind of pin. */
 .mobilito-cluster {
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #212529;
-  border: 3px solid #ffffff;
-  color: #ffffff;
+  background: #ffffff;
+  border: 3px solid var(--mbl-fonce);
+  color: var(--mbl-fonce);
   font-size: 1rem;
   font-weight: 700;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
@@ -51,7 +52,7 @@ License along with mobilito.  If not, see
 }
 
 .mobilito-cluster:focus-visible {
-  outline: 3px solid #212529;
+  outline: 3px solid var(--mbl-fonce);
   outline-offset: 2px;
   box-shadow: 0 0 0 6px #ffffff;
 }
@@ -76,22 +77,24 @@ License along with mobilito.  If not, see
   height: 1rem;
   border-radius: 50%;
   border: 2px solid #ffffff;
-  box-shadow: 0 0 0 1px #adb5bd;
+  box-shadow: 0 0 0 1px var(--mbl-bleu-gris);
 }
 
 .mobilito-legend-count {
-  background: #0d6efd;
+  background: var(--mbl-kind-count);
 }
 
 .mobilito-legend-report {
-  background: #fd7e14;
+  background: var(--mbl-kind-report);
 }
 
 .mobilito-legend-cluster {
   width: 1.4rem;
   height: 1.4rem;
-  background: #212529;
-  color: #ffffff;
+  background: #ffffff;
+  border-color: var(--mbl-fonce);
+  box-shadow: none;
+  color: var(--mbl-fonce);
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 1.1rem;

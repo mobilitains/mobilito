@@ -41,7 +41,7 @@ License along with mobilito.  If not, see
       Candidate copy to user-test (design §21.2); plainer than the
       original "Count modal share" / "Report an aménagement".
       {% endcomment %}
-      <a href="{% url 'counts_new' %}" class="btn btn-primary btn-lg w-100 h-100 py-4">
+      <a href="{% url 'counts_new' %}" class="btn btn-contribute btn-lg w-100 h-100 py-4">
         <span class="d-flex justify-content-center gap-2 fs-4 mb-1" aria-hidden="true">
           <i class="bi bi-person-walking"></i><i class="bi bi-bicycle"></i><i class="bi bi-car-front-fill"></i><i class="bi bi-bus-front-fill"></i>
         </span>
@@ -49,7 +49,7 @@ License along with mobilito.  If not, see
       </a>
     </div>
     <div class="col-6">
-      <a href="{% url 'reports_new' %}" class="btn btn-primary btn-lg w-100 h-100 py-4">
+      <a href="{% url 'reports_new' %}" class="btn btn-contribute btn-lg w-100 h-100 py-4">
         <i class="bi bi-signpost-split d-block fs-2 mb-1" aria-hidden="true"></i>
         {% trans "Report a street feature" %}
         {% comment %}Translators: reports can be positive. Avoid a grade like « bon ou mauvais »; e.g. « ce qui aide, ce qui gêne ».{% endcomment %}
@@ -72,7 +72,7 @@ License along with mobilito.  If not, see
       <a href="{% url 'map' %}" class="btn btn-outline-primary btn-lg">
         {% trans "Browse observations" %}
       </a>
-      <a href="{% url 'auth_observe' %}?next=/" class="btn btn-primary btn-lg">
+      <a href="{% url 'auth_observe' %}?next=/" class="btn btn-contribute btn-lg">
         {% trans "Make an observation" %}
       </a>
     </div>

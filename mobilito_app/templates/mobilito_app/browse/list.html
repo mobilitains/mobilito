@@ -63,10 +63,10 @@ License along with mobilito.  If not, see
             <div class="card-body py-3 position-relative">
               <h2 class="h6 mb-1">
                 {% if kind == "count" %}
-                  <i class="bi bi-bar-chart-fill text-primary" aria-hidden="true"></i>
+                  <i class="bi bi-bar-chart-fill mbl-text-count" aria-hidden="true"></i>
                   <a href="{% url 'counts_detail' item.pk %}" class="stretched-link">{% trans "Count" %}<span aria-hidden="true"> · </span><span class="visually-hidden">, </span>{% include "core/partials/place_name.html" with location=item.location %}</a>
                 {% else %}
-                  <i class="bi bi-signpost-split text-warning" aria-hidden="true"></i>
+                  <i class="bi bi-signpost-split mbl-text-report" aria-hidden="true"></i>
                   <a href="{% url 'reports_detail' item.pk %}" class="stretched-link">{% trans "Street feature" %}<span aria-hidden="true"> · </span><span class="visually-hidden">, </span>{% include "core/partials/place_name.html" with location=item.location %}</a>
                 {% endif %}
               </h2>

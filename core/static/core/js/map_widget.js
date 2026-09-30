@@ -61,7 +61,10 @@ License along with mobilito.  If not, see
   // Zoom to at least this when jumping to the device's position:
   // close enough to place the crosshair on one side of a street.
   const GPS_ZOOM = 17;
-  const PIN_COLOURS = { count: '#0d6efd', report: '#fd7e14' };
+  // --mbl-kind-count / --mbl-kind-report, and --mbl-marron for
+  // anything else (core/css/mobilitains.css): Leaflet needs values.
+  const PIN_COLOURS = { count: '#3d5c99', report: '#fa4616' };
+  const PIN_OTHER = '#7f6966';
   const PIN_RELOAD_DELAY_MS = 300;
   const CLUSTER_ZOOM_STEP = 2;
   const MAX_ZOOM = 19;
@@ -77,7 +80,7 @@ License along with mobilito.  If not, see
       radius: 12,
       color: '#ffffff',
       weight: 3,
-      fillColor: PIN_COLOURS[kind] || '#6c757d',
+      fillColor: PIN_COLOURS[kind] || PIN_OTHER,
       fillOpacity: 0.9,
     };
   }

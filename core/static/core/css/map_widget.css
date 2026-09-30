@@ -35,7 +35,7 @@ License along with mobilito.  If not, see
 }
 
 .mobilito-map-fallback {
-  color: #6c757d;
+  color: var(--mbl-marron);
 }
 
 /* Leaflet's zoom buttons default to 30px; make them finger-sized
@@ -63,18 +63,18 @@ License along with mobilito.  If not, see
 /* Dark outline under a bright stroke: readable on any tile colour
    and in sunlight. */
 .mobilito-crosshair-under {
-  stroke: #212529;
+  stroke: var(--mbl-fonce-dark);
   stroke-width: 6;
 }
 
 .mobilito-crosshair-over {
-  stroke: #ff3ea5;
+  stroke: var(--mbl-orange);
   stroke-width: 3;
 }
 
 .mobilito-crosshair-dot {
-  fill: #ff3ea5;
-  stroke: #212529;
+  fill: var(--mbl-orange);
+  stroke: var(--mbl-fonce-dark);
   stroke-width: 1.5;
 }
 
@@ -120,7 +120,7 @@ License along with mobilito.  If not, see
   padding: 0.4rem 0.75rem;
   border-radius: 0.375rem;
   background: #ffffff;
-  color: #212529;
+  color: var(--mbl-fonce);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   text-align: center;
 }

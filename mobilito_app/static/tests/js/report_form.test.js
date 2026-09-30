@@ -261,18 +261,18 @@ describe('readiness', () => {
   // Outlined while something is missing, solid once ready.
   const ready = (form) => {
     const classes = form.querySelector('[data-report-submit]').classList;
-    expect(classes.contains('btn-success')).not.toBe(
-      classes.contains('btn-outline-success')
+    expect(classes.contains('btn-contribute')).not.toBe(
+      classes.contains('btn-outline-contribute')
     );
-    return classes.contains('btn-success')
-      ? 'btn-success'
-      : 'btn-outline-success';
+    return classes.contains('btn-contribute')
+      ? 'btn-contribute'
+      : 'btn-outline-contribute';
   };
 
   test('the button looks inactive and says what is still needed', () => {
     const form = build({ confirmed: false });
     initReportForm(form, makeEnv());
-    expect(ready(form)).toBe('btn-outline-success');
+    expect(ready(form)).toBe('btn-outline-contribute');
     expect(text(form, '[data-still-needed]')).toBe('TODO LOC, PERSP, PHOTOS');
     choose(form, photo('a.jpg'));
     expect(text(form, '[data-still-needed]')).toBe('TODO LOC, PERSP');
@@ -285,7 +285,7 @@ describe('readiness', () => {
     const radio = form.querySelector('[value="both"]');
     radio.checked = true;
     radio.dispatchEvent(new Event('change', { bubbles: true }));
-    expect(ready(form)).toBe('btn-success');
+    expect(ready(form)).toBe('btn-contribute');
     expect(text(form, '[data-still-needed]')).toBe('');
     expect(submit(form).defaultPrevented).toBe(false);
   });
@@ -298,7 +298,7 @@ describe('readiness', () => {
     form.querySelector('[data-map-confirmed]').innerHTML =
       '<input type="hidden" name="lat" value="1">';
     await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(ready(form)).toBe('btn-success');
+    expect(ready(form)).toBe('btn-contribute');
     expect(text(form, '[data-still-needed]')).toBe('');
   });
 
@@ -315,19 +315,19 @@ describe('readiness', () => {
     const form = build({ perspective: 'ped' });
     initReportForm(form, makeEnv());
     choose(form, photo('a.jpg'));
-    expect(ready(form)).toBe('btn-success');
+    expect(ready(form)).toBe('btn-contribute');
     form.querySelector('.mobilito-photo-preview button').click();
-    expect(ready(form)).toBe('btn-outline-success');
+    expect(ready(form)).toBe('btn-outline-contribute');
   });
 
   test('moving the map after confirming makes it inactive again', async () => {
     const form = build({ perspective: 'ped' });
     initReportForm(form, makeEnv());
     choose(form, photo('a.jpg'));
-    expect(ready(form)).toBe('btn-success');
+    expect(ready(form)).toBe('btn-contribute');
     form.querySelector('[data-map-confirmed]').innerHTML = '';
     await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(ready(form)).toBe('btn-outline-success');
+    expect(ready(form)).toBe('btn-outline-contribute');
     expect(text(form, '[data-still-needed]')).toBe('TODO LOC');
   });
 
