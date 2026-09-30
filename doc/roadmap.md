@@ -7,10 +7,11 @@ References are to `design.md` sections.
 
 ## Current state
 
-The skeleton provides:
-- Custom user model with `email_validated` flag, magic-link auth (django-sesame), PostGIS backend, Bootstrap 5 + HTMX + django-htmx wired in, django-storages[s3] (configured for Cloudflare R2) and Pillow installed, i18n scaffold, Docker dev environment, CI.
-
-Nothing is user-visible yet.
+Phases 1–7 are done (see the **[COMPLETED]** marks below): data
+models, UI shell, magic-link and provisional sign-in, the map
+component, modal share counting, infrastructure reports and public
+browsing. Phase 8 (moderation) is next; after it, the v1-preview
+checklist.
 
 ---
 
@@ -30,6 +31,8 @@ These unblock multiple phases and should be settled first.
 ---
 
 ## Phase 1 — Core data models
+
+[COMPLETED]
 
 Everything else is built on top of these. Define all models, write migrations, seed initial data.
 
@@ -63,6 +66,8 @@ Everything else is built on top of these. Define all models, write migrations, s
 
 ## Phase 2 — Base UI shell
 
+[COMPLETED]
+
 Before building any feature page, establish the shared shell that all pages inherit from.
 
 - `base.html`: Bootstrap 5 (CDN for now; bundle later), HTMX, mobile viewport meta, Bootstrap Icons.
@@ -79,6 +84,8 @@ Before building any feature page, establish the shared shell that all pages inhe
 
 ## Phase 3 — Authentication flows
 
+[COMPLETED]
+
 `django-sesame` is already installed. This phase wires it to views and email.
 
 - **Magic-link request** (`/auth/start/`): email input form, honeypot field, rate limit (§16). On submit: get-or-create user, send magic-link email.
@@ -92,6 +99,8 @@ Before building any feature page, establish the shared shell that all pages inhe
 ---
 
 ## Phase 4 — Map component
+
+[COMPLETED]
 
 A reusable component used by observation submission (both types), browsing, and observation detail pages. Build it once cleanly.
 
@@ -108,6 +117,8 @@ A reusable component used by observation submission (both types), browsing, and 
 ---
 
 ## Phase 5 — Modal share counting
+
+[COMPLETED]
 
 Full counting workflow (§9.1, §21.3).
 
@@ -144,6 +155,8 @@ Use that code to inspire you here.  The only part of that UX that is particularl
 
 ## Phase 5b — Counting guidance
 
+[COMPLETED for v1-preview] — the two *(v1)* items (visual tutorial, explainer article) remain.
+
 What counts as what (design §9.1, "What counts as what"): we count things on the road, by behaviour, not people. Users need this from several angles, since most won't read a tutorial.
 
 - **Short text guide** on the start-counting page: the one-line rule plus common edge cases, collapsible. *(v1-preview)*
@@ -154,6 +167,8 @@ What counts as what (design §9.1, "What counts as what"): we count things on th
 ---
 
 ## Phase 6 — Infrastructure observations
+
+[COMPLETED] — the follow-ups at the end of this section remain open.
 
 More complex than modal share due to photo handling and the ontology (§9.2, §21.4).
 
@@ -177,6 +192,8 @@ More complex than modal share due to photo handling and the ontology (§9.2, §2
 ---
 
 ## Phase 7 — Observation browsing
+
+[COMPLETED] — the follow-ups marked below remain open. Detail pages live at `/counts/<id>/` and `/reports/<id>/` rather than one `/observations/<id>/`; history and me-too count on report pages arrive with Phase 10.
 
 Public, requires no authentication (§9.3, §21.1).
 
