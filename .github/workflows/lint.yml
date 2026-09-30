@@ -8,17 +8,18 @@ jobs:
   lint:
     runs-on: ubuntu-26.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.14"
 
       - name: Install linters
         run: |
           pip install --upgrade pip
-          pip install black==24.4.2 flake8==6.1.0 flake8-django==1.4
+          # Same linter versions as requirements.txt (and so Docker).
+          pip install $(sed -n 's/ *#.*//; /^\(black\|flake8\|flake8-django\)==/p' requirements.txt)
           # flake8-django 1.4 pins astroid<3.0, which can't parse the
           # PEP 695 `type` statement in Python 3.12's stdlib typing.py
           # and crashes its DJ0 check. Override it, as docker/Dockerfile
