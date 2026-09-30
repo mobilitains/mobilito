@@ -91,6 +91,9 @@ License along with mobilito.  If not, see
     L.tileLayer(config.tileUrl, {
       maxZoom: MAX_ZOOM,
       attribution: config.tileAttribution,
+      // OSM's tile policy requires a Referer, which the site-wide
+      // same-origin policy would drop; send only our origin.
+      referrerPolicy: 'strict-origin-when-cross-origin',
     }).addTo(map);
 
     const fallback = component.querySelector('[data-map-fallback]');

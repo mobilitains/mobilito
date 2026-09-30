@@ -26,7 +26,7 @@ const { initMapWidget, initAll, pinStyle, GPS_ZOOM } = require(
 
 // Minimal stand-in for the slice of Leaflet the widget uses.
 function fakeLeaflet() {
-  const created = { maps: [], layers: [] };
+  const created = { maps: [], layers: [], tiles: [] };
   function evented(obj) {
     obj.handlers = {};
     obj.on = function (name, fn) {
@@ -66,7 +66,10 @@ function fakeLeaflet() {
       created.maps.push(map);
       return map;
     },
-    tileLayer: () => ({ addTo() {} }),
+    tileLayer(url, options) {
+      created.tiles.push({ url, options });
+      return { addTo() {} };
+    },
     canvas: (options) => ({ canvas: options }),
     circleMarker: (latlng, style) => evented({ latlng, style }),
     marker: (latlng, options) => evented({ latlng, options }),
@@ -173,6 +176,18 @@ function fakeGeolocation(result, { defer = false } = {}) {
     },
   };
 }
+
+describe('tiles', () => {
+  test('send our origin as Referer, as OSM tile policy requires', () => {
+    const { L, created } = fakeLeaflet();
+    initMapWidget(buildWidget(BASE_CONFIG), { L });
+    expect(created.tiles).toHaveLength(1);
+    expect(created.tiles[0].options).toMatchObject({
+      attribution: 'OSM',
+      referrerPolicy: 'strict-origin-when-cross-origin',
+    });
+  });
+});
 
 describe('crosshair', () => {
   test('removes the no-map fallback message', () => {
