@@ -68,6 +68,8 @@ License along with mobilito.  If not, see
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  /* Long items (in French) wrap instead of running off the page. */
+  max-width: 100%;
 }
 
 .mobilito-legend-dot {

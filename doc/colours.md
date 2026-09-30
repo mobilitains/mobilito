@@ -226,6 +226,19 @@ From the guide and the *charte couleur*:
 - The logo goes at the top (left, or right when needed), never only at
   the bottom of a page.
 
+## Typography
+
+The brand's typeface, Montserrat, is the site's font. It's served from
+`core/static/core/fonts/montserrat/` (variable weight, Latin and Latin
+Extended, upright and italic; SIL Open Font License in `OFL.txt`)
+rather than Google Fonts, so visitors' browsers don't contact a third
+party. The Latin upright file is preloaded; the others load only when
+needed.
+
+Montserrat is wider than most system fonts. The phone header in
+French ("Se déconnecter") fits at 360px with only a few pixels to
+spare: check it if you add anything there.
+
 ## In the code
 
 - **Use the tokens.** Stylesheets use `var(--mbl-…)`; templates use the
@@ -249,9 +262,8 @@ From the guide and the *charte couleur*:
 
 ## Not covered yet
 
-- **Typography.** The guide's font is Montserrat ("Source code", a
-  monospace, for minor text). The site still uses the system font. Montserrat should
-  be self-hosted rather than loaded from Google Fonts, for privacy.
+- **The guide's secondary font** ("Source code", a monospace for
+  minor text) isn't used; nothing on the site calls for it yet.
 - **Dark mode.** The site has none; if it gets one, its colours need
   choosing and checking separately, not inverting.
 - **Orange's meaning.** The *charte couleur* reserves orange for

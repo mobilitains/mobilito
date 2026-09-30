@@ -28,7 +28,63 @@ License along with mobilito.  If not, see
    that fails WCAG contrast, the pair isn't used. Contrast ratios in
    comments are against white unless stated. */
 
+/* Montserrat, the brand's typeface (guide visuel), served from here
+   rather than Google Fonts so visitors' browsers don't contact a
+   third party. Variable weight 100-900; Latin covers French and
+   English, Latin Extended the rest of Europe's names. SIL Open Font
+   License: fonts/montserrat/OFL.txt. */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/montserrat/montserrat-latin-wght-normal.woff2")
+    format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/montserrat/montserrat-latin-ext-wght-normal.woff2")
+    format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/montserrat/montserrat-latin-wght-italic.woff2")
+    format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/montserrat/montserrat-latin-ext-wght-italic.woff2")
+    format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 :root {
+  --bs-body-font-family: "Montserrat", system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
   /* The five brand colours (guide visuel, Dec. 2021), plus the dark
      blue used for text. */
   --mbl-bleu: #5bc2e7;        /* bleu emblème: contributing (CTA) */
@@ -372,9 +428,18 @@ License along with mobilito.  If not, see
     border-left: 0;
   }
 
-  /* Narrower, not shorter: taps keep their height. */
+  /* If the text is bigger than planned (a larger default font
+     size), wrap to two rows rather than scroll sideways. */
+  .mbl-navbar > .container {
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+  }
+
+  /* Narrower, not shorter: taps keep their height (44px). */
   .mbl-navbar .btn {
-    --bs-btn-padding-x: 0.5rem;
+    --bs-btn-padding-x: 0.4rem;
+    --bs-btn-font-size: 0.9375rem;
+    min-height: 2.75rem;
   }
 }
 

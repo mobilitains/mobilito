@@ -37,9 +37,9 @@ License along with mobilito.  If not, see
   <a href="{% url 'observations' %}" data-map-list-link="{{ map.id }}">{% trans "See them as a list" %}</a>
 </p>
 <p class="mb-2 mobilito-map-legend">
-  <span class="text-nowrap"><span class="mobilito-legend-dot mobilito-legend-count" aria-hidden="true"></span> {% trans "Counts of what goes by" %}</span>
-  <span class="text-nowrap"><span class="mobilito-legend-dot mobilito-legend-report" aria-hidden="true"></span> {% trans "Street features" %}</span>
-  <span class="text-nowrap"><span class="mobilito-legend-dot mobilito-legend-cluster" aria-hidden="true">3</span> {% trans "Several together: tap to see them" %}</span>
+  <span><span class="mobilito-legend-dot mobilito-legend-count" aria-hidden="true"></span> {% trans "Counts of what goes by" %}</span>
+  <span><span class="mobilito-legend-dot mobilito-legend-report" aria-hidden="true"></span> {% trans "Street features" %}</span>
+  <span><span class="mobilito-legend-dot mobilito-legend-cluster" aria-hidden="true">3</span> {% trans "Several together: tap to see them" %}</span>
 </p>
 <div class="mobilito-browse-map">
   {% include "core/includes/map_widget.html" with map=map %}

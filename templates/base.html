@@ -34,6 +34,8 @@ License along with mobilito.  If not, see
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
     integrity="sha384-CK2SzKma4jA5H/MXDUU7i1TqZlCFaD4T01vtyDFvPlD97JQyS+IsSh1nI2EFbpyk"
     crossorigin="anonymous">
+  {# The brand font's common subset, fetched early (see mobilitains.css). #}
+  <link rel="preload" href="{% static 'core/fonts/montserrat/montserrat-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
   {# Brand colours; after Bootstrap, which it themes. #}
   <link rel="stylesheet" href="{% static 'core/css/mobilitains.css' %}">
   <link rel="icon" type="image/svg+xml" href="{% static 'core/img/mobilitains-mark.svg' %}">
