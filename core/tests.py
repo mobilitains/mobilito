@@ -404,7 +404,8 @@ class LocationConfirmViewTests(TestCase):
         self.assertContains(response, 'name="device_lat" value="47.218500"')
         self.assertContains(response, 'name="device_accuracy" value="8.0"')
         self.assertNotContains(response, "<html")
-        geocode.assert_called_once_with(47.2184, -1.5536, "fr")
+        # In the request's language (tests run in English).
+        geocode.assert_called_once_with(47.2184, -1.5536, "en")
 
     @mock.patch("core.views.reverse_geocode", return_value=None)
     def test_no_address_invites_a_name(self, geocode):

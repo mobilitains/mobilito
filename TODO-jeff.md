@@ -74,9 +74,8 @@ detail is in [doc/operations.md](doc/operations.md).
 - [ ] Tag families (walking, cycling…) show untranslated in the
       report form (roadmap Phase 6 follow-up). Decide whether that's
       acceptable for the preview.
-- [ ] Times display in UTC (roadmap Phase 7 follow-up). A count at
-      17:00 in Nantes reads 15:00 or 16:00. Probably worth fixing
-      before testers see it; say if you want me to.
+- [ ] Times now display in Europe/Paris (was UTC). Fine for Nantes;
+      revisit if the preview reaches other time zones.
 
 ## 4. Test plan
 

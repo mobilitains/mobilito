@@ -21,7 +21,8 @@ License along with mobilito.  If not, see
 """
 
 import math
-from datetime import timedelta
+from datetime import datetime, timedelta
+from datetime import timezone as dt_timezone
 
 from unittest import mock
 
@@ -699,6 +700,25 @@ class HistoryTests(BrowseTestCase):
         self.assertNotContains(
             response, f'{dateformat.format(recent, "D j N")} {recent.year}'
         )
+
+    def test_times_are_local_to_nantes(self):
+        # 23:30 UTC on 31 December is already 00:30 on 1 January in
+        # Nantes: that's the date and year shown, and the year counts
+        # as "this year" on 1 January.
+        this = count_at(47.21, -1.55, total_car=1)
+        count_at(47.21, -1.55, total_car=1)  # so the history shows
+        start = datetime(2026, 12, 31, 23, 30, tzinfo=dt_timezone.utc)
+        ModalShareSession.objects.filter(pk=this.pk).update(
+            started_at=start, finished_at=start + timedelta(minutes=10)
+        )
+        new_year = datetime(2027, 1, 1, 11, 0, tzinfo=dt_timezone.utc)
+        with mock.patch("django.utils.timezone.now", return_value=new_year):
+            response = self.detail(this)
+        rows = response.context["history"]
+        self.assertEqual([r["year"] for r in rows if r["is_this"]], [2027])
+        self.assertContains(response, "Jan. 1, 2027, 12:30 a.m.")
+        self.assertContains(response, "Fri 1 Jan.")
+        self.assertNotContains(response, "Fri 1 Jan. 2027")
 
     def test_radius_boundary(self):
         # About 40 m and 60 m north (the radius is 50 m).

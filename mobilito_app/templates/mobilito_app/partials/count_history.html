@@ -48,7 +48,7 @@ number.
         <div class="mobilito-history-row{% if row.is_this %} mobilito-history-this{% endif %}">
           <span class="mobilito-history-date">
             {# Weekday and time: traffic depends on both. #}
-            {{ row.count.started_at|date:"D j N" }}{% if row.count.started_at.year != now_year %} {{ row.count.started_at|date:"Y" }}{% endif %}
+            {{ row.count.started_at|date:"D j N" }}{% if row.year != now_year %} {{ row.count.started_at|date:"Y" }}{% endif %}
             <span class="d-block small text-body-secondary">{{ row.count.started_at|time:"TIME_FORMAT" }}</span>
             {% if row.is_this %}<span class="d-block small fw-semibold">{% trans "this count" %}</span>{% endif %}
           </span>
@@ -79,9 +79,9 @@ number.
               <tr>
                 <th scope="row" class="fw-normal">
                   {% if row.is_this %}
-                    <strong>{{ row.count.started_at|date:"D j N" }}{% if row.count.started_at.year != now_year %} {{ row.count.started_at|date:"Y" }}{% endif %}</strong>
+                    <strong>{{ row.count.started_at|date:"D j N" }}{% if row.year != now_year %} {{ row.count.started_at|date:"Y" }}{% endif %}</strong>
                   {% else %}
-                    <a href="{% url 'counts_detail' row.count.pk %}">{{ row.count.started_at|date:"D j N" }}{% if row.count.started_at.year != now_year %} {{ row.count.started_at|date:"Y" }}{% endif %}</a>
+                    <a href="{% url 'counts_detail' row.count.pk %}">{{ row.count.started_at|date:"D j N" }}{% if row.year != now_year %} {{ row.count.started_at|date:"Y" }}{% endif %}</a>
                   {% endif %}
                   <span class="d-block text-body-secondary">{{ row.count.started_at|time:"TIME_FORMAT" }}</span>
                   <span class="d-block">{% include "mobilito_app/partials/counted_in.html" %}</span>

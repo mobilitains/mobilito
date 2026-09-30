@@ -628,6 +628,8 @@ def history(session) -> list:
             {
                 "count": count,
                 "is_this": count.pk == session.pk,
+                # Shown in local time: compare years the same way.
+                "year": timezone.localtime(count.started_at).year,
                 "total": total,
                 "minutes": round(
                     (count.finished_at - count.started_at).total_seconds() / 60
@@ -664,7 +666,7 @@ def detail(request, pk):
             "session": session,
             **totals_bars(session),
             "history": history(session),
-            "now_year": timezone.now().year,
+            "now_year": timezone.localdate().year,
             "mode_labels": [(mode, MODE_LABELS[mode]) for mode in MODES],
             **state_context(session, role),
             "duration_minutes": round(

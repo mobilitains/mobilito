@@ -217,7 +217,8 @@ class MagicLinkStartTests(TestCase):
 
     def test_tampered_language_is_ignored(self):
         self.client.post(reverse("auth_start"), {"email": "lang2@example.com"})
-        path = link_path_from_outbox().replace("lang=fr", "lang=xx")
+        path = re.sub(r"lang=\w+", "lang=xx", link_path_from_outbox())
+        self.assertIn("lang=xx", path)
         self.client.post(path, {"remember": "on"})
         user = MobilitoUser.objects.get(email="lang2@example.com")
         self.assertIsNone(user.preferred_language)

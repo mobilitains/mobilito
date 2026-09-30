@@ -194,7 +194,9 @@ LANGUAGES = [
     ("en", "English"),
 ]
 LOCALE_PATHS = [BASE_DIR / "locale"]
-TIME_ZONE = "UTC"
+# Times are stored in UTC (USE_TZ) and shown in this zone. Mobilito
+# starts in Nantes; per-observer zones can come later.
+TIME_ZONE = "Europe/Paris"
 USE_I18N = True
 USE_TZ = True
 
@@ -332,6 +334,9 @@ MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Tests assert on English copy (see the runner).
+TEST_RUNNER = "web_infra.test_runner.EnglishTestRunner"
 
 LOGGING = {
     "version": 1,
