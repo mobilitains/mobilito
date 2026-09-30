@@ -1,0 +1,79 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}{% comment %}
+Mail clients ignore CSS variables, so the brand colours are written
+out: --mbl-fonce text, --mbl-marine button, --mbl-marron small print
+(core/static/core/css/mobilitains.css, doc/colours.md).
+{% endcomment %}<!DOCTYPE html>
+<html lang="{{ language }}">
+<body style="font-family: sans-serif; line-height: 1.5; color: #333f48; background: #ffffff;">
+  <p>{% trans "Hello," %}</p>
+  {% if drop_on %}
+    <p>{% trans "You recorded an observation on Mobilito, but haven't confirmed your email address yet. Confirm it's you so that what you recorded counts:" %}</p>
+  {% elif attempt %}
+    <p>{% trans "You gave this email address on Mobilito. Confirm it's you so that what you record counts:" %}</p>
+  {% else %}
+    <p>{% trans "Use the button below to sign in to Mobilito:" %}</p>
+  {% endif %}
+  <p>
+    <a href="{{ link }}" style="display: inline-block; padding: 12px 24px; background: #43526e; color: #ffffff; text-decoration: none; border-radius: 6px;">{% if attempt %}{% trans "Confirm my email address" %}{% else %}{% trans "Sign in" %}{% endif %}</a>
+  </p>
+  {% if drop_on %}
+    <p>
+      {% blocktranslate trimmed with date=drop_on|date:"DATE_FORMAT" %}
+        If you don't confirm your email address by {{ date }}, what you recorded will be deleted.
+      {% endblocktranslate %}
+    </p>
+  {% elif attempt %}
+    <p>{% trans "No hurry: you can finish what you're doing first." %}</p>
+  {% elif has_next %}
+    <p>{% trans "You'll be taken back to what you were doing." %}</p>
+  {% endif %}
+  <p>
+    {% if attempt %}
+      {% blocktranslate trimmed count days=max_age_days %}
+        The link works once, for {{ days }} day.
+      {% plural %}
+        The link works once, for {{ days }} days.
+      {% endblocktranslate %}
+    {% else %}
+      {% blocktranslate trimmed count minutes=max_age_minutes %}
+        The link works once, for {{ minutes }} minute.
+      {% plural %}
+        The link works once, for {{ minutes }} minutes.
+      {% endblocktranslate %}
+    {% endif %}
+  </p>
+  <p style="color: #7f6966; font-size: 0.9em;">
+    {% trans "If the button doesn't work, copy this address into your browser:" %}<br>
+    <a href="{{ link }}" style="word-break: break-all;">{{ link }}</a>
+  </p>
+  <p style="color: #7f6966; font-size: 0.9em;">
+    {% if attempt %}
+      {% trans "If you didn't ask for this, you can ignore this email: nothing will be kept." %}
+    {% else %}
+      {% trans "If you didn't ask for this, you can ignore this email." %}
+    {% endif %}
+  </p>
+  <p>Mobilito</p>
+</body>
+</html>

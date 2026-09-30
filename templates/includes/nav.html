@@ -1,0 +1,77 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% comment %}
+The header follows the Mobilitains proof of concept: the logo, white
+with its coloured dots, on the brand's navy (doc/colours.md). Phones
+get the logo's mark alone, so the controls still fit.
+{% endcomment %}
+<nav class="navbar navbar-expand navbar-dark mbl-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <img src="{% static 'core/img/mobilitains-logo-on-dark.svg' %}" alt="Les Mobilitains" class="mbl-logo d-none d-sm-block">
+      <img src="{% static 'core/img/mobilitains-mark-on-dark.svg' %}" alt="Les Mobilitains" class="mbl-logo d-sm-none">
+      <span class="mbl-product">Mobilito</span>
+    </a>
+
+    <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 gap-sm-3 ms-auto">
+      {% comment %}
+      Real form + submit buttons: works with no JS; htmx (below)
+      intercepts and the server replies with a full-page redirect
+      instead of a swap, so the effect is the same either way.
+      {% endcomment %}
+      <form method="post" action="{% url 'set_language' %}" hx-post="{% url 'set_language' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <div
+          class="btn-group"
+          role="group"
+          aria-label="{% trans 'Change language' %}"
+        >
+          {% for code, name in LANGUAGES %}
+            <button
+              type="submit"
+              name="language"
+              value="{{ code }}"
+              class="btn {% if code == LANGUAGE_CODE %}btn-light{% else %}btn-outline-light{% endif %}"
+              {% if code == LANGUAGE_CODE %}disabled aria-current="true"{% endif %}
+              aria-label="{{ name }}"
+              title="{{ name }}"
+            >{{ code|upper }}</button>
+          {% endfor %}
+        </div>
+      </form>
+
+      {% if user.is_authenticated %}
+        <span class="navbar-text text-light small d-none d-sm-inline">{% trans "Signed in" %}</span>
+        <form method="post" action="{% url 'auth_logout' %}" class="m-0">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-light text-nowrap">
+            {% trans "Sign out" %}
+          </button>
+        </form>
+      {% else %}
+        <a href="{% url 'auth_start' %}" class="btn btn-outline-light text-nowrap">
+          {% trans "Sign in" %}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</nav>

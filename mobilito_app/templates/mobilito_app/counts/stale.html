@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+{% block extra_head %}
+  <script src="{% static 'mobilito_app/js/count_rescue.js' %}" defer></script>
+{% endblock %}
+
+{% block title %}{% trans "An unfinished count" %} · Mobilito{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 40rem;">
+  <h1 class="h4 mb-2">{% trans "This count wasn’t finished" %}</h1>
+  <p class="text-body-secondary">
+    {% include "core/partials/place_name.html" with location=session.location %}<br>
+    {% blocktranslate trimmed with date=session.started_at|date:"DATETIME_FORMAT" %}Started {{ date }}{% endblocktranslate %}
+  </p>
+  <p>{% trans "It’s too late to carry on counting: adding to it now would mix two different times." %}</p>
+  {{ rescue|json_script:"rescue-config" }}
+  <p class="alert alert-info" role="status" hidden data-count-rescue
+     data-msg-sending="{% trans 'Sending what your phone saved while it was offline…' %}"
+     data-msg-offline="{% trans 'Your phone still has some of this count saved. Reload this page once you have a connection, to send it before choosing.' %}"
+     data-msg-error="{% trans 'We couldn’t take what your phone saved just now. Try reloading this page in a few minutes, before choosing.' %}"></p>
+  {% if taps %}
+    <p>
+      {% blocktranslate trimmed count taps=taps %}
+        {{ taps }} counted before it stopped. You can keep the count as it was then.
+      {% plural %}
+        {{ taps }} counted before it stopped. You can keep the count as it was then.
+      {% endblocktranslate %}
+    </p>
+  {% else %}
+    <p>{% trans "Nothing was counted, so there is nothing to keep." %}</p>
+  {% endif %}
+  <form method="post" action="{% url 'counts_close_stale' session.pk %}" data-stale-actions>
+    {% csrf_token %}
+    {% if taps %}
+      <div class="d-grid mb-3">
+        <button type="submit" name="action" value="keep" class="btn btn-primary btn-lg">
+          {% trans "Keep what was counted" %}
+        </button>
+      </div>
+    {% endif %}
+    {# Apart from "keep", and small when there is something to lose: a mis-tap mustn't delete fieldwork. #}
+    <p class="{% if taps %}mt-5{% endif %} mb-3">
+      {% if taps %}{% trans "Or, if it was a mistake:" %}{% endif %}
+      <button type="submit" name="action" value="discard" class="btn {% if taps %}btn-outline-danger ms-1{% else %}btn-danger btn-lg w-100{% endif %}">
+        {% trans "Throw it away" %}
+      </button>
+    </p>
+  </form>
+  <p><a href="{% url 'my_observations' %}">{% trans "Decide later" %}</a></p>
+</div>
+{% endblock %}

@@ -19,8 +19,9 @@ along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.db import transaction
 
-from .models import MobilitoUser
+from .models import MobilitoUser, SignInAttempt
 
 
 @admin.register(MobilitoUser)
@@ -46,6 +47,8 @@ class MobilitoUserAdmin(UserAdmin):
                     "is_staff",
                     "is_superuser",
                     "email_validated",
+                    "preferred_language",
+                    "use_device_location",
                 )
             },
         ),
@@ -58,6 +61,21 @@ class MobilitoUserAdmin(UserAdmin):
             {"fields": ("created_at", "updated_at")},
         ),
     )
+
+    def save_model(self, request, obj, form, change):
+        from core.lifecycle import promote, public_content_changed
+
+        super().save_model(request, obj, form, change)
+        if "email_validated" not in form.changed_data:
+            return
+        if obj.email_validated:
+            # As if they had opened their link: what they sent moves
+            # on to moderation (§14).
+            promote(obj)
+        # Withdrawn, their published observations drop off the map
+        # (browse.published_*): don't let cached pins keep them.
+        transaction.on_commit(public_content_changed)
+
     add_fieldsets = (
         (
             None,
@@ -67,3 +85,35 @@ class MobilitoUserAdmin(UserAdmin):
             },
         ),
     )
+
+
+@admin.register(SignInAttempt)
+class SignInAttemptAdmin(admin.ModelAdmin):
+    """Provisional sign-ins (§5.4), for oversight; not edited by hand."""
+
+    list_display = (
+        "id",
+        "email",
+        "created_at",
+        "reminders_sent",
+        "confirmed_at",
+    )
+    list_filter = ("confirmed_at",)
+    search_fields = ("email",)
+    readonly_fields = (
+        "email",
+        "user",
+        "created_user",
+        "created_at",
+        "reminders_sent",
+        "last_reminded_at",
+        "confirmed_at",
+    )
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        # Only process_sign_in_attempts drops attempts, together with
+        # everything linked to them (drop_attempt).
+        return False

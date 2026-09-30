@@ -1,0 +1,62 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+{% comment %}
+Swapped in by htmx after "Confirm location" (map widget). Supplies
+the confirmed position as lat/lon (plus any GPS evidence) and an
+editable address suggestion (§11.1) to the form enclosing the map.
+{% endcomment %}
+{% if form.is_valid %}
+  <p class="fw-semibold mb-2">
+    <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
+    {% trans "Location confirmed." %}
+  </p>
+  <input type="hidden" name="lat" value="{{ form.cleaned_data.lat|stringformat:'.6f' }}">
+  <input type="hidden" name="lon" value="{{ form.cleaned_data.lon|stringformat:'.6f' }}">
+  {% if form.cleaned_data.device_lat is not None and form.cleaned_data.device_lon is not None %}
+    <input type="hidden" name="device_lat" value="{{ form.cleaned_data.device_lat|stringformat:'.6f' }}">
+    <input type="hidden" name="device_lon" value="{{ form.cleaned_data.device_lon|stringformat:'.6f' }}">
+    {% if form.cleaned_data.device_accuracy is not None %}
+      <input type="hidden" name="device_accuracy" value="{{ form.cleaned_data.device_accuracy|stringformat:'.1f' }}">
+    {% endif %}
+  {% endif %}
+  <div class="mb-3">
+    <label for="{{ widget }}-address" class="form-label">
+      {% trans "Address or name of this spot" %}
+    </label>
+    <input type="text" id="{{ widget }}-address" name="address"
+           class="form-control form-control-lg" maxlength="255"
+           value="{{ result.address|default:'' }}"
+           aria-describedby="{{ widget }}-address-help">
+    <div id="{{ widget }}-address-help" class="form-text">
+      {% if result.address %}
+        {% trans "Check this and correct it if needed." %}
+      {% else %}
+        {% trans "No address suggestion available. Type one, or give the spot a name people would recognise." %}
+      {% endif %}
+    </div>
+  </div>
+{% else %}
+  <div class="alert alert-warning">
+    {% trans "We couldn't read that position. Move the map slightly and tap “Confirm location” again." %}
+  </div>
+{% endif %}

@@ -1,0 +1,73 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static mobilito_tags %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" data-bs-theme="{{ theme|default:'light' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Mobilito{% endblock %}</title>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+    crossorigin="anonymous">
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    integrity="sha384-CK2SzKma4jA5H/MXDUU7i1TqZlCFaD4T01vtyDFvPlD97JQyS+IsSh1nI2EFbpyk"
+    crossorigin="anonymous">
+  {# The brand font's common subset, fetched early (see mobilitains.css). #}
+  <link rel="preload" href="{% static 'core/fonts/montserrat/montserrat-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
+  {# Brand colours; after Bootstrap, which it themes. #}
+  <link rel="stylesheet" href="{% static 'core/css/mobilitains.css' %}">
+  <link rel="icon" type="image/svg+xml" href="{% static 'core/img/mobilitains-mark.svg' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+{% comment %}
+hx-headers: htmx requests that aren't whole-form submissions (e.g.
+the map widget's buttons) still need Django's CSRF token.
+{% endcomment %}
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+  {% block nav %}{% include "includes/nav.html" %}{% endblock %}
+  <main class="{% block main_class %}container py-4{% endblock %}">
+    {% if not hide_unvalidated_banner %}{% unvalidated_banner %}{% endif %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }}" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  {% block footer %}{% site_footer %}{% endblock %}
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js"
+    integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
+    crossorigin="anonymous"></script>
+  <script src="{% static 'core/js/theme_switch.js' %}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

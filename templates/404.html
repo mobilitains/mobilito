@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% comment %}
+extends must be the first tag in the file, so the copyright header
+follows it here instead of leading the file.
+
+Copyright 2024  Francais pour une Meilleure Mobilité.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+
+{% block title %}{% trans "Page not found" %} — Mobilito{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+  <h1>{% trans "Page not found" %}</h1>
+  <p class="lead">
+    {% trans "The page you're looking for doesn't exist." %}
+  </p>
+  <a href="{% url 'home' %}" class="btn btn-primary">
+    {% trans "Back to Mobilito" %}
+  </a>
+</div>
+{% endblock %}

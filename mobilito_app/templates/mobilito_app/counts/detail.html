@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+{% block title %}{% trans "Modal share count" %} · Mobilito{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'mobilito_app/css/count.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 40rem;">
+  <h1 class="h3 mb-1">{% trans "What went by" %}</h1>
+  <p class="text-body-secondary mb-3">
+    {% include "core/partials/place_name.html" with location=session.location %}<br>
+    {% if duration_minutes < 1 %}
+      {% blocktranslate trimmed with date=session.started_at|date:"DATETIME_FORMAT" %}
+        {{ date }}, for less than a minute
+      {% endblocktranslate %}
+    {% else %}
+      {% blocktranslate trimmed with date=session.started_at|date:"DATETIME_FORMAT" count minutes=duration_minutes %}
+        {{ date }}, for {{ minutes }} minute
+      {% plural %}
+        {{ date }}, for {{ minutes }} minutes
+      {% endblocktranslate %}
+    {% endif %}
+  </p>
+
+  {% if can_flag and session.location.user_entered_address %}
+    {% trans "Report a problem with this place name" as flag_label %}
+    {% include "mobilito_app/moderation/flag_link.html" with kind="count" pk=session.pk label=flag_label %}
+  {% endif %}
+
+  {% include "mobilito_app/moderation/state_notes.html" with what="count" %}
+
+  {% if not total %}
+    <p class="lead">{% trans "Nothing was counted this time." %}</p>
+  {% else %}
+  {% include "mobilito_app/partials/count_bars.html" with caption_id="bars-caption" %}
+  {% endif %}
+
+  {% include "mobilito_app/partials/count_history.html" %}
+
+  {% if session.location_mismatch %}
+    <p class="small text-body-secondary">
+      <i class="bi bi-info-circle" aria-hidden="true"></i>
+      {% trans "The phone's own position was some distance from this spot when the count started." %}
+    </p>
+  {% endif %}
+
+  <div class="d-grid gap-2 mb-3">
+    <a href="{% url 'counts_new' %}?from={{ session.pk }}" class="btn btn-contribute btn-lg">
+      <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+      {% trans "Do another count here" %}
+    </a>
+    <a href="{% url 'home' %}" class="btn btn-link">
+      {% trans "Back to the start" %}
+    </a>
+  </div>
+
+  {% if published %}
+    <p class="small">
+      {% trans "Link to share this count:" %}<br>
+      <a href="{{ share_url }}" class="text-break">{{ share_url }}</a>
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

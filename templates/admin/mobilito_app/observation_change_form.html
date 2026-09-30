@@ -1,0 +1,51 @@
+{% extends "admin/change_form.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+{% comment %}
+An observation's admin page, with its moderation outcomes as buttons
+(roadmap Phase 8). They don't apply photo boxes, which may be stale:
+only Save does.
+{% endcomment %}
+
+{% block form_top %}
+  {% if moderation_buttons %}
+    <p class="help">
+      {% trans "Look at the content and flags below, then choose a decision with the buttons at the bottom of the page." %}
+      {% if has_editable_parts %}
+        {% trans "To hide or show one photo, change its “published” box and press Save first." %}
+      {% endif %}
+    </p>
+  {% endif %}
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+  {% if moderation_buttons %}
+    <div class="submit-row">
+      <strong>{% trans "Decision:" %}</strong>
+      {% for name, label in moderation_buttons %}
+        <input type="submit" name="_moderate_{{ name }}" value="{{ label }}">
+      {% endfor %}
+    </div>
+  {% endif %}
+  {{ block.super }}
+{% endblock %}

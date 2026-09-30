@@ -1,0 +1,64 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+{% comment %}
+The details of what counts as what (design §9.1), shared by the
+start page's collapsible guide and the counting screen's overlay.
+{% endcomment %}
+<p class="mb-2">{% trans "Count each thing as what it behaves like." %}</p>
+<dl class="mb-0">
+  <dt><i class="bi bi-person-walking" aria-hidden="true"></i> {% trans "Pedestrians" %}</dt>
+  <dd>
+    {% blocktranslate trimmed %}
+      People walking, wheelchairs, people pushing a bike. A child
+      walking counts; a baby in a pram or stroller doesn't.
+    {% endblocktranslate %}
+  </dd>
+  <dt><i class="bi bi-bicycle" aria-hidden="true"></i> {% trans "Bikes" %}</dt>
+  <dd>
+    {% comment %}Translators: « trottinettes (électriques ou non) », not « scooters », which in French are motor scooters (counted as cars).{% endcomment %}
+    {% blocktranslate trimmed %}
+      Anything that behaves like a bike: bikes, e-bikes, tricycles,
+      kick scooters and e-scooters, skateboards, monowheels.
+      Passengers (a child in a seat or a cargo bike) don't add one.
+    {% endblocktranslate %}
+  </dd>
+  <dt><i class="bi bi-car-front-fill" aria-hidden="true"></i> {% trans "Cars" %}</dt>
+  <dd>
+    {% blocktranslate trimmed %}
+      Cars, vans, lorries, motorbikes and mopeds: one each, whoever
+      is inside.
+    {% endblocktranslate %}
+  </dd>
+  <dt><i class="bi bi-bus-front-fill" aria-hidden="true"></i> {% trans "Public transit" %}</dt>
+  <dd>
+    {% blocktranslate trimmed %}
+      Each bus or tram, once.
+    {% endblocktranslate %}
+  </dd>
+</dl>
+<p class="small text-body-secondary mt-2 mb-0">
+  {% blocktranslate trimmed %}
+    A child on a little bike next to a walking parent: one bike and
+    one pedestrian.
+  {% endblocktranslate %}
+</p>

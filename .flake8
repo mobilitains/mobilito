@@ -1,4 +1,7 @@
 [flake8]
-ignore = D100,D101,D102,D103,D104,D105,D106,D107
+# W503 (line break before binary operator) conflicts with black's
+# formatting, which puts the operator first; black's own docs
+# recommend ignoring it.
+ignore = D100,D101,D102,D103,D104,D105,D106,D107,W503
 exclude = migrations, settings.py, venv
 max-line-length = 79

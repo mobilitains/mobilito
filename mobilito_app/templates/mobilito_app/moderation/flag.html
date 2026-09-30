@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+
+{% block title %}{% trans "Report a problem" %} · Mobilito{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 40rem;">
+  <h1 class="h3 mb-3">
+    {% if kind == "photo" %}{% trans "Report a problem with a photo" %}
+    {% elif kind == "count" %}{% trans "Report a problem with a count's place name" %}
+    {% elif observation.description %}{% trans "Report a problem with a report's text" %}
+    {% else %}{% trans "Report a problem with a report's place name" %}{% endif %}
+  </h1>
+  {% include "mobilito_app/moderation/flag_form.html" %}
+  {% if thanks or already %}
+    <a href="{{ back_url }}" class="btn btn-primary">{% trans "Back" %}</a>
+  {% endif %}
+</div>
+{% endblock %}

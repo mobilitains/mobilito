@@ -1,0 +1,46 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+{% comment %}
+A "Report a problem" link for one thing (§13.4). Usage:
+  {% include "mobilito_app/moderation/flag_link.html" with kind="report" pk=report.pk label=flag_label %}
+Optional: hidden_label, read out after label (e.g. "with photo 2");
+slot, the id of an element elsewhere (flag_slot.html) to open the
+form in, when there's no room here (photos in a grid). Without a
+slot, one is made right after the link.
+
+Without JavaScript the link opens the form as a page of its own.
+With htmx the form opens in the slot, and remembers which link
+opened it so Cancel can give focus back.
+{% endcomment %}
+{% with pk_text=pk|stringformat:"s" %}{% with own_slot="flag-"|add:kind|add:"-"|add:pk_text %}{% with slot_id=slot|default:own_slot %}
+<a href="{% url 'flag' kind pk %}" id="flag-open-{{ kind }}-{{ pk }}"
+   class="btn btn-link small text-body-secondary px-0 d-inline-flex align-items-center gap-1"
+   style="min-height: 2.75rem;"
+   aria-controls="{{ slot_id }}"
+   hx-get="{% url 'flag' kind pk %}" hx-target="#{{ slot_id }}" hx-swap="innerHTML"
+   hx-on::before-request="document.getElementById('{{ slot_id }}').dataset.opener = this.id">
+  <i class="bi bi-flag" aria-hidden="true"></i>
+  <span>{{ label }}{% if hidden_label %}<span class="visually-hidden"> {{ hidden_label }}</span>{% endif %}</span>
+</a>
+{% if not slot %}{% include "mobilito_app/moderation/flag_slot.html" with slot_id=slot_id %}{% endif %}
+{% endwith %}{% endwith %}{% endwith %}

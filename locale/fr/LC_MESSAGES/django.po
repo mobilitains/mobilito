@@ -1,0 +1,2155 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: mobilito\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-30 17:52+0200\n"
+"PO-Revision-Date: 2026-09-30 09:30+0200\n"
+"Last-Translator: Claude (machine draft, needs native review)\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: authentication/forms.py:31
+#: authentication/templates/authentication/observe.html:25
+msgid "Your email address"
+msgstr "Votre adresse e-mail"
+
+#: authentication/forms.py:54
+msgid "Stay signed in on this device"
+msgstr "Garder la connexion sur cet appareil"
+
+#: authentication/models.py:71
+msgid "Superuser must have is_staff=True."
+msgstr "Un superutilisateur doit avoir is_staff=True."
+
+#: authentication/models.py:73
+msgid "Superuser must have is_superuser=True."
+msgstr "Un superutilisateur doit avoir is_superuser=True."
+
+#: authentication/provisional.py:148
+msgid ""
+"Your email address wasn't confirmed in time, so anything you recorded was "
+"deleted."
+msgstr ""
+"Votre adresse e-mail n'a pas été confirmée à temps : ce que vous aviez "
+"enregistré a donc été supprimé."
+
+#: authentication/templates/authentication/email/magic_link.html:29
+#: authentication/templates/authentication/email/magic_link.txt:22
+msgid "Hello,"
+msgstr "Bonjour,"
+
+#: authentication/templates/authentication/email/magic_link.html:31
+msgid ""
+"You recorded an observation on Mobilito, but haven't confirmed your email "
+"address yet. Confirm it's you so that what you recorded counts:"
+msgstr ""
+"Vous avez enregistré une observation sur Mobilito, mais vous n'avez pas "
+"encore confirmé votre adresse e-mail. Confirmez que c'est bien vous pour que "
+"votre observation soit prise en compte :"
+
+#: authentication/templates/authentication/email/magic_link.html:33
+msgid ""
+"You gave this email address on Mobilito. Confirm it's you so that what you "
+"record counts:"
+msgstr ""
+"Vous avez donné cette adresse e-mail sur Mobilito. Confirmez que c'est bien "
+"vous pour que vos observations soient prises en compte :"
+
+#: authentication/templates/authentication/email/magic_link.html:35
+msgid "Use the button below to sign in to Mobilito:"
+msgstr "Utilisez le bouton ci-dessous pour vous connecter à Mobilito :"
+
+#: authentication/templates/authentication/email/magic_link.html:38
+#: authentication/templates/authentication/verify.html:54
+msgid "Confirm my email address"
+msgstr "Confirmer mon adresse e-mail"
+
+#: authentication/templates/authentication/email/magic_link.html:38
+#: authentication/templates/authentication/start.html:25
+#: authentication/templates/authentication/start.html:29
+#: authentication/templates/authentication/verify.html:25
+#: authentication/templates/authentication/verify.html:54
+#: templates/includes/nav.html:73
+msgid "Sign in"
+msgstr "Se connecter"
+
+#: authentication/templates/authentication/email/magic_link.html:42
+#: authentication/templates/authentication/email/magic_link.txt:28
+#, python-format
+msgid ""
+"If you don't confirm your email address by %(date)s, what you recorded will "
+"be deleted."
+msgstr ""
+"Si vous ne confirmez pas votre adresse e-mail d'ici le %(date)s, ce que vous "
+"avez enregistré sera supprimé."
+
+#: authentication/templates/authentication/email/magic_link.html:47
+#: authentication/templates/authentication/email/magic_link.txt:32
+msgid "No hurry: you can finish what you're doing first."
+msgstr "Rien ne presse : vous pouvez d'abord terminer ce que vous faites."
+
+#: authentication/templates/authentication/email/magic_link.html:49
+#: authentication/templates/authentication/email/magic_link.txt:34
+msgid "You'll be taken back to what you were doing."
+msgstr "Vous reviendrez là où vous en étiez."
+
+#: authentication/templates/authentication/email/magic_link.html:53
+#: authentication/templates/authentication/email/magic_link.txt:36
+#, python-format
+msgid "The link works once, for %(days)s day."
+msgid_plural "The link works once, for %(days)s days."
+msgstr[0] "Le lien ne fonctionne qu'une fois, pendant %(days)s jour."
+msgstr[1] "Le lien ne fonctionne qu'une fois, pendant %(days)s jours."
+
+#: authentication/templates/authentication/email/magic_link.html:59
+#: authentication/templates/authentication/email/magic_link.txt:40
+#: authentication/templates/authentication/sent.html:42
+#, python-format
+msgid "The link works once, for %(minutes)s minute."
+msgid_plural "The link works once, for %(minutes)s minutes."
+msgstr[0] "Le lien ne fonctionne qu'une fois, pendant %(minutes)s minute."
+msgstr[1] "Le lien ne fonctionne qu'une fois, pendant %(minutes)s minutes."
+
+#: authentication/templates/authentication/email/magic_link.html:67
+msgid "If the button doesn't work, copy this address into your browser:"
+msgstr ""
+"Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur :"
+
+#: authentication/templates/authentication/email/magic_link.html:72
+#: authentication/templates/authentication/email/magic_link.txt:46
+msgid ""
+"If you didn't ask for this, you can ignore this email: nothing will be kept."
+msgstr ""
+"Si vous n'avez rien demandé, vous pouvez ignorer cet e-mail : rien ne sera "
+"conservé."
+
+#: authentication/templates/authentication/email/magic_link.html:74
+#: authentication/templates/authentication/email/magic_link.txt:46
+msgid "If you didn't ask for this, you can ignore this email."
+msgstr "Si vous n'avez rien demandé, vous pouvez ignorer cet e-mail."
+
+#: authentication/templates/authentication/email/magic_link.txt:24
+msgid ""
+"You recorded an observation on Mobilito, but haven't confirmed your email "
+"address yet. Open this link to confirm it's you, so that what you recorded "
+"counts:"
+msgstr ""
+"Vous avez enregistré une observation sur Mobilito, mais vous n'avez pas "
+"encore confirmé votre adresse e-mail. Ouvrez ce lien pour confirmer que "
+"c'est bien vous, afin que votre observation soit prise en compte :"
+
+#: authentication/templates/authentication/email/magic_link.txt:24
+msgid ""
+"You gave this email address on Mobilito. Open this link to confirm it's you, "
+"so that what you record counts:"
+msgstr ""
+"Vous avez donné cette adresse e-mail sur Mobilito. Ouvrez ce lien pour "
+"confirmer que c'est bien vous, afin que vos observations soient prises en "
+"compte :"
+
+#: authentication/templates/authentication/email/magic_link.txt:24
+msgid "Open this link to sign in to Mobilito:"
+msgstr "Ouvrez ce lien pour vous connecter à Mobilito :"
+
+#: authentication/templates/authentication/email/magic_link_subject.txt:22
+msgid "Reminder: confirm your email address for Mobilito"
+msgstr "Rappel : confirmez votre adresse e-mail pour Mobilito"
+
+#: authentication/templates/authentication/email/magic_link_subject.txt:22
+msgid "Confirm your email address for Mobilito"
+msgstr "Confirmez votre adresse e-mail pour Mobilito"
+
+#: authentication/templates/authentication/email/magic_link_subject.txt:22
+msgid "Your Mobilito sign-in link"
+msgstr "Votre lien de connexion à Mobilito"
+
+#: authentication/templates/authentication/observe.html:30
+msgid "Change your email address"
+msgstr "Changer d'adresse e-mail"
+
+#: authentication/templates/authentication/observe.html:32
+msgid ""
+"Correct your address and we'll send the link there instead. What you've "
+"recorded so far is kept."
+msgstr ""
+"Corrigez votre adresse et nous y enverrons le lien. Ce que vous avez déjà "
+"enregistré est conservé."
+
+#: authentication/templates/authentication/observe.html:38
+msgid "Before you start"
+msgstr "Avant de commencer"
+
+#: authentication/templates/authentication/observe.html:40
+msgid ""
+"What's your email address? You can start straight away. We'll email you a "
+"link: open it within a week so that what you record counts."
+msgstr ""
+"Quelle est votre adresse e-mail ? Vous pouvez commencer tout de suite. Nous "
+"vous enverrons un lien par e-mail : ouvrez-le dans la semaine pour que vos "
+"observations soient prises en compte."
+
+#: authentication/templates/authentication/observe.html:67
+msgid "Continue"
+msgstr "Continuer"
+
+#: authentication/templates/authentication/observe.html:71
+msgid ""
+"We only use your address to send you this link and news about your "
+"observations. It's never shown to anyone. If you don't confirm it within a "
+"week, what you record is deleted."
+msgstr ""
+"Nous n'utilisons votre adresse que pour vous envoyer ce lien et des "
+"nouvelles de vos observations. Elle n'est jamais montrée à personne. Si vous "
+"ne la confirmez pas dans la semaine, ce que vous enregistrez est supprimé."
+
+#: authentication/templates/authentication/observe.html:79
+msgid "Already used Mobilito?"
+msgstr "Vous avez déjà utilisé Mobilito ?"
+
+#: authentication/templates/authentication/observe.html:80
+msgid "Sign in instead"
+msgstr "Me connecter plutôt"
+
+#: authentication/templates/authentication/sent.html:25
+#: authentication/templates/authentication/sent.html:30
+msgid "Check your email"
+msgstr "Consultez vos e-mails"
+
+#: authentication/templates/authentication/sent.html:33
+#, python-format
+msgid "We've sent a sign-in link to <strong>%(email)s</strong>."
+msgstr "Nous avons envoyé un lien de connexion à <strong>%(email)s</strong>."
+
+#: authentication/templates/authentication/sent.html:36
+msgid "Wrong address?"
+msgstr "Mauvaise adresse ?"
+
+#: authentication/templates/authentication/sent.html:39
+msgid "We've sent you a sign-in link."
+msgstr "Nous vous avons envoyé un lien de connexion."
+
+#: authentication/templates/authentication/sent.html:49
+msgid ""
+"To sign in on this phone or computer, open the email here too. The link "
+"signs in whichever device you open it on."
+msgstr ""
+"Pour vous connecter sur ce téléphone ou cet ordinateur, ouvrez l'e-mail ici "
+"aussi. Le lien connecte l'appareil sur lequel vous l'ouvrez."
+
+#: authentication/templates/authentication/sent.html:55
+msgid "Nothing arrived after a few minutes? Check your spam folder."
+msgstr ""
+"Rien reçu après quelques minutes ? Regardez dans vos courriers indésirables."
+
+#: authentication/templates/authentication/sent.html:58
+msgid "Ask for a new link"
+msgstr "Demander un nouveau lien"
+
+#: authentication/templates/authentication/start.html:31
+msgid ""
+"Enter your email address and we'll send you a link. Tap it to sign in "
+"&mdash; no password needed."
+msgstr ""
+"Saisissez votre adresse e-mail et nous vous enverrons un lien. Appuyez "
+"dessus pour vous connecter &mdash; pas besoin de mot de passe."
+
+#: authentication/templates/authentication/start.html:55
+msgid "Send me a sign-in link"
+msgstr "M'envoyer un lien de connexion"
+
+#: authentication/templates/authentication/start.html:59
+msgid ""
+"We only use your address to sign you in and to tell you about your "
+"observations. It's never shown to anyone."
+msgstr ""
+"Nous n'utilisons votre adresse que pour vous connecter et vous donner des "
+"nouvelles de vos observations. Elle n'est jamais montrée à personne."
+
+#: authentication/templates/authentication/verify.html:25
+msgid "Confirm your email address"
+msgstr "Confirmez votre adresse e-mail"
+
+#: authentication/templates/authentication/verify.html:29
+msgid "One more tap"
+msgstr "Encore un geste"
+
+#: authentication/templates/authentication/verify.html:32
+#, python-format
+msgid ""
+"Tap the button to confirm <strong>%(email)s</strong>. What you recorded will "
+"then count, and this device will be signed in."
+msgstr ""
+"Appuyez sur le bouton pour confirmer <strong>%(email)s</strong>. Ce que vous "
+"avez enregistré sera alors pris en compte, et cet appareil sera connecté."
+
+#: authentication/templates/authentication/verify.html:37
+#, python-format
+msgid "Tap the button to finish signing in as <strong>%(email)s</strong>."
+msgstr ""
+"Appuyez sur le bouton pour finir de vous connecter en tant que "
+"<strong>%(email)s</strong>."
+
+#: authentication/templates/authentication/verify.html:50
+msgid "Uncheck this on a shared or public device."
+msgstr "Décochez cette case sur un appareil partagé ou public."
+
+#: authentication/templates/authentication/verify_invalid.html:25
+#: authentication/templates/authentication/verify_invalid.html:30
+msgid "Already confirmed"
+msgstr "Déjà confirmée"
+
+#: authentication/templates/authentication/verify_invalid.html:25
+#: authentication/templates/authentication/verify_invalid.html:41
+msgid "This link no longer works"
+msgstr "Ce lien ne fonctionne plus"
+
+#: authentication/templates/authentication/verify_invalid.html:32
+msgid ""
+"Your email address is already confirmed: what you recorded counts. To see it "
+"on this device, sign in here too."
+msgstr ""
+"Votre adresse e-mail est déjà confirmée : ce que vous avez enregistré est "
+"pris en compte. Pour le voir sur cet appareil, connectez-vous ici aussi."
+
+#: authentication/templates/authentication/verify_invalid.html:38
+msgid "Sign in on this device"
+msgstr "Me connecter sur cet appareil"
+
+#: authentication/templates/authentication/verify_invalid.html:43
+msgid ""
+"It has already been used, or it has expired. Ask for a new one and we'll "
+"send it straight away."
+msgstr ""
+"Il a déjà servi, ou il a expiré. Demandez-en un nouveau et nous vous "
+"l'enverrons tout de suite."
+
+#: authentication/templates/authentication/verify_invalid.html:58
+#: authentication/templates/authentication/verify_invalid.html:63
+msgid "Send me a new link"
+msgstr "M'envoyer un nouveau lien"
+
+#: authentication/views.py:85
+msgid ""
+"There have been several requests for links in a short time. Check your inbox "
+"and spam folder for one we've already sent. If it no longer works, you can "
+"ask for a new one within the hour."
+msgstr ""
+"Plusieurs liens ont été demandés en peu de temps. Cherchez dans votre boîte "
+"de réception et vos courriers indésirables celui que nous avons déjà envoyé. "
+"S'il ne fonctionne plus, vous pourrez en demander un nouveau d'ici une heure."
+
+#: authentication/views.py:142
+msgid "We couldn't send the email just now. Please try again in a few minutes."
+msgstr ""
+"Nous n'avons pas pu envoyer l'e-mail pour le moment. Réessayez dans quelques "
+"minutes."
+
+#: authentication/views.py:238
+msgid "Your email address is confirmed: what you recorded will count."
+msgstr ""
+"Votre adresse e-mail est confirmée : ce que vous avez enregistré sera pris "
+"en compte."
+
+#: authentication/views.py:243
+msgid "Sign-in complete."
+msgstr "Connexion réussie."
+
+#: authentication/views.py:259
+msgid "Your email address is already confirmed: what you recorded counts."
+msgstr ""
+"Votre adresse e-mail est déjà confirmée : ce que vous avez enregistré est "
+"pris en compte."
+
+#: authentication/views.py:304
+msgid "You're already signed in."
+msgstr "Connexion déjà active."
+
+#: authentication/views.py:381
+msgid ""
+"You can start now, but we couldn't send the email just now. Use “Send it "
+"again” in a few minutes."
+msgstr ""
+"Vous pouvez commencer, mais nous n'avons pas pu envoyer l'e-mail pour le "
+"moment. Utilisez « Le renvoyer » dans quelques minutes."
+
+#: authentication/views.py:391
+#, python-format
+msgid "We've sent a new link to %(email)s."
+msgstr "Nous avons envoyé un nouveau lien à %(email)s."
+
+#: authentication/views.py:393
+#, python-format
+msgid "You can start now. We've sent a link to %(email)s."
+msgstr "Vous pouvez commencer. Nous avons envoyé un lien à %(email)s."
+
+#: authentication/views.py:414
+msgid ""
+"We've sent several links already. Check your inbox and spam folder, or try "
+"again later."
+msgstr ""
+"Nous avons déjà envoyé plusieurs liens. Regardez dans votre boîte de "
+"réception et vos courriers indésirables, ou réessayez plus tard."
+
+#: authentication/views.py:425
+msgid "We couldn't send the email just now. Please try again soon."
+msgstr ""
+"Nous n'avons pas pu envoyer l'e-mail pour le moment. Réessayez bientôt."
+
+#: authentication/views.py:430
+#, python-format
+msgid "We've sent the link again to %(email)s."
+msgstr "Nous avons renvoyé le lien à %(email)s."
+
+#: authentication/views.py:439
+msgid "You're signed out."
+msgstr "Déconnexion effectuée."
+
+#: core/forms.py:44
+msgid "Leave this field empty"
+msgstr "Laissez ce champ vide"
+
+#: core/geocoding.py:97
+msgid "© OpenStreetMap contributors"
+msgstr "© les contributeurs d’OpenStreetMap"
+
+#: core/images.py:100
+#, python-format
+msgid "“%(name)s” isn't a photo we can read (JPEG or PNG work best)."
+msgstr ""
+"« %(name)s » n'est pas une photo que nous savons lire (JPEG ou PNG "
+"conviennent le mieux)."
+
+#: core/images.py:113
+#, python-format
+msgid "“%(name)s” is too large (at most %(mb)s MB per photo)."
+msgstr "« %(name)s » est trop volumineuse (%(mb)s Mo au plus par photo)."
+
+#: core/lifecycle.py:104 core/lifecycle.py:132
+msgid "It hasn't been sent yet."
+msgstr "Elle n'a pas encore été envoyée."
+
+#: core/lifecycle.py:106
+msgid "The count isn't finished."
+msgstr "Le comptage n'est pas terminé."
+
+#: core/lifecycle.py:109
+msgid "Its author hasn't confirmed their email address yet."
+msgstr ""
+"La personne qui l'a publiée n'a pas encore confirmé son adresse e-mail."
+
+#: core/lifecycle.py:124
+msgid "Not a moderation outcome."
+msgstr "Ce n'est pas une décision de modération."
+
+#: core/maps.py:45
+msgid ""
+"&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> "
+"contributors"
+msgstr ""
+"&copy; les contributeurs d’<a href=\"https://www.openstreetmap.org/"
+"copyright\">OpenStreetMap</a>"
+
+#: core/models.py:38
+msgid "Draft"
+msgstr "Brouillon"
+
+#: core/models.py:39
+msgid "Submitted"
+msgstr "Envoyée"
+
+#: core/models.py:40
+msgid "Pending validation"
+msgstr "En attente de validation"
+
+#: core/models.py:41
+msgid "Pending moderation"
+msgstr "En attente de modération"
+
+#: core/models.py:42 mobilito_app/admin.py:62
+msgid "Published"
+msgstr "Publiée"
+
+#: core/models.py:43 mobilito_app/admin.py:68
+msgid "Light hold"
+msgstr "Retenue légère"
+
+#: core/models.py:44 mobilito_app/admin.py:76
+msgid "Sandboxed"
+msgstr "Isolée"
+
+#: core/models.py:56
+msgid "Unreviewed"
+msgstr "Non examinée"
+
+#: core/models.py:57
+msgid "Cleared"
+msgstr "Validée"
+
+#: core/models.py:58
+msgid "Flagged for review"
+msgstr "Alerte à examiner"
+
+#: core/templates/core/credits.html:25 core/templates/core/credits.html:28
+#: templates/includes/footer.html:33
+msgid "Credits"
+msgstr "Crédits"
+
+#: core/templates/core/credits.html:30
+msgid "Maps and addresses"
+msgstr "Cartes et adresses"
+
+#: core/templates/core/credits.html:32
+msgid "Map:"
+msgstr "Carte :"
+
+#: core/templates/core/credits.html:33 templates/includes/footer.html:32
+msgid "Addresses:"
+msgstr "Adresses :"
+
+#: core/templates/core/credits.html:36
+msgid ""
+"OpenStreetMap is a map of the world made by volunteers. Its data is "
+"available under the <a href=\"https://opendatacommons.org/licenses/odbl/"
+"\">Open Database License</a>."
+msgstr ""
+"OpenStreetMap est une carte du monde faite par des bénévoles. Ses données "
+"sont disponibles sous la <a href=\"https://opendatacommons.org/licenses/odbl/"
+"\">Licence ouverte de base de données</a> (ODbL)."
+
+#: core/templates/core/credits.html:45
+msgid ""
+"Mobilito’s traffic counts grew out of a first prototype by Benjamin "
+"Mourgues, whose field trials shaped the counting screen."
+msgstr ""
+"Les comptages de Mobilito sont nés d’un premier prototype de Benjamin "
+"Mourgues, dont les essais sur le terrain ont façonné l’écran de comptage."
+
+#: core/templates/core/credits.html:51
+msgid ""
+"Mobilito is free software: you may use, study, share and improve it under "
+"the <a href=\"https://www.gnu.org/licenses/agpl-3.0.html\">GNU Affero "
+"General Public License</a>, version 3 or later. © Français pour une "
+"Meilleure Mobilité."
+msgstr ""
+"Mobilito est un logiciel libre : vous pouvez l’utiliser, l’étudier, le "
+"partager et l’améliorer selon les termes de la <a href=\"https://www.gnu.org/"
+"licenses/agpl-3.0.html\">Licence publique générale GNU Affero</a>, version 3 "
+"ou ultérieure. © Français pour une Meilleure Mobilité."
+
+#: core/templates/core/credits.html:57
+msgid "Get the source code."
+msgstr "Obtenir le code source."
+
+#: core/templates/core/credits.html:60
+msgid ""
+"Built with <a href=\"https://www.djangoproject.com/\">Django</a>, <a "
+"href=\"https://leafletjs.com/\">Leaflet</a>, <a href=\"https://"
+"getbootstrap.com/\">Bootstrap</a>, <a href=\"https://icons.getbootstrap.com/"
+"\">Bootstrap Icons</a> and <a href=\"https://htmx.org/\">htmx</a>."
+msgstr ""
+"Réalisé avec <a href=\"https://www.djangoproject.com/\">Django</a>, <a "
+"href=\"https://leafletjs.com/\">Leaflet</a>, <a href=\"https://"
+"getbootstrap.com/\">Bootstrap</a>, <a href=\"https://icons.getbootstrap.com/"
+"\">Bootstrap Icons</a> et <a href=\"https://htmx.org/\">htmx</a>."
+
+#: core/templates/core/includes/map_widget.html:45
+msgid "Drag the map until the pink target is on the spot."
+msgstr ""
+"Faites glisser la carte jusqu'à ce que la cible rose soit sur l'endroit."
+
+#: core/templates/core/includes/map_widget.html:50
+msgid "Map. Use the arrow keys to move it."
+msgstr "Carte. Utilisez les flèches du clavier pour la déplacer."
+
+#: core/templates/core/includes/map_widget.html:53
+msgid "The map couldn't load. Check your connection and reload the page."
+msgstr ""
+"La carte n'a pas pu se charger. Vérifiez votre connexion et rechargez la "
+"page."
+
+#: core/templates/core/includes/map_widget.html:77
+#: core/templates/core/includes/map_widget.html:78
+msgid "Go to my location"
+msgstr "Aller à ma position"
+
+#: core/templates/core/includes/map_widget.html:85
+msgid "No observations here yet. Zoom out or move the map to look further."
+msgstr ""
+"Pas encore d'observation ici. Dézoomez ou déplacez la carte pour chercher "
+"plus loin."
+
+#: core/templates/core/includes/map_widget.html:86
+msgid ""
+"We couldn’t load the observations. Check your connection: moving the map "
+"tries again."
+msgstr ""
+"Nous n'avons pas pu charger les observations. Vérifiez votre connexion, puis "
+"déplacez la carte pour réessayer."
+
+#: core/templates/core/includes/map_widget.html:100
+msgid "Use device location"
+msgstr "Utiliser la position de l'appareil"
+
+#: core/templates/core/includes/map_widget.html:103
+msgid "We'll remember this choice."
+msgstr "Nous retiendrons ce choix."
+
+#: core/templates/core/includes/map_widget.html:112
+msgid ""
+"Your observation will be marked “location not checked”, which makes it less "
+"useful to local authorities."
+msgstr ""
+"Votre observation sera marquée « position non vérifiée », ce qui la rend "
+"moins utile aux collectivités."
+
+#: core/templates/core/includes/map_widget.html:113
+msgid ""
+"Your browser is blocking location. You can allow it in your browser "
+"settings, or place the target by hand. Until then, your observation will be "
+"marked “location not checked”."
+msgstr ""
+"Votre navigateur bloque la localisation. Vous pouvez l'autoriser dans ses "
+"réglages, ou placer la cible à la main. En attendant, votre observation sera "
+"marquée « position non vérifiée »."
+
+#: core/templates/core/includes/map_widget.html:114
+msgid ""
+"This browser can’t share your position. Place the target by hand. Your "
+"observation will be marked “location not checked”."
+msgstr ""
+"Ce navigateur ne peut pas partager votre position. Placez la cible à la "
+"main. Votre observation sera marquée « position non vérifiée »."
+
+#: core/templates/core/includes/map_widget.html:115
+msgid ""
+"We couldn’t get your position. Tap the arrow button at the top right of the "
+"map to try again, or place the target by hand."
+msgstr ""
+"Nous n'avons pas pu obtenir votre position. Appuyez sur le bouton flèche en "
+"haut à droite de la carte pour réessayer, ou placez la cible à la main."
+
+#: core/templates/core/includes/map_widget.html:136
+msgid "Confirm location"
+msgstr "Confirmer l'emplacement"
+
+#: core/templates/core/includes/map_widget.html:141
+msgid "You moved the map. Tap “Confirm location” again."
+msgstr ""
+"Vous avez déplacé la carte. Appuyez à nouveau sur « Confirmer "
+"l'emplacement »."
+
+#: core/templates/core/includes/map_widget.html:142
+msgid ""
+"The map moved to where you are. Check the target and tap “Confirm location” "
+"again."
+msgstr ""
+"La carte s'est placée là où vous êtes. Vérifiez la cible et appuyez à "
+"nouveau sur « Confirmer l'emplacement »."
+
+#: core/templates/core/includes/map_widget.html:143
+msgid "We couldn’t confirm the location. Check your connection and try again."
+msgstr ""
+"Nous n'avons pas pu confirmer l'emplacement. Vérifiez votre connexion et "
+"réessayez."
+
+#: core/templates/core/includes/map_widget.html:149
+msgid "Loading…"
+msgstr "Chargement…"
+
+#: core/templates/core/includes/map_widget.html:150
+#: core/templates/core/includes/map_widget.html:157
+msgid "Observation"
+msgstr "Observation"
+
+#: core/templates/core/includes/map_widget.html:151
+msgid "Observations here"
+msgstr "Observations ici"
+
+#: core/templates/core/includes/map_widget.html:152
+#, python-format
+msgid "%%(n)s observations here. Zoom in on them."
+msgstr "%%(n)s observations ici. Zoomer dessus."
+
+#: core/templates/core/includes/map_widget.html:153
+#, python-format
+msgid "%%(n)s observations at this spot. Show them."
+msgstr "%%(n)s observations à cet endroit. Les afficher."
+
+#: core/templates/core/includes/map_widget.html:154
+msgid "We couldn’t load this observation. Close this panel and try again."
+msgstr ""
+"Nous n'avons pas pu charger cette observation. Fermez ce panneau et "
+"réessayez."
+
+#: core/templates/core/includes/map_widget.html:160
+msgid "Close"
+msgstr "Fermer"
+
+#: core/templates/core/partials/location_confirmed.html:31
+msgid "Location confirmed."
+msgstr "Emplacement confirmé."
+
+#: core/templates/core/partials/location_confirmed.html:44
+msgid "Address or name of this spot"
+msgstr "Adresse ou nom de cet endroit"
+
+#: core/templates/core/partials/location_confirmed.html:52
+msgid "Check this and correct it if needed."
+msgstr "Vérifiez et corrigez si besoin."
+
+#: core/templates/core/partials/location_confirmed.html:54
+msgid ""
+"No address suggestion available. Type one, or give the spot a name people "
+"would recognise."
+msgstr ""
+"Aucune adresse à suggérer. Saisissez-en une, ou donnez à l'endroit un nom "
+"que les gens reconnaîtront."
+
+#: core/templates/core/partials/location_confirmed.html:60
+msgid ""
+"We couldn't read that position. Move the map slightly and tap “Confirm "
+"location” again."
+msgstr ""
+"Nous n'avons pas pu lire cette position. Déplacez un peu la carte et appuyez "
+"à nouveau sur « Confirmer l'emplacement »."
+
+#: core/templates/core/partials/place_name.html:25
+#, python-format
+msgid "Near %(lat)s, %(lon)s"
+msgstr "Près de %(lat)s, %(lon)s"
+
+#: mobilito_app/admin.py:60
+msgid "Publish (show to everyone)"
+msgstr "Publier (visible par tout le monde)"
+
+#: mobilito_app/admin.py:61
+msgid "Publish"
+msgstr "Publier"
+
+#: mobilito_app/admin.py:67
+msgid "Light hold (link only, off the map)"
+msgstr "Retenue légère (lien seulement, hors de la carte)"
+
+#: mobilito_app/admin.py:69
+msgid "Put on light hold"
+msgstr "Mise en retenue légère"
+
+#: mobilito_app/admin.py:74
+msgid "Sandbox (author and moderators only)"
+msgstr ""
+"Isoler (visible seulement par la personne qui l'a publiée et la modération)"
+
+#: mobilito_app/admin.py:75
+msgid "Sandbox"
+msgstr "Isoler"
+
+#: mobilito_app/admin.py:107 mobilito_app/admin.py:187
+#: mobilito_app/admin.py:379
+msgid "open flags"
+msgstr "alertes ouvertes"
+
+#: mobilito_app/admin.py:111
+msgid "Has open flags"
+msgstr "Avec alertes ouvertes"
+
+#: mobilito_app/admin.py:111
+msgid "No open flags"
+msgstr "Sans alerte ouverte"
+
+#: mobilito_app/admin.py:122
+msgid "status"
+msgstr "état"
+
+#: mobilito_app/admin.py:126
+msgid "Still open"
+msgstr "Encore ouvert"
+
+#: mobilito_app/admin.py:126
+msgid "Dealt with"
+msgstr "Traité"
+
+#: mobilito_app/admin.py:144
+msgid "flags"
+msgstr "alertes"
+
+#: mobilito_app/admin.py:191
+msgid "email confirmed"
+msgstr "e-mail confirmé"
+
+#: mobilito_app/admin.py:221
+#, python-format
+msgid "(%(n)d flag(s) dealt with)"
+msgstr "(%(n)d alerte(s) traitée(s))"
+
+#: mobilito_app/admin.py:242
+#, python-format
+msgid "%(verb)s: %(n)d."
+msgstr "%(verb)s : %(n)d."
+
+#: mobilito_app/admin.py:248
+#, python-format
+msgid "Already in that state: %(n)d."
+msgstr "Déjà dans cet état : %(n)d."
+
+#: mobilito_app/admin.py:254 mobilito_app/admin.py:305
+#, python-format
+msgid "Not changed: %(list)s"
+msgstr "Non modifié : %(list)s"
+
+#: mobilito_app/admin.py:348
+msgid "counted"
+msgstr "compté"
+
+#: mobilito_app/admin.py:363
+msgid "photos (untick “published” to hide one from the public)"
+msgstr "photos (décochez « published » pour en masquer une au public)"
+
+#: mobilito_app/admin.py:369
+msgid "photo"
+msgstr "photo"
+
+#: mobilito_app/admin.py:476
+#, python-format
+msgid "Photo %(pk)d: shown to the public"
+msgstr "Photo %(pk)d : montrée au public"
+
+#: mobilito_app/admin.py:479
+#, python-format
+msgid "Photo %(pk)d: hidden from the public"
+msgstr "Photo %(pk)d : masquée au public"
+
+#: mobilito_app/admin.py:528
+msgid "flagged"
+msgstr "objet de l'alerte"
+
+#: mobilito_app/admin.py:533
+msgid "(gone)"
+msgstr "(supprimé)"
+
+#: mobilito_app/admin.py:540
+#, python-format
+msgid "photo in %(what)s"
+msgstr "photo dans %(what)s"
+
+#: mobilito_app/admin.py:545
+msgid "state now"
+msgstr "état actuel"
+
+#: mobilito_app/admin.py:553
+msgid "(photo hidden)"
+msgstr "(photo masquée)"
+
+#: mobilito_app/admin.py:557
+msgid "Mark as dealt with (no change to the content)"
+msgstr "Marquer comme traité (sans modifier le contenu)"
+
+#: mobilito_app/admin.py:566
+#, python-format
+msgid "Marked %(n)d flag(s) as dealt with."
+msgstr "%(n)d alerte(s) marquée(s) comme traitée(s)."
+
+#: mobilito_app/counts.py:70
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:29
+msgid "Pedestrians"
+msgstr "Piétons"
+
+#: mobilito_app/counts.py:73
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:36
+msgid "Bikes"
+msgstr "Vélos"
+
+#: mobilito_app/counts.py:74
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:45
+msgid "Cars"
+msgstr "Voitures"
+
+#: mobilito_app/counts.py:75 mobilito_app/models.py:41
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:52
+msgid "Public transit"
+msgstr "Transports en commun"
+
+#: mobilito_app/counts.py:478
+msgid "Count discarded."
+msgstr "Comptage abandonné."
+
+#: mobilito_app/counts.py:556
+msgid "Count thrown away."
+msgstr "Comptage supprimé."
+
+#: mobilito_app/counts.py:576
+msgid "Count saved."
+msgstr "Comptage enregistré."
+
+#: mobilito_app/forms.py:34
+#: mobilito_app/templates/mobilito_app/counts/new.html:47
+#: mobilito_app/templates/mobilito_app/reports/new.html:45
+#: mobilito_app/templates/mobilito_app/reports/new.html:63
+msgid "Tap “Confirm location” first."
+msgstr "Appuyez d'abord sur « Confirmer l'emplacement »."
+
+#: mobilito_app/forms.py:36
+#: mobilito_app/templates/mobilito_app/reports/new.html:46
+msgid ""
+"Choose whether you are reporting this as a pedestrian, a cyclist, or both."
+msgstr ""
+"Indiquez si vous signalez ceci en tant que piéton, cycliste ou les deux."
+
+#: mobilito_app/forms.py:125 mobilito_app/forms.py:126
+#: mobilito_app/reports.py:283
+msgid "Choose tags from the list shown."
+msgstr "Choisissez des mots-clés dans la liste affichée."
+
+#: mobilito_app/forms.py:136
+msgid "Offensive or inappropriate"
+msgstr "Choquant ou inapproprié"
+
+#: mobilito_app/forms.py:139
+msgid "Shows a face, a number plate or personal details"
+msgstr ""
+"Montre un visage, une plaque d'immatriculation ou des informations "
+"personnelles"
+
+#: mobilito_app/forms.py:141
+msgid "Advertising or spam"
+msgstr "Publicité ou spam"
+
+#: mobilito_app/forms.py:142
+msgid "Nothing to do with streets or travel"
+msgstr "Sans rapport avec la rue ou les déplacements"
+
+#: mobilito_app/forms.py:143
+msgid "Something else"
+msgstr "Autre chose"
+
+#: mobilito_app/forms.py:150 mobilito_app/forms.py:151
+msgid "Choose what the problem is."
+msgstr "Indiquez quel est le problème."
+
+#: mobilito_app/forms.py:161
+msgid "Gives someone's personal details"
+msgstr "Donne des informations personnelles sur quelqu'un"
+
+#: mobilito_app/mine.py:56
+msgid "Waiting to be checked"
+msgstr "En attente de vérification"
+
+#: mobilito_app/mine.py:57
+msgid "Others will see it once it has been checked."
+msgstr "Les autres la verront une fois vérifiée."
+
+#: mobilito_app/mine.py:60
+msgid "Not visible to others"
+msgstr "Non visible par les autres"
+
+#: mobilito_app/mine.py:62
+msgid "Not sent yet"
+msgstr "Pas encore envoyée"
+
+#: mobilito_app/mine.py:65
+msgid "Open the link we emailed you"
+msgstr "Ouvrez le lien reçu par e-mail"
+
+#: mobilito_app/mine.py:66
+msgid "Once you have, it will be checked, then shown to others."
+msgstr "Ensuite, elle sera vérifiée, puis montrée aux autres."
+
+#: mobilito_app/mine.py:70
+msgid "Visible to everyone"
+msgstr "Visible par tout le monde"
+
+#: mobilito_app/mine.py:72
+msgid "Being checked"
+msgstr "En cours de vérification"
+
+#: mobilito_app/mine.py:73
+msgid "People with the link can open it; it's off the map for now."
+msgstr ""
+"Les personnes qui ont le lien peuvent l'ouvrir ; elle est retirée de la "
+"carte pour le moment."
+
+#: mobilito_app/mine.py:79
+msgid "Still counting"
+msgstr "Comptage en cours"
+
+#: mobilito_app/mine.py:80
+msgid "Open it to carry on counting."
+msgstr "Ouvrez-le pour continuer à compter."
+
+#: mobilito_app/mine.py:84
+msgid "Not finished"
+msgstr "Pas terminé"
+
+#: mobilito_app/mine.py:85
+msgid "Open it to decide what to do with it."
+msgstr "Ouvrez-le pour décider quoi en faire."
+
+#: mobilito_app/models.py:38 mobilito_app/models.py:145
+#: mobilito_app/reports.py:117
+msgid "Pedestrian"
+msgstr "Piéton"
+
+#: mobilito_app/models.py:39 mobilito_app/models.py:146
+#: mobilito_app/reports.py:118
+msgid "Cyclist"
+msgstr "Cycliste"
+
+#: mobilito_app/models.py:40
+msgid "Car"
+msgstr "Voiture"
+
+#: mobilito_app/models.py:147 mobilito_app/reports.py:119
+msgid "Both"
+msgstr "Les deux"
+
+#: mobilito_app/models.py:178
+msgid "Photo"
+msgstr "Photo"
+
+#: mobilito_app/models.py:223
+msgid "Active"
+msgstr "Actif"
+
+#: mobilito_app/models.py:224
+msgid "Deprecated"
+msgstr "Obsolète"
+
+#: mobilito_app/models.py:239
+msgid "ISO 3166-1 alpha-2 code. Blank means universal."
+msgstr "Code ISO 3166-1 alpha-2. Vide signifie universel."
+
+#: mobilito_app/models.py:254
+msgid "Me too"
+msgstr "Moi aussi"
+
+#: mobilito_app/models.py:255
+msgid "Progress"
+msgstr "Amélioration"
+
+#: mobilito_app/models.py:256
+msgid "Degradation"
+msgstr "Dégradation"
+
+#: mobilito_app/models.py:257
+msgid "Resolved"
+msgstr "Résolu"
+
+#: mobilito_app/models.py:258
+msgid "Additional issue"
+msgstr "Autre problème"
+
+#: mobilito_app/models.py:294
+msgid "Email"
+msgstr "E-mail"
+
+#: mobilito_app/models.py:332
+msgid "Inappropriate"
+msgstr "Inapproprié"
+
+#: mobilito_app/models.py:334
+msgid "Personal information"
+msgstr "Informations personnelles"
+
+#: mobilito_app/models.py:335
+msgid "Spam"
+msgstr "Spam"
+
+#: mobilito_app/models.py:336
+msgid "Off-topic"
+msgstr "Hors sujet"
+
+#: mobilito_app/models.py:337
+msgid "Other"
+msgstr "Autre"
+
+#: mobilito_app/moderation.py:325
+#: mobilito_app/templates/mobilito_app/moderation/flag_form.html:33
+msgid "Thank you. We'll take a look at what you reported."
+msgstr "Merci. Nous allons examiner ce que vous avez signalé."
+
+#: mobilito_app/reports.py:189
+msgid ""
+"You had already sent this form, so nothing new was saved. Here is that "
+"report. To report something else, tap “Report something else”."
+msgstr ""
+"Vous aviez déjà envoyé ce formulaire : rien de nouveau n'a été enregistré. "
+"Voici ce signalement. Pour signaler autre chose, appuyez sur « Signaler "
+"autre chose »."
+
+#: mobilito_app/reports.py:257
+msgid ""
+"You've sent a lot of reports in a short time. Please wait a while and try "
+"again."
+msgstr ""
+"Vous avez envoyé beaucoup de signalements en peu de temps. Patientez un peu "
+"et réessayez."
+
+#: mobilito_app/reports.py:287
+#: mobilito_app/templates/mobilito_app/reports/new.html:47
+msgid "Add at least one photo."
+msgstr "Ajoutez au moins une photo."
+
+#: mobilito_app/reports.py:291
+#, python-format
+msgid "At most %(n)s photos, please."
+msgstr "%(n)s photos au maximum, s'il vous plaît."
+
+#: mobilito_app/reports.py:327
+msgid "Thank you! Your report has been sent."
+msgstr "Merci ! Votre signalement a été envoyé."
+
+#: mobilito_app/templates/mobilito_app/browse/here.html:34
+#: mobilito_app/templates/mobilito_app/browse/list.html:67
+#: mobilito_app/templates/mobilito_app/browse/mine.html:65
+#: mobilito_app/templates/mobilito_app/counts/summary.html:27
+msgid "Count"
+msgstr "Comptage"
+
+#: mobilito_app/templates/mobilito_app/browse/here.html:37
+#: mobilito_app/templates/mobilito_app/browse/list.html:93
+#: mobilito_app/templates/mobilito_app/browse/mine.html:80
+#, python-format
+msgid "%(total)s counted"
+msgid_plural "%(total)s counted"
+msgstr[0] "%(total)s passage compté"
+msgstr[1] "%(total)s passages comptés"
+
+#: mobilito_app/templates/mobilito_app/browse/here.html:44
+msgid "under a minute"
+msgstr "moins d'une minute"
+
+#: mobilito_app/templates/mobilito_app/browse/here.html:46
+#, python-format
+msgid "%(minutes)s minute"
+msgid_plural "%(minutes)s minutes"
+msgstr[0] "%(minutes)s minute"
+msgstr[1] "%(minutes)s minutes"
+
+#: mobilito_app/templates/mobilito_app/browse/here.html:57
+#: mobilito_app/templates/mobilito_app/browse/list.html:70
+#: mobilito_app/templates/mobilito_app/browse/mine.html:68
+#: mobilito_app/templates/mobilito_app/reports/detail.html:42
+#: mobilito_app/templates/mobilito_app/reports/summary.html:27
+msgid "Street feature"
+msgstr "Aménagement"
+
+#: mobilito_app/templates/mobilito_app/browse/here.html:66
+#, python-format
+msgid "Showing the latest %(n)s."
+msgid_plural "Showing the latest %(n)s."
+msgstr[0] "Affichage des %(n)s plus récentes."
+msgstr[1] "Affichage des %(n)s plus récentes."
+
+#: mobilito_app/templates/mobilito_app/browse/here.html:74
+msgid "These observations aren’t shown any more."
+msgstr "Ces observations ne sont plus affichées."
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:25
+#: mobilito_app/templates/mobilito_app/browse/list.html:29
+msgid "What people have seen: list"
+msgstr "Ce que les gens ont vu : liste"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:33
+msgid "Newest first."
+msgstr "Les plus récentes d'abord."
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:35
+msgid "Nearest first, from the middle of the map."
+msgstr "Les plus proches d'abord, depuis le centre de la carte."
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:37
+msgid ""
+"Nearest first, from roughly where you are (worked out from your internet "
+"connection, not your phone’s location)."
+msgstr ""
+"Les plus proches d'abord, depuis l'endroit approximatif où vous êtes (déduit "
+"de votre connexion internet, pas de la localisation de votre téléphone)."
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:39
+#, python-format
+msgid "%(total)s in all."
+msgid_plural "%(total)s in all."
+msgstr[0] "%(total)s au total."
+msgstr[1] "%(total)s au total."
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:48
+msgid "Show nearest first"
+msgstr "Afficher les plus proches d'abord"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:50
+msgid "Show newest first"
+msgstr "Afficher les plus récentes d'abord"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:54
+msgid "Show them on the map"
+msgstr "Les voir sur la carte"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:80
+msgid "less than 1 km away"
+msgstr "à moins d'1 km"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:82
+#, python-format
+msgid "about %(km)s km away"
+msgstr "à environ %(km)s km"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:85
+#, python-format
+msgid "%(metres)s m away"
+msgstr "à %(metres)s m"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:87
+#, python-format
+msgid "%(km)s km away"
+msgstr "à %(km)s km"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:100
+msgid "in under a minute"
+msgstr "en moins d'une minute"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:102
+#, python-format
+msgid "in %(minutes)s minute"
+msgid_plural "in %(minutes)s minutes"
+msgstr[0] "en %(minutes)s minute"
+msgstr[1] "en %(minutes)s minutes"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:114
+msgid "On the map"
+msgstr "Sur la carte"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:122
+#: mobilito_app/templates/mobilito_app/browse/mine.html:96
+msgid "Pages"
+msgstr "Pages"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:125
+#: mobilito_app/templates/mobilito_app/browse/mine.html:99
+msgid "Previous page"
+msgstr "Page précédente"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:128
+#: mobilito_app/templates/mobilito_app/browse/mine.html:102
+#, python-format
+msgid "Page %(n)s of %(total)s"
+msgstr "Page %(n)s sur %(total)s"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:131
+#: mobilito_app/templates/mobilito_app/browse/mine.html:105
+msgid "Next page"
+msgstr "Page suivante"
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:137
+msgid "Nothing to show yet."
+msgstr "Rien à afficher pour l'instant."
+
+#: mobilito_app/templates/mobilito_app/browse/list.html:138
+msgid "Be the first to count or report something."
+msgstr "Lancez-vous : comptez ou signalez quelque chose."
+
+#: mobilito_app/templates/mobilito_app/browse/map.html:25
+#: mobilito_app/templates/mobilito_app/browse/map.html:33
+msgid "What people have seen: map"
+msgstr "Ce que les gens ont vu : carte"
+
+#: mobilito_app/templates/mobilito_app/browse/map.html:35
+msgid "Tap a dot to see what someone saw there."
+msgstr "Appuyez sur un point pour voir ce que quelqu'un y a observé."
+
+#: mobilito_app/templates/mobilito_app/browse/map.html:37
+msgid "See them as a list"
+msgstr "Les voir en liste"
+
+#: mobilito_app/templates/mobilito_app/browse/map.html:40
+msgid "Counts of what goes by"
+msgstr "Comptages de ce qui passe"
+
+#: mobilito_app/templates/mobilito_app/browse/map.html:41
+msgid "Street features"
+msgstr "Aménagements"
+
+#: mobilito_app/templates/mobilito_app/browse/map.html:42
+msgid "Several together: tap to see them"
+msgstr "Plusieurs au même endroit : appuyez pour les voir"
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:25
+#: mobilito_app/templates/mobilito_app/browse/mine.html:29
+#: mobilito_app/templates/mobilito_app/home.html:62
+msgid "Your observations"
+msgstr "Vos observations"
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:32
+msgid ""
+"This shows what you’ve recorded since you gave your email address in this "
+"browser."
+msgstr ""
+"Voici ce que vous avez enregistré depuis que vous avez donné votre adresse e-"
+"mail dans ce navigateur."
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:34
+msgid "Sign in to see everything you’ve recorded."
+msgstr "Connectez-vous pour voir tout ce que vous avez enregistré."
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:36
+msgid "Open the link we emailed you to see everything you’ve recorded."
+msgstr ""
+"Ouvrez le lien reçu par e-mail pour voir tout ce que vous avez enregistré."
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:42
+#, python-format
+msgid "You’ve made %(total)s observation."
+msgid_plural "You’ve made %(total)s observations."
+msgstr[0] "Vous avez fait %(total)s observation."
+msgstr[1] "Vous avez fait %(total)s observations."
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:48
+#, python-format
+msgid "%(visible)s is visible to everyone."
+msgid_plural "%(visible)s are visible to everyone."
+msgstr[0] "%(visible)s est visible par tout le monde."
+msgstr[1] "%(visible)s sont visibles par tout le monde."
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:111
+msgid "Nothing here yet."
+msgstr "Rien ici pour l'instant."
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:112
+msgid ""
+"What you count or report will be listed here, including what others can’t "
+"see yet."
+msgstr ""
+"Ce que vous comptez ou signalez apparaîtra ici, y compris ce que les autres "
+"ne peuvent pas encore voir."
+
+#: mobilito_app/templates/mobilito_app/browse/mine.html:114
+#: mobilito_app/templates/mobilito_app/counts/new.html:25
+#: mobilito_app/templates/mobilito_app/home.html:49
+msgid "Count what goes by"
+msgstr "Compter ce qui passe"
+
+#. Translators: reports can be positive. Avoid « Signaler un problème »; e.g. « Partager un aménagement ».
+#: mobilito_app/templates/mobilito_app/browse/mine.html:115
+#: mobilito_app/templates/mobilito_app/home.html:55
+#: mobilito_app/templates/mobilito_app/reports/new.html:26
+#: mobilito_app/templates/mobilito_app/reports/new.html:72
+msgid "Report a street feature"
+msgstr "Partager un aménagement"
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:32
+msgid "Counting"
+msgstr "Comptage"
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:47
+msgid ""
+"No connection: your counts are saved on this phone and will be sent when the "
+"connection comes back."
+msgstr ""
+"Pas de connexion : ce que vous comptez est gardé sur ce téléphone et sera "
+"envoyé quand la connexion reviendra."
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:48
+msgid "Sending your counts…"
+msgstr "Envoi de ce que vous avez compté…"
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:49
+msgid "Sending your count…"
+msgstr "Envoi de votre comptage…"
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:50
+msgid "Waiting for a connection to send your count. Keep this page open."
+msgstr ""
+"En attente d'une connexion pour envoyer votre comptage. Gardez cette page "
+"ouverte."
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:51
+msgid ""
+"Something went wrong sending your count. It is saved on this phone, and we "
+"will keep trying."
+msgstr ""
+"Un problème est survenu à l'envoi de votre comptage. Il est gardé sur ce "
+"téléphone et nous continuerons d'essayer."
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:52
+msgid "No connection: the count can’t be discarded yet. Try again in a moment."
+msgstr ""
+"Pas de connexion : le comptage ne peut pas encore être abandonné. Réessayez "
+"dans un instant."
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:53
+msgid "The count couldn’t be discarded. Try again."
+msgstr "Le comptage n'a pas pu être abandonné. Réessayez."
+
+#. Translators: ends a modal share count.
+#: mobilito_app/templates/mobilito_app/counts/count.html:59
+msgid "Finish"
+msgstr "Terminer"
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:62
+msgid "Time counted"
+msgstr "Durée du comptage"
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:69
+#: mobilito_app/templates/mobilito_app/counts/count.html:70
+#: mobilito_app/templates/mobilito_app/counts/what_counts.html:42
+msgid "What counts as what?"
+msgstr "Comment classer ce qui passe ?"
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:93
+msgid "One tap for each thing that goes by, not for each person in it."
+msgstr "Un appui par chose qui passe, pas par personne à bord."
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:100
+msgid "Back to counting"
+msgstr "Revenir au comptage"
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:112
+msgid "That was a short count. Keep counting?"
+msgstr "C'était un comptage court. Continuer à compter ?"
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:115
+#, python-format
+msgid "Counts of at least %(minutes)s minute are more useful."
+msgid_plural "Counts of at least %(minutes)s minutes are more useful."
+msgstr[0] "Les comptages d'au moins %(minutes)s minute sont plus utiles."
+msgstr[1] "Les comptages d'au moins %(minutes)s minutes sont plus utiles."
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:129
+msgid "Discard it"
+msgstr "L'abandonner"
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:132
+msgid "Save it anyway"
+msgstr "L'enregistrer quand même"
+
+#: mobilito_app/templates/mobilito_app/counts/count.html:135
+msgid "Keep counting"
+msgstr "Continuer à compter"
+
+#: mobilito_app/templates/mobilito_app/counts/detail.html:25
+msgid "Modal share count"
+msgstr "Comptage de part modale"
+
+#: mobilito_app/templates/mobilito_app/counts/detail.html:33
+msgid "What went by"
+msgstr "Ce qui est passé"
+
+#: mobilito_app/templates/mobilito_app/counts/detail.html:37
+#, python-format
+msgid "%(date)s, for less than a minute"
+msgstr "%(date)s, pendant moins d'une minute"
+
+#: mobilito_app/templates/mobilito_app/counts/detail.html:41
+#, python-format
+msgid "%(date)s, for %(minutes)s minute"
+msgid_plural "%(date)s, for %(minutes)s minutes"
+msgstr[0] "%(date)s, pendant %(minutes)s minute"
+msgstr[1] "%(date)s, pendant %(minutes)s minutes"
+
+#: mobilito_app/templates/mobilito_app/counts/detail.html:50
+#: mobilito_app/templates/mobilito_app/reports/detail.html:94
+msgid "Report a problem with this place name"
+msgstr "Signaler un problème avec ce nom de lieu"
+
+#: mobilito_app/templates/mobilito_app/counts/detail.html:57
+#: mobilito_app/templates/mobilito_app/counts/summary.html:35
+msgid "Nothing was counted this time."
+msgstr "Rien n'a été compté cette fois-ci."
+
+#: mobilito_app/templates/mobilito_app/counts/detail.html:67
+msgid ""
+"The phone's own position was some distance from this spot when the count "
+"started."
+msgstr ""
+"Au début du comptage, la position du téléphone était à une certaine distance "
+"de cet endroit."
+
+#: mobilito_app/templates/mobilito_app/counts/detail.html:74
+#: mobilito_app/templates/mobilito_app/counts/summary.html:41
+msgid "Do another count here"
+msgstr "Refaire un comptage ici"
+
+#: mobilito_app/templates/mobilito_app/counts/detail.html:77
+#: mobilito_app/templates/mobilito_app/reports/detail.html:111
+msgid "Back to the start"
+msgstr "Retour à l'accueil"
+
+#: mobilito_app/templates/mobilito_app/counts/detail.html:83
+msgid "Link to share this count:"
+msgstr "Lien pour partager ce comptage :"
+
+#: mobilito_app/templates/mobilito_app/counts/new.html:33
+#: mobilito_app/templates/mobilito_app/home.html:32
+msgid "You have a count in progress."
+msgstr "Vous avez un comptage en cours."
+
+#: mobilito_app/templates/mobilito_app/counts/new.html:35
+#: mobilito_app/templates/mobilito_app/home.html:34
+msgid "Go back to it"
+msgstr "Y revenir"
+
+#: mobilito_app/templates/mobilito_app/counts/new.html:39
+msgid "Where are you counting?"
+msgstr "Où comptez-vous ?"
+
+#: mobilito_app/templates/mobilito_app/counts/new.html:41
+msgid "Counting again at the same spot? Check the target, then confirm."
+msgstr "Vous recomptez au même endroit ? Vérifiez la cible, puis confirmez."
+
+#: mobilito_app/templates/mobilito_app/counts/new.html:55
+#, python-format
+msgid ""
+"Then count everything that goes by, for as long as you like: at least "
+"%(minutes)s minute makes a useful count."
+msgid_plural ""
+"Then count everything that goes by, for as long as you like: at least "
+"%(minutes)s minutes makes a useful count."
+msgstr[0] ""
+"Ensuite, comptez tout ce qui passe, aussi longtemps que vous voulez : au "
+"moins %(minutes)s minute fait un comptage utile."
+msgstr[1] ""
+"Ensuite, comptez tout ce qui passe, aussi longtemps que vous voulez : au "
+"moins %(minutes)s minutes font un comptage utile."
+
+#: mobilito_app/templates/mobilito_app/counts/new.html:65
+msgid "Start counting"
+msgstr "Commencer à compter"
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:29
+msgid "An unfinished count"
+msgstr "Un comptage inachevé"
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:33
+msgid "This count wasn’t finished"
+msgstr "Ce comptage n'a pas été terminé"
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:36
+#, python-format
+msgid "Started %(date)s"
+msgstr "Commencé le %(date)s"
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:38
+msgid ""
+"It’s too late to carry on counting: adding to it now would mix two different "
+"times."
+msgstr ""
+"Il est trop tard pour continuer : y ajouter maintenant mélangerait deux "
+"moments différents."
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:41
+msgid "Sending what your phone saved while it was offline…"
+msgstr "Envoi de ce que votre téléphone a gardé hors connexion…"
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:42
+msgid ""
+"Your phone still has some of this count saved. Reload this page once you "
+"have a connection, to send it before choosing."
+msgstr ""
+"Votre téléphone garde encore une partie de ce comptage. Rechargez cette page "
+"quand vous aurez une connexion, pour l'envoyer avant de choisir."
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:43
+msgid ""
+"We couldn’t take what your phone saved just now. Try reloading this page in "
+"a few minutes, before choosing."
+msgstr ""
+"Nous n'avons pas pu récupérer ce que votre téléphone a gardé. Rechargez "
+"cette page dans quelques minutes, avant de choisir."
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:46
+#, python-format
+msgid ""
+"%(taps)s counted before it stopped. You can keep the count as it was then."
+msgid_plural ""
+"%(taps)s counted before it stopped. You can keep the count as it was then."
+msgstr[0] ""
+"%(taps)s passage compté avant l'arrêt. Vous pouvez garder le comptage tel "
+"qu'il était alors."
+msgstr[1] ""
+"%(taps)s passages comptés avant l'arrêt. Vous pouvez garder le comptage tel "
+"qu'il était alors."
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:53
+msgid "Nothing was counted, so there is nothing to keep."
+msgstr "Rien n'a été compté : il n'y a rien à garder."
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:60
+msgid "Keep what was counted"
+msgstr "Garder ce qui a été compté"
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:66
+msgid "Or, if it was a mistake:"
+msgstr "Ou, si c'était une erreur :"
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:68
+msgid "Throw it away"
+msgstr "Le supprimer"
+
+#: mobilito_app/templates/mobilito_app/counts/stale.html:72
+msgid "Decide later"
+msgstr "Décider plus tard"
+
+#: mobilito_app/templates/mobilito_app/counts/summary.html:38
+#: mobilito_app/templates/mobilito_app/reports/summary.html:47
+msgid "See more"
+msgstr "Voir plus"
+
+#: mobilito_app/templates/mobilito_app/counts/what_counts.html:36
+msgid ""
+"One tap for each thing that goes by (a walker, a bike, a car, a bus), not "
+"for each person in it."
+msgstr ""
+"Un appui par chose qui passe (un piéton, un vélo, une voiture, un bus), pas "
+"par personne à bord."
+
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:27
+msgid "Count each thing as what it behaves like."
+msgstr "Comptez chaque chose selon la façon dont elle se déplace."
+
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:31
+msgid ""
+"People walking, wheelchairs, people pushing a bike. A child walking counts; "
+"a baby in a pram or stroller doesn't."
+msgstr ""
+"Les personnes à pied, en fauteuil roulant, ou qui poussent un vélo. Un "
+"enfant qui marche compte ; un bébé en landau ou en poussette, non."
+
+#. Translators: « trottinettes (électriques ou non) », not « scooters », which in French are motor scooters (counted as cars).
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:39
+msgid ""
+"Anything that behaves like a bike: bikes, e-bikes, tricycles, kick scooters "
+"and e-scooters, skateboards, monowheels. Passengers (a child in a seat or a "
+"cargo bike) don't add one."
+msgstr ""
+"Tout ce qui se déplace comme un vélo : vélos, vélos électriques, tricycles, "
+"trottinettes (mécaniques ou électriques), skateboards, gyroroues. Les "
+"passagers (un enfant sur un siège ou dans un vélo cargo) ne comptent pas en "
+"plus."
+
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:47
+msgid ""
+"Cars, vans, lorries, motorbikes and mopeds: one each, whoever is inside."
+msgstr ""
+"Voitures, camionnettes, camions, motos et scooters : une fois chacun, quel "
+"que soit le nombre de personnes à bord."
+
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:54
+msgid "Each bus or tram, once."
+msgstr "Chaque bus ou tram, une fois."
+
+#: mobilito_app/templates/mobilito_app/counts/what_counts_body.html:60
+msgid ""
+"A child on a little bike next to a walking parent: one bike and one "
+"pedestrian."
+msgstr ""
+"Un enfant sur un petit vélo à côté d'un parent à pied : un vélo et un piéton."
+
+#. Translators: reports can be positive. Avoid a grade like « bon ou mauvais »; e.g. « ce qui aide, ce qui gêne ».
+#: mobilito_app/templates/mobilito_app/home.html:57
+msgid "good or bad"
+msgstr "ce qui aide ou ce qui gêne"
+
+#: mobilito_app/templates/mobilito_app/home.html:64
+msgid "Browse the map"
+msgstr "Parcourir la carte"
+
+#: mobilito_app/templates/mobilito_app/home.html:70
+msgid ""
+"Document how people move through your streets: count what goes by, and "
+"report the infrastructure that helps or hinders it."
+msgstr ""
+"Documentez la façon dont on se déplace dans vos rues : comptez ce qui passe, "
+"et signalez les aménagements qui aident ou qui gênent."
+
+#: mobilito_app/templates/mobilito_app/home.html:74
+msgid "Browse observations"
+msgstr "Parcourir les observations"
+
+#: mobilito_app/templates/mobilito_app/home.html:77
+msgid "Make an observation"
+msgstr "Faire une observation"
+
+#: mobilito_app/templates/mobilito_app/moderation/flag.html:25
+#: mobilito_app/templates/mobilito_app/reports/detail.html:72
+msgid "Report a problem"
+msgstr "Signaler un problème"
+
+#: mobilito_app/templates/mobilito_app/moderation/flag.html:30
+msgid "Report a problem with a photo"
+msgstr "Signaler un problème avec une photo"
+
+#: mobilito_app/templates/mobilito_app/moderation/flag.html:31
+msgid "Report a problem with a count's place name"
+msgstr "Signaler un problème avec le nom de lieu d'un comptage"
+
+#: mobilito_app/templates/mobilito_app/moderation/flag.html:32
+msgid "Report a problem with a report's text"
+msgstr "Signaler un problème avec le texte d'un signalement"
+
+#: mobilito_app/templates/mobilito_app/moderation/flag.html:33
+msgid "Report a problem with a report's place name"
+msgstr "Signaler un problème avec le nom de lieu d'un signalement"
+
+#: mobilito_app/templates/mobilito_app/moderation/flag.html:37
+msgid "Back"
+msgstr "Retour"
+
+#: mobilito_app/templates/mobilito_app/moderation/flag_form.html:31
+msgid "You've already reported this. Thank you: we'll take a look."
+msgstr "Vous l'avez déjà signalé. Merci : nous allons y jeter un œil."
+
+#: mobilito_app/templates/mobilito_app/moderation/flag_form.html:42
+msgid "The photo you are reporting"
+msgstr "La photo que vous signalez"
+
+#: mobilito_app/templates/mobilito_app/moderation/flag_form.html:48
+msgid "What's the problem?"
+msgstr "Quel est le problème ?"
+
+#: mobilito_app/templates/mobilito_app/moderation/flag_form.html:61
+msgid "Anything to add? (optional)"
+msgstr "Quelque chose à ajouter ? (facultatif)"
+
+#: mobilito_app/templates/mobilito_app/moderation/flag_form.html:69
+msgid ""
+"Someone from Mobilito will look at it. The person who posted it isn't told "
+"who reported it."
+msgstr ""
+"Quelqu'un de Mobilito va l'examiner. La personne qui a publié ce contenu ne "
+"saura pas qui l'a signalé."
+
+#: mobilito_app/templates/mobilito_app/moderation/flag_form.html:72
+msgid "Send"
+msgstr "Envoyer"
+
+#: mobilito_app/templates/mobilito_app/moderation/flag_form.html:85
+msgid "Cancel"
+msgstr "Annuler"
+
+#: mobilito_app/templates/mobilito_app/moderation/state_notes.html:30
+msgid "Moderator view:"
+msgstr "Vue modération :"
+
+#: mobilito_app/templates/mobilito_app/moderation/state_notes.html:31
+msgid "Open in the admin"
+msgstr "Ouvrir dans l'administration"
+
+#: mobilito_app/templates/mobilito_app/moderation/state_notes.html:36
+msgid ""
+"This is being checked. People who have the link can still open it, but it "
+"isn't on the map or in the list for now."
+msgstr ""
+"Cette observation est en cours de vérification. Les personnes qui ont le "
+"lien peuvent toujours l'ouvrir, mais elle n'est plus sur la carte ni dans la "
+"liste pour le moment."
+
+#: mobilito_app/templates/mobilito_app/moderation/state_notes.html:38
+msgid ""
+"This count is being checked. It isn't on the map or in the list for now."
+msgstr ""
+"Ce comptage est en cours de vérification. Il n'est plus sur la carte ni dans "
+"la liste pour le moment."
+
+#: mobilito_app/templates/mobilito_app/moderation/state_notes.html:40
+msgid ""
+"This report is being checked. It isn't on the map or in the list for now."
+msgstr ""
+"Ce signalement est en cours de vérification. Il n'est plus sur la carte ni "
+"dans la liste pour le moment."
+
+#: mobilito_app/templates/mobilito_app/moderation/state_notes.html:46
+msgid "This isn't visible to others."
+msgstr "Cette observation n'est pas visible par les autres."
+
+#: mobilito_app/templates/mobilito_app/moderation/state_notes.html:48
+#, python-format
+msgid ""
+"If you think this is a mistake, write to us at <a href=\"mailto:"
+"%(contact_email)s\">%(contact_email)s</a>."
+msgstr ""
+"Si vous pensez que c'est une erreur, écrivez-nous à <a href=\"mailto:"
+"%(contact_email)s\">%(contact_email)s</a>."
+
+#: mobilito_app/templates/mobilito_app/moderation/state_notes.html:55
+msgid ""
+"Once you've opened the link we sent you by email, we'll check your count and "
+"then show it to others."
+msgstr ""
+"Une fois que vous aurez ouvert le lien reçu par e-mail, nous vérifierons "
+"votre comptage puis le montrerons aux autres."
+
+#: mobilito_app/templates/mobilito_app/moderation/state_notes.html:57
+msgid ""
+"Once you've opened the link we sent you by email, we'll check your report "
+"and then show it to others."
+msgstr ""
+"Une fois que vous aurez ouvert le lien reçu par e-mail, nous vérifierons "
+"votre signalement puis le montrerons aux autres."
+
+#: mobilito_app/templates/mobilito_app/moderation/state_notes.html:60
+msgid ""
+"Thank you! Your count will be visible to others once it has been reviewed."
+msgstr "Merci ! Votre comptage sera visible par les autres une fois vérifié."
+
+#: mobilito_app/templates/mobilito_app/moderation/state_notes.html:62
+msgid "Your report will be visible to others once it has been reviewed."
+msgstr "Votre signalement sera visible par les autres une fois vérifié."
+
+#: mobilito_app/templates/mobilito_app/partials/count_bars.html:34
+#, python-format
+msgid "%(percent)s%%"
+msgstr "%(percent)s %%"
+
+#: mobilito_app/templates/mobilito_app/partials/count_bars.html:38
+#, python-format
+msgid "%(total)s person or vehicle counted in all."
+msgid_plural "%(total)s people and vehicles counted in all."
+msgstr[0] "%(total)s personne ou véhicule compté au total."
+msgstr[1] "%(total)s personnes et véhicules comptés au total."
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:31
+msgid "At this spot over time"
+msgstr "À cet endroit au fil du temps"
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:34
+msgid ""
+"This is the only count here so far. Count here again on another day or at "
+"another time to see how things change."
+msgstr ""
+"C'est le seul comptage ici pour l'instant. Revenez compter un autre jour ou "
+"à une autre heure pour voir comment les choses évoluent."
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:38
+msgid ""
+"Each bar is one count, split by what went by. Counts last different lengths "
+"of time, so the bars compare proportions, not totals. Counts within a short "
+"walk of here are included."
+msgstr ""
+"Chaque barre est un comptage, réparti selon ce qui est passé. Les comptages "
+"ne durent pas le même temps : les barres comparent donc des proportions, pas "
+"des totaux. Les comptages faits à quelques pas d'ici sont inclus."
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:53
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:88
+msgid "this count"
+msgstr "ce comptage"
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:60
+msgid "Nothing counted"
+msgstr "Rien compté"
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:67
+msgid "Show the numbers"
+msgstr "Afficher les chiffres"
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:70
+msgid "Counts at this spot, oldest first."
+msgstr "Comptages à cet endroit, les plus anciens d'abord."
+
+#: mobilito_app/templates/mobilito_app/partials/count_history.html:73
+msgid "When"
+msgstr "Quand"
+
+#: mobilito_app/templates/mobilito_app/partials/counted_in.html:23
+#, python-format
+msgid "%(total)s counted in under a minute"
+msgid_plural "%(total)s counted in under a minute"
+msgstr[0] "%(total)s passage compté en moins d'une minute"
+msgstr[1] "%(total)s passages comptés en moins d'une minute"
+
+#: mobilito_app/templates/mobilito_app/partials/counted_in.html:23
+#, python-format
+msgid "%(total)s counted in %(minutes)s min"
+msgid_plural "%(total)s counted in %(minutes)s min"
+msgstr[0] "%(total)s passage compté en %(minutes)s min"
+msgstr[1] "%(total)s passages comptés en %(minutes)s min"
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:25
+msgid "Street feature report"
+msgstr "Signalement d'aménagement"
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:52
+msgid "Seen on foot"
+msgstr "Vu à pied"
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:53
+msgid "Seen by bike"
+msgstr "Vu à vélo"
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:54
+msgid "Seen on foot and by bike"
+msgstr "Vu à pied et à vélo"
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:64
+#, python-format
+msgid "Photo %(n)s"
+msgstr "Photo %(n)s"
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:66
+msgid "(opens in a new tab)"
+msgstr "(s'ouvre dans un nouvel onglet)"
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:69
+msgid "Hidden from the public"
+msgstr "Masquée au public"
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:73
+#, python-format
+msgid "with photo %(n)s"
+msgstr "avec la photo %(n)s"
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:88
+msgid "Report a problem with this text or place name"
+msgstr "Signaler un problème avec ce texte ou ce nom de lieu"
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:91
+msgid "Report a problem with this text"
+msgstr "Signaler un problème avec ce texte"
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:109
+msgid "Report something else"
+msgstr "Signaler autre chose"
+
+#: mobilito_app/templates/mobilito_app/reports/detail.html:116
+msgid "Link to share this report:"
+msgstr "Lien pour partager ce signalement :"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:40
+#, python-format
+msgid "At most %(n)s photos: the extra ones were left out."
+msgstr "%(n)s photos au maximum : les autres n'ont pas été ajoutées."
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:41
+#, python-format
+msgid "Left out: larger than %(mb)s MB."
+msgstr "Non ajoutée : plus de %(mb)s Mo."
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:42
+#, python-format
+msgid "Photos added: %%(n)s."
+msgstr "Photos ajoutées : %%(n)s."
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:43
+#, python-format
+msgid "Photo %%(n)s"
+msgstr "Photo %%(n)s"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:44
+#, python-format
+msgid "Remove photo %%(n)s"
+msgstr "Retirer la photo %%(n)s"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:48
+#, python-format
+msgid "To send, you still need to: %%(items)s."
+msgstr "Pour envoyer, il reste à : %%(items)s."
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:49
+msgid "confirm the location (step 1)"
+msgstr "confirmer l'emplacement (étape 1)"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:50
+msgid "choose pedestrian, cyclist or both (step 2)"
+msgstr "choisir piéton, cycliste ou les deux (étape 2)"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:51
+msgid "add a photo (step 3)"
+msgstr "ajouter une photo (étape 3)"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:52
+msgid ""
+"Sending your photos… This can take a minute on mobile data. Keep this page "
+"open."
+msgstr ""
+"Envoi de vos photos… Cela peut prendre une minute en données mobiles. Gardez "
+"cette page ouverte."
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:53
+msgid ""
+"Still sending. If your connection dropped, open the report form again: your "
+"text and choices are kept, but photos need adding again."
+msgstr ""
+"Envoi toujours en cours. Si votre connexion a coupé, rouvrez le formulaire : "
+"votre texte et vos choix sont gardés, mais il faudra rajouter les photos."
+
+#. Translators: non-breaking space before the colon in French.
+#: mobilito_app/templates/mobilito_app/reports/new.html:60
+msgid "Almost there:"
+msgstr "Presque fini :"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:67
+msgid ""
+"Please add your photos again: we can't keep them when something needs fixing."
+msgstr ""
+"Merci de rajouter vos photos : nous ne pouvons pas les garder quand quelque "
+"chose est à corriger."
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:74
+msgid ""
+"Something that helps you get around, or something in the way: both are "
+"useful."
+msgstr ""
+"Quelque chose qui vous aide à vous déplacer, ou quelque chose qui gêne : les "
+"deux sont utiles."
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:78
+msgid "1. Where is it?"
+msgstr "1. Où est-ce ?"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:79
+#: mobilito_app/templates/mobilito_app/reports/new.html:87
+#: mobilito_app/templates/mobilito_app/reports/new.html:106
+msgid "(required)"
+msgstr "(obligatoire)"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:86
+msgid "2. Are you reporting this as a pedestrian or a cyclist?"
+msgstr "2. Vous faites ce signalement en tant que piéton ou cycliste ?"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:105
+msgid "3. Photos"
+msgstr "3. Photos"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:109
+#, python-format
+msgid ""
+"At least one, up to %(n)s, each up to %(mb)s MB. Ideally one wide shot so "
+"people recognise the place, and one close-up of the detail. Avoid faces and "
+"number plates if you can."
+msgstr ""
+"Au moins une, jusqu'à %(n)s, de %(mb)s Mo maximum chacune. Idéalement une "
+"vue d'ensemble pour qu'on reconnaisse l'endroit, et un gros plan sur le "
+"détail. Évitez si possible les visages et les plaques d'immatriculation."
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:116
+msgid "Add your photos again here."
+msgstr "Rajoutez vos photos ici."
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:122
+msgid "Add photos"
+msgstr "Ajouter des photos"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:131
+msgid "4. What's here?"
+msgstr "4. Qu'y a-t-il ici ?"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:132
+#: mobilito_app/templates/mobilito_app/reports/new.html:143
+msgid "(optional)"
+msgstr "(facultatif)"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:136
+msgid "What helps or gets in the way, and for whom. It helps a lot."
+msgstr "Ce qui aide ou ce qui gêne, et pour qui. Cela aide beaucoup."
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:142
+msgid "5. What kind of thing is it?"
+msgstr "5. De quoi s'agit-il ?"
+
+#: mobilito_app/templates/mobilito_app/reports/new.html:156
+msgid "Send report"
+msgstr "Envoyer le signalement"
+
+#: mobilito_app/templates/mobilito_app/reports/summary.html:33
+msgid "Photo of this street feature"
+msgstr "Photo de cet aménagement"
+
+#: mobilito_app/templates/mobilito_app/reports/tags.html:30
+msgid "Confirm the location to see the tags that apply there."
+msgstr "Confirmez l'emplacement pour voir les mots-clés qui s'y appliquent."
+
+#: mobilito_app/templates/mobilito_app/reports/tags.html:33
+msgid "Tick any that fit."
+msgstr "Cochez ceux qui conviennent."
+
+#: mobilito_app/templates/mobilito_app/reports/tags.html:54
+msgid "No tags for this area yet."
+msgstr "Pas encore de mots-clés pour ce secteur."
+
+#: templates/404.html:26 templates/404.html:30
+msgid "Page not found"
+msgstr "Page introuvable"
+
+#: templates/404.html:32
+msgid "The page you're looking for doesn't exist."
+msgstr "La page que vous cherchez n'existe pas."
+
+#: templates/404.html:35
+msgid "Back to Mobilito"
+msgstr "Retour à Mobilito"
+
+#: templates/admin/mobilito_app/observation_change_form.html:33
+msgid ""
+"Look at the content and flags below, then choose a decision with the buttons "
+"at the bottom of the page."
+msgstr ""
+"Examinez le contenu et les signalements ci-dessous, puis prenez une décision "
+"avec les boutons en bas de page."
+
+#: templates/admin/mobilito_app/observation_change_form.html:35
+msgid ""
+"To hide or show one photo, change its “published” box and press Save first."
+msgstr ""
+"Pour masquer ou montrer une photo, changez d'abord sa case « published » "
+"puis enregistrez."
+
+#: templates/admin/mobilito_app/observation_change_form.html:44
+msgid "Decision:"
+msgstr "Décision :"
+
+#: templates/includes/footer.html:34
+msgid "Source code"
+msgstr "Code source"
+
+#: templates/includes/footer.html:42
+msgid "Dark mode"
+msgstr "Mode sombre"
+
+#: templates/includes/nav.html:47
+msgid "Change language"
+msgstr "Changer de langue"
+
+#: templates/includes/nav.html:64
+msgid "Signed in"
+msgstr "Connexion active"
+
+#: templates/includes/nav.html:68
+msgid "Sign out"
+msgstr "Se déconnecter"
+
+#: templates/includes/unvalidated_banner.html:26
+#, python-format
+msgid ""
+"Please confirm your email address, <strong>%(email)s</strong>, so that what "
+"you record counts."
+msgstr ""
+"Merci de confirmer votre adresse e-mail, <strong>%(email)s</strong>, pour "
+"que vos observations soient prises en compte."
+
+#: templates/includes/unvalidated_banner.html:31
+#, python-format
+msgid ""
+"Carry on: what you record will count once you open the link we sent to "
+"<strong>%(email)s</strong>."
+msgstr ""
+"Continuez : vos observations seront prises en compte dès que vous aurez "
+"ouvert le lien envoyé à <strong>%(email)s</strong>."
+
+#: templates/includes/unvalidated_banner.html:41
+msgid "Send me a link"
+msgstr "M'envoyer un lien"
+
+#: templates/includes/unvalidated_banner.html:41
+msgid "Send it again"
+msgstr "Le renvoyer"
+
+#: templates/includes/unvalidated_banner.html:45
+msgid "Not your address?"
+msgstr "Ce n'est pas votre adresse ?"

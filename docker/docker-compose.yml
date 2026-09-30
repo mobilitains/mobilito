@@ -1,12 +1,15 @@
 services:
   db:
-    image: postgis/postgis:15-3.4
+    image: postgis/postgis:18-3.6
     environment:
       POSTGRES_DB: mobilito
       POSTGRES_USER: mobilito
       POSTGRES_PASSWORD: mobilito
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      # PostgreSQL 18 images keep data in a versioned subdirectory
+      # of /var/lib/postgresql. A new volume name leaves the old
+      # PostgreSQL 15 data (postgres_data) untouched.
+      - postgres18_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U mobilito"]
       interval: 10s
@@ -52,4 +55,4 @@ services:
       POSTGRES_PORT: "5432"
 
 volumes:
-  postgres_data:
+  postgres18_data:

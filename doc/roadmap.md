@@ -7,10 +7,11 @@ References are to `design.md` sections.
 
 ## Current state
 
-The skeleton provides:
-- Custom user model with `email_validated` flag, magic-link auth (django-sesame), PostGIS backend, Bootstrap 5 + HTMX + django-htmx wired in, django-storages[s3] (configured for Cloudflare R2) and Pillow installed, i18n scaffold, Docker dev environment, CI.
-
-Nothing is user-visible yet.
+Phases 1–8 are done (see the **[COMPLETED]** marks below): data
+models, UI shell, magic-link and provisional sign-in, the map
+component, modal share counting, infrastructure reports and public
+browsing. Phase 8 (moderation) is done too; what remains for v1-preview is
+the checklist below it, mostly deployment and testing.
 
 ---
 
@@ -25,11 +26,13 @@ These unblock multiple phases and should be settled first.
 | **Reverse geocoding** | Nominatim (OSM) | Free but rate-limited. Wrap in a thin service layer so the provider can be swapped without touching views. **Decision: Yes.  Assume we may also use mapbox for reverse geocoding, with an attempt to stay within their free tier.** |
 | **Object storage** | Cloudflare R2 | django-storages[s3] installed; R2 is S3-compatible and has no egress fees. Configure credentials before Phase 6. **Decision: Yes.** |
 | **Async task queue** | Celery + RabbitMQ | Needed for LLM calls (v1). RabbitMQ's push-based delivery keeps task pickup latency in milliseconds — important because the tag-proposal LLM call is a user-waiting interaction (page polls for result). Redis-as-broker has weaker acknowledgment semantics and would add unreliability overhead. Add to docker-compose when Phase 12 starts; not needed for v1-preview. **Decision: Yes.** |
-| **Javascript** | HTMX + narrow explicit JS modules | Layering policy in design.md §8.2: Django views/templates baseline → HTMX for server-backed interactions → real links/forms as a no-JS fallback where feasible → explicit JS modules only for the map, camera, and offline queueing → JSON API only where genuine data (not rendered UI) is exchanged. **Decision: htmx 2.x for now.** htmx 4.0 shipped 2026-08-28 and is worth adopting, but it's one day old at time of writing and the htmx project itself keeps 2.x as "latest" until roughly early 2027. No HTMX code exists yet, so there's nothing to migrate — **re-evaluate 2.x vs. 4.0 at Phase 4** (first phase to actually wire up HTMX), by which point 4.0 will have a track record. See design.md §8.2 for detail. |
+| **Javascript** | HTMX + narrow explicit JS modules | Layering policy in design.md §8.2: Django views/templates baseline → HTMX for server-backed interactions → real links/forms as a no-JS fallback where feasible → explicit JS modules only for the map, camera, and offline queueing → JSON API only where genuine data (not rendered UI) is exchanged. **Decision: htmx 2.x for now.** htmx 4.0 shipped 2026-08-28 and is worth adopting, but it's one day old at time of writing and the htmx project itself keeps 2.x as "latest" until roughly early 2027. No HTMX code exists yet, so there's nothing to migrate — **re-evaluate 2.x vs. 4.0 at Phase 4** (first phase to actually wire up HTMX), by which point 4.0 will have a track record. See design.md §8.2 for detail. **Re-evaluated 2026-09-25 (Phase 4): stay on 2.x.** 4.0.0 is still the only 4.x release and still on npm's `next` tag; 2.x is still `latest` and still maintained (2.0.11 on 2026-09-22). Re-check when 4.x becomes `latest` (expected early 2027). Keep htmx usage to plain `hx-post`/`hx-get`/`hx-target`/`hx-swap` and explicit `htmx.ajax()` calls, which 2→4 changes least. |
 
 ---
 
 ## Phase 1 — Core data models
+
+[COMPLETED]
 
 Everything else is built on top of these. Define all models, write migrations, seed initial data.
 
@@ -63,6 +66,8 @@ Everything else is built on top of these. Define all models, write migrations, s
 
 ## Phase 2 — Base UI shell
 
+[COMPLETED]
+
 Before building any feature page, establish the shared shell that all pages inherit from.
 
 - `base.html`: Bootstrap 5 (CDN for now; bundle later), HTMX, mobile viewport meta, Bootstrap Icons.
@@ -79,6 +84,8 @@ Before building any feature page, establish the shared shell that all pages inhe
 
 ## Phase 3 — Authentication flows
 
+[COMPLETED]
+
 `django-sesame` is already installed. This phase wires it to views and email.
 
 - **Magic-link request** (`/auth/start/`): email input form, honeypot field, rate limit (§16). On submit: get-or-create user, send magic-link email.
@@ -93,9 +100,11 @@ Before building any feature page, establish the shared shell that all pages inhe
 
 ## Phase 4 — Map component
 
+[COMPLETED]
+
 A reusable component used by observation submission (both types), browsing, and observation detail pages. Build it once cleanly.
 
-**Before starting**: re-check the htmx 2.x vs. 4.0 decision (see the Decisions table and design.md §8.2) — this is the first phase that writes HTMX code, and by now 4.0 will have had time to show whether it's stable.
+**Before starting**: re-check the htmx 2.x vs. 4.0 decision (see the Decisions table and design.md §8.2) — this is the first phase that writes HTMX code, and by now 4.0 will have had time to show whether it's stable. **Done 2026-09-25: staying on 2.x** (see Decisions table).
 
 - Leaflet.js loaded from CDN (or bundled with `django-compressor` later).
 - `map_widget.html` include: takes a Django template context with initial centre, zoom, optional observation pins GeoJSON, and configuration flags (crosshair mode on/off, GPS button on/off).
@@ -109,7 +118,16 @@ A reusable component used by observation submission (both types), browsing, and 
 
 ## Phase 5 — Modal share counting
 
+[COMPLETED]
+
 Full counting workflow (§9.1, §21.3).
+
+**Provisional sign-in (§5.3, §5.4)** — this is the first phase where someone can observe before confirming their email, so it lands here:
+- Entering an email to start counting signs the user in provisionally and sends the magic link at the same time (Phase 3's flow, minus the wait).
+- A `SignInAttempt` model tracks each provisional sign-in: email, session, started / reminded / confirmed timestamps. Observations, count events, media and location evidence created during the attempt link to it.
+- Scope: a provisional session sees only what its own attempt created, never an existing user's data or preferences with the same email.
+- Confirming (magic link) attaches the attempt's data to the user.
+- Management command (run from cron; Celery later) to send the reminder after a configurable delay, then delete everything linked to attempts still unconfirmed after a further configurable period, including stored photos and any never-confirmed user left with no data.
 
 **Server side:**
 - `POST /counts/start/` — create `ModalShareSession` (state: Draft), return session id.
@@ -130,12 +148,27 @@ Full counting workflow (§9.1, §21.3).
 - Unvalidated user: gentle prompt to check email.
 - Share link (direct URL to this observation).
 
-Note that a POC of this was built at ~/src/jma/transport-nantes/tn_web/transport_nantes/mobilito/ .
+Note that a POC of this was built at ~/src/jma/transport-nantes/tn_web/transport_nantes/mobilito/ (public: github.com/transport-nantes/tn_web).
 Use that code to inspire you here.  The only part of that UX that is particularly confirmed by the POC is the large four-button grid for counting.
 
 ---
 
+## Phase 5b — Counting guidance
+
+[COMPLETED for v1-preview] — the two *(v1)* items (visual tutorial, explainer article) remain.
+
+What counts as what (design §9.1, "What counts as what"): we count things on the road, by behaviour, not people. Users need this from several angles, since most won't read a tutorial.
+
+- **Short text guide** on the start-counting page: the one-line rule plus common edge cases, collapsible. *(v1-preview)*
+- **Home-screen labels**: plainer candidate copy (§21.2) in place; user-test it. *(v1-preview)*
+- **Visual tutorial**: per mode, a rapidly changing image (2–3 per second) labelled with the mode, showing clearly identifiable examples. Needs a set of images we have the rights to (photos or illustrations), and a way to reach it from the counting flow (e.g. first count, and a "?" on the start page). *(v1)*
+- **Explainer article**: a blog-like page on counting things on the road vs the usual definition of modal share. Content task, in FR and EN. *(v1)*
+
+---
+
 ## Phase 6 — Infrastructure observations
+
+[COMPLETED] — the follow-ups at the end of this section remain open.
 
 More complex than modal share due to photo handling and the ontology (§9.2, §21.4).
 
@@ -152,9 +185,15 @@ More complex than modal share due to photo handling and the ontology (§9.2, §2
 - Form state persistence in `sessionStorage` so partial drafts survive accidental navigation (§18).
 - Photo preview before upload.
 
+**Follow-ups (noted in review, not yet done):**
+- Shrink photos in the browser (canvas / `createImageBitmap`, ~2048px JPEG) before upload. Up to 6 × 20 MB goes up raw today and the server shrinks it to 2048px anyway; shrinking first would cut uploads 10–20× on mobile data. Keep the server-side processing as the real check.
+- `InfrastructureTag.family` is shown as a group heading but isn't translated (only `label` and `description` are registered with modeltranslation). Register it, or make families a small translated model, before tags are seeded in both languages.
+
 ---
 
 ## Phase 7 — Observation browsing
+
+[COMPLETED] — the follow-ups marked below remain open. Detail pages live at `/counts/<id>/` and `/reports/<id>/` rather than one `/observations/<id>/`; history and me-too count on report pages arrive with Phase 10.
 
 Public, requires no authentication (§9.3, §21.1).
 
@@ -163,11 +202,15 @@ Public, requires no authentication (§9.3, §21.1).
 - `GET /observations/<id>/` — full detail: photos, text, tags, history, me-too count, share button.
 - GeoJSON API endpoint (`/api/observations.geojson`) used by the map: returns published observations within a bounding box. Cached (e.g. 60 s) to handle multiple simultaneous viewers.
 - Own observations list for authenticated users: `/observations/mine/` — shows all their observations including those not yet published, with their current state in plain language.
-- **Location time-series view** (§9.1): for a given `Location`, aggregate and chart modal share counts across all sessions linked to it over time. This is listed as a required "must support" capability in Core Features, not a nice-to-have — give it its own view (e.g. on the location/observation detail page) rather than letting it fall out of scope.
+- **Follow-up (list view cost):** `/observations/` orders every published observation by distance (sphere `ST_Distance` over a UNION of both kinds, then OFFSET paging), which can't use the spatial index. Fine for thousands of rows; before ~10⁵, bound it (e.g. per-kind KNN `<->` with a LIMIT of page × size, or an `ST_DWithin` radius with a "nothing nearer" message).
+- **Follow-up (time zone):** *Done 2026-09-30: times display in Europe/Paris and the history compares local years; per-observer zones remain for later.* Was: `TIME_ZONE` is UTC and no time zone is activated, so every page shows observation times in UTC (a 17:00 count in Nantes reads 15:00 or 16:00, and one near midnight can show the wrong weekday). The count history compares by weekday and time of day, so this matters there most. Activate Europe/Paris (or the observer's zone) for display, and compare years in local time.
+- **Location time-series view** (§9.1): for a given count, aggregate and chart the published modal share counts within `LOCATION_EQUIVALENCE_RADIUS_MODAL_SHARE_METERS` of it over time (by radius rather than `Location` FK, so independent counts on the same stretch are compared; done in Phase 7, on the count's results page). This is listed as a required "must support" capability in Core Features, not a nice-to-have — give it its own view (e.g. on the location/observation detail page) rather than letting it fall out of scope.
 
 ---
 
 ## Phase 8 — Moderation and publication lifecycle
+
+[COMPLETED] — as built: transitions in `core/lifecycle.py` (`moderate()`; publish *and* light hold both refuse an unvalidated or ownerless author, since light hold is link-visible), admin actions plus per-observation decision buttons, photos hidden individually from the report's admin page, `/flag/<kind>/<id>/` (report text, photo, or a count's typed place name; works without JS, inline with htmx). Repeated flags from confirmed users auto-hide a photo or light-hold an observation (`MODERATION_FLAG_AUTO_HOLD_REPORTERS`). Public lists, map and history also require a confirmed author. See doc/operations.md "Moderation".
 
 Minimal for v1-preview (admin-accessible only); full dashboard in v1 (§13).
 
@@ -190,15 +233,15 @@ Minimal for v1-preview (admin-accessible only); full dashboard in v1 (§13).
 
 Before opening to test users:
 
-- [ ] All user-facing strings have French translations (`compilemessages` passes)
+- [x] All user-facing strings have French translations (`compilemessages` passes) — machine-drafted 2026-09-30; a native speaker still needs to read them (TODO-jeff.md)
 - [ ] Cloudflare in front of the deployment — §16 names it the first line of bot defence and §11.1/§11.2 assume edge geo-tag data is captured on every request from day one; v1-preview is a "limited public preview" per §22.1, not an unexposed internal build, so this shouldn't wait for public launch
-- [ ] Rate limiting on auth and submission endpoints (Django middleware or Cloudflare rules)
-- [ ] Honeypot fields on all forms
+- [ ] Rate limiting on auth and submission endpoints (Django middleware or Cloudflare rules) — app-level limits done for sign-in, counts, reports and flags; Cloudflare rules still to add
+- [x] Honeypot fields on all forms
 - [ ] Email sending confirmed working end-to-end
 - [ ] Photo upload to S3 confirmed working
 - [ ] Mobile QA: iPhone Safari, Android Chrome, Android Firefox
-- [ ] Admin can view and moderate all observations
-- [ ] No observations from unvalidated users appear in the public map or GeoJSON endpoint
+- [x] Admin can view and moderate all observations
+- [x] No observations from unvalidated users appear in the public map or GeoJSON endpoint
 
 ---
 
@@ -283,7 +326,7 @@ Use prompt caching where possible (system prompt + tag list as cached prefix).
 
 - **User deletion flow**: view at `/preferences/delete/`. Replaces email with `deleted-user-<id>@example.com`, sets `is_active = False`, nulls all FK references to the user in `ObservationAction`, `InfrastructureMedia`. All observation content retained, fully anonymised.
 - **Privacy policy**: static pages in FR and EN at `/legal/privacy/`.
-- **Data retention**: management command to delete unvalidated users who have never submitted and are older than a configurable threshold (e.g. 90 days).
+- **Data retention**: management command to delete unvalidated users who have never submitted and are older than a configurable threshold (e.g. 90 days). (Unconfirmed sign-in attempts and their data are already reminded and dropped by the Phase 5 command, §5.4; fold both into one documented retention schedule here.)
 - **ROPA** (Art. 30 record of processing): internal document; not a code task, but required before launch.
 - Legal review of the lawful basis table from §19.1.
 

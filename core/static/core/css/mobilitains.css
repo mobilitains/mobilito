@@ -1,0 +1,668 @@
+/*
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+*/
+
+/* Mobilitains colours (doc/colours.md). Every colour on the site
+   comes from here: templates and other stylesheets use these tokens
+   (or the Bootstrap classes themed below), never a raw hex value.
+
+   Accessibility comes first: where the brand guide allows a pair
+   that fails WCAG contrast, the pair isn't used. Contrast ratios in
+   comments are against white unless stated. */
+
+/* Montserrat, the brand's typeface (guide visuel), served from here
+   rather than Google Fonts so visitors' browsers don't contact a
+   third party. Variable weight 100-900; Latin covers French and
+   English, Latin Extended the rest of Europe's names. SIL Open Font
+   License: fonts/montserrat/OFL.txt. */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/montserrat/montserrat-latin-wght-normal.woff2")
+    format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/montserrat/montserrat-latin-ext-wght-normal.woff2")
+    format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/montserrat/montserrat-latin-wght-italic.woff2")
+    format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/montserrat/montserrat-latin-ext-wght-italic.woff2")
+    format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+:root {
+  --bs-body-font-family: "Montserrat", system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* The five brand colours (guide visuel, Dec. 2021), plus the dark
+     blue used for text. */
+  --mbl-bleu: #5bc2e7;        /* bleu emblème: contributing (CTA) */
+  --mbl-marine: #43526e;      /* bleu +1: navigation, headings 7.9 */
+  --mbl-gris: #dbe3eb;        /* gris: surfaces */
+  --mbl-orange: #fa4616;      /* rouge mobilitains: accents 3.5 */
+  --mbl-marron: #7f6966;      /* rouge-gris: logo core, muted 5.1 */
+  --mbl-fonce: #333f48;       /* bleu foncé: body text 10.8 */
+  --mbl-bleu-gris: #78909c;   /* secondary: borders 3.4 */
+
+  /* Lighter and darker steps (OKLCH lightness ±0.08, same hue). */
+  --mbl-bleu-light: #96d8f2;
+  --mbl-bleu-dark: #3ea8cd;
+  --mbl-bleu-text: #107998;   /* the bleu, dark enough for text 5.0 */
+  --mbl-marine-light: #596986; /* 5.5 */
+  --mbl-marine-dark: #2e3c57; /* 11.1 */
+  --mbl-gris-light: #eaf2fa;
+  --mbl-gris-dark: #c4ccd4;
+  --mbl-orange-light: #fd7e61;
+  --mbl-orange-dark: #d23404; /* text and white-on-orange 5.0 */
+  --mbl-orange-darker: #b32c03;
+  --mbl-marron-light: #97807d;
+  --mbl-marron-dark: #685350; /* 7.1 */
+  --mbl-fonce-dark: #1f2b33;  /* 14.5 */
+
+  /* Tints for message boxes. */
+  --mbl-bleu-tint: #d3f1fd;
+  --mbl-orange-tint: #ffe5de;
+
+  /* Chart and map categories, validated for colour-blind separation
+     in this order (dataviz validator). Marine and marron are too
+     grey to tell apart as data, so charts use more saturated steps
+     of the same hues. */
+  --mbl-chart-1: #5bc2e7;     /* bleu */
+  --mbl-chart-2: #3d5c99;     /* marine, saturated */
+  --mbl-chart-3: #fa4616;     /* orange */
+  --mbl-chart-4: #8f433c;     /* marron, saturated */
+  --mbl-mode-ped: var(--mbl-chart-1);
+  --mbl-mode-bike: var(--mbl-chart-2);
+  --mbl-mode-car: var(--mbl-chart-3);
+  --mbl-mode-tc: var(--mbl-chart-4);
+  /* Map pins (on the light map in both themes), and the icons that
+     stand for each kind in lists (on the page). */
+  --mbl-kind-count: var(--mbl-chart-2);
+  --mbl-kind-report: var(--mbl-orange);
+  --mbl-kind-count-text: var(--mbl-chart-2);
+  --mbl-kind-report-text: var(--mbl-orange-dark);
+  /* A solid focus ring, for outlines Bootstrap doesn't draw. */
+  --mbl-ring: var(--mbl-marine);
+  /* Ticked boxes and radios (white tick on it). */
+  --mbl-check: var(--mbl-marine);
+
+  /* Bootstrap 5.3, themed. */
+  --bs-body-color: var(--mbl-fonce);
+  --bs-body-color-rgb: 51, 63, 72;
+  --bs-emphasis-color: var(--mbl-fonce-dark);
+  --bs-emphasis-color-rgb: 31, 43, 51;
+  --bs-heading-color: var(--mbl-marine);
+  /* Help and secondary text (.text-body-secondary). */
+  --bs-secondary-color: var(--mbl-marron);
+  --bs-secondary-color-rgb: 127, 105, 102;
+  --bs-secondary-bg: var(--mbl-gris);
+  --bs-tertiary-bg: var(--mbl-gris-light);
+  --bs-link-color: var(--mbl-marine);
+  --bs-link-color-rgb: 67, 82, 110;
+  --bs-link-hover-color: var(--mbl-marine-dark);
+  --bs-link-hover-color-rgb: 46, 60, 87;
+  /* Form fields need a 3:1 edge (WCAG 1.4.11). */
+  --bs-border-color: var(--mbl-bleu-gris);
+  --bs-border-color-translucent: rgba(67, 82, 110, 0.25);
+  /* Solid enough to see: about 4:1 on white (fields, links). */
+  --bs-focus-ring-color: rgba(67, 82, 110, 0.75);
+
+  --bs-primary: var(--mbl-marine);
+  --bs-primary-rgb: 67, 82, 110;
+  --bs-primary-text-emphasis: var(--mbl-marine-dark);
+  --bs-primary-bg-subtle: var(--mbl-gris-light);
+  --bs-primary-border-subtle: var(--mbl-gris-dark);
+
+  --bs-info-text-emphasis: var(--mbl-fonce);
+  --bs-info-bg-subtle: var(--mbl-bleu-tint);
+  --bs-info-border-subtle: var(--mbl-bleu);
+
+  --bs-secondary-text-emphasis: var(--mbl-fonce);
+  --bs-secondary-bg-subtle: var(--mbl-gris-light);
+  --bs-secondary-border-subtle: var(--mbl-gris-dark);
+
+  /* Errors in the brand's orange rather than a second, clashing
+     red; always with words, never colour alone. */
+  --bs-danger: var(--mbl-orange-dark);
+  --bs-danger-rgb: 210, 52, 4;
+  --bs-danger-text-emphasis: var(--mbl-fonce);
+  --bs-danger-bg-subtle: var(--mbl-orange-tint);
+  --bs-danger-border-subtle: var(--mbl-orange);
+  --bs-form-invalid-color: var(--mbl-orange-dark);
+  --bs-form-invalid-border-color: var(--mbl-orange-dark);
+
+  /* Success and warning keep Bootstrap's green and yellow: status,
+     not brand, and always with an icon or words. */
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+  border-color: var(--mbl-ring);
+  box-shadow: 0 0 0 0.25rem var(--bs-focus-ring-color);
+}
+
+/* Muted text inside tinted boxes and pressed rows: the usual
+   rouge-gris falls just under 4.5:1 there, so a step darker. */
+.alert,
+.list-group-item-action:active {
+  --bs-secondary-color: var(--mbl-marron-dark);
+  --bs-secondary-color-rgb: 104, 83, 80;
+  --bs-danger-rgb: 179, 44, 3;
+}
+
+/* Page links: the current page in navy. */
+.pagination {
+  --bs-pagination-color: var(--mbl-marine);
+  --bs-pagination-hover-color: var(--mbl-marine-dark);
+  --bs-pagination-focus-color: var(--mbl-marine-dark);
+  --bs-pagination-focus-box-shadow: 0 0 0 0.25rem
+    var(--bs-focus-ring-color);
+  --bs-pagination-active-bg: var(--mbl-marine);
+  --bs-pagination-active-border-color: var(--mbl-marine);
+}
+
+.form-check-input:checked {
+  background-color: var(--mbl-check);
+  border-color: var(--mbl-check);
+}
+
+/* Header (as in the proof of concept): the logo, white with its
+   coloured dots, on the brand's navy. */
+.mbl-navbar {
+  background-color: var(--mbl-marine);
+}
+
+.mbl-logo {
+  display: block;
+  height: 1.75rem;
+  width: auto;
+}
+
+.mbl-navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+}
+
+.mbl-navbar .mbl-product {
+  padding-left: 0.75rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Buttons. Bootstrap's own state rules beat plain properties, so
+   set its variables. Focus rings have a white gap before the
+   coloured ring, so the ring shows even on a button of its own
+   colour (on the dark header it's plain white instead). */
+
+/* Navigation and everyday actions: white on navy. */
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--mbl-marine);
+  --bs-btn-border-color: var(--mbl-marine);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--mbl-marine-dark);
+  --bs-btn-hover-border-color: var(--mbl-marine-dark);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--mbl-marine-dark);
+  --bs-btn-active-border-color: var(--mbl-marine-dark);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: var(--mbl-marine-light);
+  --bs-btn-disabled-border-color: var(--mbl-marine-light);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(67, 82, 110, 0.9);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--mbl-marine);
+  --bs-btn-border-color: var(--mbl-marine);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--mbl-marine);
+  --bs-btn-hover-border-color: var(--mbl-marine);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--mbl-marine-dark);
+  --bs-btn-active-border-color: var(--mbl-marine-dark);
+  --bs-btn-disabled-color: var(--mbl-marine-light);
+  --bs-btn-disabled-border-color: var(--mbl-marine-light);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(67, 82, 110, 0.9);
+}
+
+/* Contributing (count, report, send): the brand's call-to-action
+   blue. White on this blue is unreadable (2.0:1), so dark text. */
+.btn-contribute {
+  --bs-btn-color: var(--mbl-fonce-dark);
+  --bs-btn-bg: var(--mbl-bleu);
+  --bs-btn-border-color: var(--mbl-bleu-text);
+  --bs-btn-hover-color: var(--mbl-fonce-dark);
+  --bs-btn-hover-bg: var(--mbl-bleu-light);
+  --bs-btn-hover-border-color: var(--mbl-bleu-text);
+  --bs-btn-active-color: var(--mbl-fonce-dark);
+  --bs-btn-active-bg: var(--mbl-gris);
+  --bs-btn-active-border-color: var(--mbl-bleu-text);
+  --bs-btn-disabled-color: var(--mbl-fonce);
+  --bs-btn-disabled-bg: var(--mbl-bleu-light);
+  --bs-btn-disabled-border-color: var(--mbl-bleu-light);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(16, 121, 152, 0.9);
+  font-weight: 600;
+}
+
+/* Not ready yet, or a lesser contribution. */
+.btn-outline-contribute {
+  --bs-btn-color: var(--mbl-fonce);
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: var(--mbl-bleu-text);
+  --bs-btn-hover-color: var(--mbl-fonce-dark);
+  --bs-btn-hover-bg: var(--mbl-bleu);
+  --bs-btn-hover-border-color: var(--mbl-bleu-text);
+  --bs-btn-active-color: var(--mbl-fonce-dark);
+  --bs-btn-active-bg: var(--mbl-bleu-light);
+  --bs-btn-active-border-color: var(--mbl-bleu-text);
+  --bs-btn-disabled-color: var(--mbl-marron);
+  --bs-btn-disabled-border-color: var(--mbl-gris-dark);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(16, 121, 152, 0.9);
+  font-weight: 600;
+}
+
+.btn-danger {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--mbl-orange-dark);
+  --bs-btn-border-color: var(--mbl-orange-dark);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--mbl-orange-darker);
+  --bs-btn-hover-border-color: var(--mbl-orange-darker);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--mbl-orange-darker);
+  --bs-btn-active-border-color: var(--mbl-orange-darker);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(210, 52, 4, 0.9);
+}
+
+.btn-outline-danger {
+  --bs-btn-color: var(--mbl-orange-dark);
+  --bs-btn-border-color: var(--mbl-orange-dark);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--mbl-orange-dark);
+  --bs-btn-hover-border-color: var(--mbl-orange-dark);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--mbl-orange-darker);
+  --bs-btn-active-border-color: var(--mbl-orange-darker);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(210, 52, 4, 0.9);
+}
+
+/* The buttons Bootstrap leaves as they are still get a visible
+   ring: text-like links and light buttons in navy, the yellow
+   warning button in dark blue. */
+.btn-link {
+  --bs-btn-color: var(--mbl-marine);
+  --bs-btn-hover-color: var(--mbl-marine-dark);
+  --bs-btn-active-color: var(--mbl-marine-dark);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(67, 82, 110, 0.9);
+}
+
+.btn-light {
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(67, 82, 110, 0.9);
+}
+
+.btn-warning {
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(51, 63, 72, 0.9);
+}
+
+/* Bootstrap's close (X) button has its own faint blue ring. */
+.btn-close {
+  --bs-btn-close-focus-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(67, 82, 110, 0.9);
+}
+
+/* Bootstrap draws its error icon in its own red: redraw it in the
+   dark orange (%23 is "#" in a data URI). */
+.form-control.is-invalid,
+.was-validated .form-control:invalid {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23d23404'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23d23404' stroke='none'/%3e%3c/svg%3e");
+}
+
+/* A field with an error keeps a visible ring (about 3.5:1). */
+.form-control.is-invalid:focus,
+.form-select.is-invalid:focus,
+.was-validated .form-control:invalid:focus,
+.was-validated .form-select:invalid:focus {
+  box-shadow: 0 0 0 0.25rem rgba(210, 52, 4, 0.75);
+}
+
+/* What kind of observation an item is, matching its map pin. The
+   report orange is darkened to read on white (3:1 for icons). */
+.mbl-text-count {
+  color: var(--mbl-kind-count-text);
+}
+
+.mbl-text-report {
+  color: var(--mbl-kind-report-text);
+}
+
+/* Dark mode: opt-in, per device (the switch in the footer sets
+   data-bs-theme="dark" on <html>). Its own steps, chosen and checked
+   against the dark page, not an inversion: see doc/colours.md. The
+   header and counting screen are dark in both modes; the map stays
+   light (OpenStreetMap tiles), so pins keep their light colours. */
+[data-bs-theme="dark"] {
+  --mbl-page-dark: #1f2b33;     /* = foncé dark */
+  --mbl-surface-dark: #2e3a43;  /* raised: hover, subtle boxes */
+  --mbl-surface-dark-2: #3d4a53; /* pressed rows */
+  --mbl-marron-text-dark: #b69f9b; /* muted text 5.8 (4.7 raised) */
+  /* On pressed rows (surface 2), a step lighter: 4.6. */
+  --mbl-marron-text-dark-2: #cbb3af;
+  --mbl-orange-text-dark: #fd7e61; /* errors 5.7 (4.6 raised) */
+  --mbl-marine-text-dark: #7497d8; /* count icons 4.9 (3.1+ raised) */
+  --mbl-check-dark: #2e86ab;    /* white tick 4.1, vs page 3.5 */
+  --mbl-bleu-tint-dark: #133b49;
+  --mbl-orange-tint-dark: #502920;
+
+  --bs-body-bg: var(--mbl-page-dark);
+  --bs-body-bg-rgb: 31, 43, 51;
+  --bs-body-color: var(--mbl-gris);         /* 11.2 */
+  --bs-body-color-rgb: 219, 227, 235;
+  --bs-emphasis-color: #fff;
+  --bs-emphasis-color-rgb: 255, 255, 255;
+  --bs-heading-color: var(--mbl-bleu);      /* 7.1 */
+  --bs-secondary-color: var(--mbl-marron-text-dark);
+  --bs-secondary-color-rgb: 182, 159, 155;
+  --bs-secondary-bg: var(--mbl-surface-dark-2);
+  --bs-tertiary-bg: var(--mbl-surface-dark);
+  --bs-link-color: var(--mbl-bleu-light);   /* 9.2 */
+  --bs-link-color-rgb: 150, 216, 242;
+  --bs-link-hover-color: #fff;
+  --bs-link-hover-color-rgb: 255, 255, 255;
+  --bs-border-color: var(--mbl-bleu-gris);  /* 4.3 */
+  --bs-border-color-translucent: rgba(219, 227, 235, 0.2);
+  --bs-focus-ring-color: rgba(150, 216, 242, 0.75);
+
+  --bs-primary: var(--mbl-bleu-light);
+  --bs-primary-rgb: 150, 216, 242;
+  --bs-primary-text-emphasis: var(--mbl-bleu-light);
+  --bs-primary-bg-subtle: var(--mbl-surface-dark);
+  --bs-primary-border-subtle: var(--mbl-bleu-gris);
+  --bs-info-text-emphasis: var(--mbl-gris);
+  --bs-info-bg-subtle: var(--mbl-bleu-tint-dark);
+  --bs-info-border-subtle: var(--mbl-bleu);
+  --bs-secondary-text-emphasis: var(--mbl-gris);
+  --bs-secondary-bg-subtle: var(--mbl-surface-dark);
+  --bs-secondary-border-subtle: var(--mbl-bleu-gris);
+  --bs-danger: var(--mbl-orange-text-dark);
+  --bs-danger-rgb: 253, 126, 97;
+  --bs-danger-text-emphasis: var(--mbl-gris);
+  --bs-danger-bg-subtle: var(--mbl-orange-tint-dark);
+  --bs-danger-border-subtle: var(--mbl-orange);
+  --bs-form-invalid-color: var(--mbl-orange-text-dark);
+  --bs-form-invalid-border-color: var(--mbl-orange-text-dark);
+
+  --mbl-ring: var(--mbl-bleu-light);
+  --mbl-check: var(--mbl-check-dark);
+  --mbl-kind-count-text: var(--mbl-marine-text-dark);
+  --mbl-kind-report-text: var(--mbl-orange-text-dark);
+  /* Charts on the dark page, checked the same way (dataviz
+     validator, dark surface #1f2b33). */
+  --mbl-mode-ped: #33a0c4;
+  --mbl-mode-bike: #3463c4;
+  --mbl-mode-car: var(--mbl-orange);
+  --mbl-mode-tc: #a1564e;
+}
+
+[data-bs-theme="dark"] .alert {
+  --bs-secondary-color: var(--mbl-marron-text-dark);
+  --bs-secondary-color-rgb: 182, 159, 155;
+  --bs-danger-rgb: 253, 126, 97;
+}
+
+[data-bs-theme="dark"] .list-group-item-action:active {
+  --bs-secondary-color: var(--mbl-marron-text-dark-2);
+  --bs-secondary-color-rgb: 203, 179, 175;
+  --bs-danger-rgb: 253, 126, 97;
+}
+
+[data-bs-theme="dark"] .pagination {
+  --bs-pagination-color: var(--mbl-bleu-light);
+  --bs-pagination-hover-color: #fff;
+  --bs-pagination-focus-color: #fff;
+  --bs-pagination-active-bg: var(--mbl-marine);
+  --bs-pagination-active-border-color: var(--mbl-bleu-gris);
+}
+
+/* Navy buttons get a bleu-gris edge: navy alone barely shows on the
+   dark page. */
+[data-bs-theme="dark"] .btn-primary {
+  --bs-btn-border-color: var(--mbl-bleu-gris);
+  --bs-btn-hover-bg: var(--mbl-marine-light);
+  --bs-btn-hover-border-color: var(--mbl-bleu-gris);
+  --bs-btn-active-bg: var(--mbl-marine-light);
+  --bs-btn-active-border-color: var(--mbl-bleu-gris);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(150, 216, 242, 0.9);
+}
+
+/* Navigation outlines read neutral (grey on a bleu-gris edge), so
+   they stay distinct from contributing, which reads blue. The
+   header is navy in both modes, so its buttons (the current
+   language is .btn-light) keep their light-mode look; the GPS
+   button has its own rule below. */
+[data-bs-theme="dark"] .btn-outline-primary,
+[data-bs-theme="dark"] .btn-light:not(.mbl-navbar .btn, .mobilito-gps-button) {
+  --bs-btn-color: var(--mbl-gris);
+  --bs-btn-border-color: var(--mbl-bleu-gris);
+  --bs-btn-hover-color: var(--mbl-fonce-dark);
+  --bs-btn-hover-bg: var(--mbl-bleu-light);
+  --bs-btn-hover-border-color: var(--mbl-bleu-light);
+  --bs-btn-active-color: var(--mbl-fonce-dark);
+  --bs-btn-active-bg: var(--mbl-bleu-light);
+  --bs-btn-active-border-color: var(--mbl-bleu-light);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(150, 216, 242, 0.9);
+}
+
+[data-bs-theme="dark"] .btn-light:not(.mbl-navbar .btn, .mobilito-gps-button) {
+  --bs-btn-bg: var(--mbl-surface-dark);
+}
+
+/* Controls over the map stay light, like the map and Leaflet's own
+   zoom buttons. */
+[data-bs-theme="dark"] .mobilito-gps-button {
+  --bs-btn-color: var(--mbl-marine);
+  --bs-btn-bg: #fff;
+  --bs-btn-border-color: var(--mbl-bleu-gris);
+  --bs-btn-hover-color: var(--mbl-marine-dark);
+  --bs-btn-hover-bg: var(--mbl-gris-light);
+  --bs-btn-hover-border-color: var(--mbl-bleu-gris);
+  --bs-btn-active-color: var(--mbl-marine-dark);
+  --bs-btn-active-bg: var(--mbl-gris);
+  --bs-btn-active-border-color: var(--mbl-bleu-gris);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem #fff,
+    0 0 0 0.4rem rgba(67, 82, 110, 0.9);
+}
+
+[data-bs-theme="dark"] .btn-contribute,
+[data-bs-theme="dark"] .btn-outline-contribute {
+  --bs-btn-border-color: var(--mbl-bleu);
+  --bs-btn-hover-border-color: var(--mbl-bleu-light);
+  --bs-btn-active-border-color: var(--mbl-bleu-light);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(91, 194, 231, 0.9);
+}
+
+[data-bs-theme="dark"] .btn-outline-contribute {
+  --bs-btn-color: var(--mbl-gris);
+  --bs-btn-disabled-color: var(--mbl-marron-text-dark);
+}
+
+[data-bs-theme="dark"] .btn-outline-danger {
+  --bs-btn-color: var(--mbl-orange-text-dark);
+  --bs-btn-border-color: var(--mbl-orange-text-dark);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(253, 126, 97, 0.9);
+}
+
+[data-bs-theme="dark"] .btn-danger {
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(253, 126, 97, 0.9);
+}
+
+[data-bs-theme="dark"] .btn-link {
+  --bs-btn-color: var(--mbl-bleu-light);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-color: #fff;
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(150, 216, 242, 0.9);
+}
+
+[data-bs-theme="dark"] .btn-close {
+  --bs-btn-close-focus-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(150, 216, 242, 0.9);
+}
+
+[data-bs-theme="dark"] .form-control.is-invalid,
+[data-bs-theme="dark"] .was-validated .form-control:invalid {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23fd7e61'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23fd7e61' stroke='none'/%3e%3c/svg%3e");
+}
+
+/* On the dark backgrounds (header, counting screen) a dark ring
+   vanishes: white instead, with a gap in the background colour so
+   it doesn't merge with a white-bordered button. */
+.mbl-navbar .btn {
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--mbl-marine),
+    0 0 0 0.4rem rgba(255, 255, 255, 0.9);
+}
+
+.mobilito-count-top .btn {
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--mbl-marine-dark),
+    0 0 0 0.4rem rgba(255, 255, 255, 0.9);
+}
+
+/* Plain links there (the logo) too: browsers' default blue outline
+   hardly shows on navy. */
+.mbl-navbar a:not(.btn):focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+/* Phones: the mark, "Mobilito" and the controls on one line, even
+   in French ("Se déconnecter"). */
+@media (max-width: 575.98px) {
+  .mbl-logo {
+    height: 1.5rem;
+  }
+
+  .mbl-navbar .navbar-brand {
+    gap: 0.4rem;
+    margin-right: 0.5rem;
+  }
+
+  .mbl-navbar .mbl-product {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  /* If the text is bigger than planned (a larger default font
+     size), wrap to two rows rather than scroll sideways. */
+  .mbl-navbar > .container {
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+  }
+
+  /* Narrower, not shorter: taps keep their height (44px). */
+  .mbl-navbar .btn {
+    --bs-btn-padding-x: 0.4rem;
+    --bs-btn-font-size: 0.9375rem;
+    min-height: 2.75rem;
+  }
+}
+
+/* The narrowest phones (320px): the mark alone on screen; screen
+   readers still hear "Mobilito" (as .visually-hidden). */
+@media (max-width: 359.98px) {
+  .mbl-navbar .mbl-product {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+/* The footer's dark mode switch: a button that reads like the
+   footer's links, with a toggle icon showing its state. */
+.mbl-footer-switch {
+  --bs-btn-padding-x: 0;
+  --bs-btn-padding-y: 0.5rem;
+  min-height: 2.75rem;
+  --bs-btn-font-size: inherit;
+  --bs-btn-line-height: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  vertical-align: baseline;
+}
+
+.mbl-footer-switch .bi {
+  font-size: 1.25em;
+}

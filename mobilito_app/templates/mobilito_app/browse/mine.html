@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+
+{% block title %}{% trans "Your observations" %} · Mobilito{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 40rem;">
+  <h1 class="h4 mb-3">{% trans "Your observations" %}</h1>
+  {% if provisional %}
+    <p class="alert alert-info">
+      {% trans "This shows what you’ve recorded since you gave your email address in this browser." %}
+      {% if confirmed_elsewhere %}
+        <a href="{{ sign_in_url }}">{% trans "Sign in to see everything you’ve recorded." %}</a>
+      {% else %}
+        {% trans "Open the link we emailed you to see everything you’ve recorded." %}
+      {% endif %}
+    </p>
+  {% endif %}
+  {% if page.object_list %}
+    <p class="text-body-secondary mb-3">
+      {% blocktranslate trimmed count total=page.paginator.count %}
+        You’ve made {{ total }} observation.
+      {% plural %}
+        You’ve made {{ total }} observations.
+      {% endblocktranslate %}
+      {% if visible %}
+        {% blocktranslate trimmed count visible=visible %}
+          {{ visible }} is visible to everyone.
+        {% plural %}
+          {{ visible }} are visible to everyone.
+        {% endblocktranslate %}
+      {% endif %}
+    </p>
+
+    {# role: Safari drops list semantics from unstyled lists. #}
+    <ul class="list-unstyled mb-3" role="list">
+      {% for entry in items %}
+        {% with kind=entry.kind item=entry.item %}
+          <li class="card mb-2">
+            <div class="card-body py-3 position-relative">
+              <h2 class="h6 mb-1">
+                {% if kind == "count" %}
+                  <i class="bi bi-bar-chart-fill mbl-text-count" aria-hidden="true"></i>
+                  <a href="{% if item.finished_at %}{% url 'counts_detail' item.pk %}{% else %}{% url 'counts_count' item.pk %}{% endif %}" class="stretched-link">{% trans "Count" %}<span aria-hidden="true"> · </span><span class="visually-hidden">, </span>{% include "core/partials/place_name.html" with location=item.location %}</a>
+                {% else %}
+                  <i class="bi bi-signpost-split mbl-text-report" aria-hidden="true"></i>
+                  <a href="{% url 'reports_detail' item.pk %}" class="stretched-link">{% trans "Street feature" %}<span aria-hidden="true"> · </span><span class="visually-hidden">, </span>{% include "core/partials/place_name.html" with location=item.location %}</a>
+                {% endif %}
+              </h2>
+              <p class="small text-body-secondary mb-1">
+                {% if kind == "count" %}{{ item.started_at|date:"DATETIME_FORMAT" }}{% else %}{{ item.created_at|date:"DATETIME_FORMAT" }}{% endif %}
+              </p>
+              <p class="mb-1">
+                <span class="badge text-bg-{{ entry.colour }} text-wrap text-start">{{ entry.status }}</span>
+                {% if entry.next_step %}<span class="d-block small mt-1">{{ entry.next_step }}</span>{% endif %}
+              </p>
+              {% if kind == "count" and item.finished_at %}
+                <p class="mb-0 small">
+                  {% blocktranslate trimmed count total=item.total %}
+                    {{ total }} counted
+                  {% plural %}
+                    {{ total }} counted
+                  {% endblocktranslate %}
+                </p>
+              {% elif kind == "report" and item.description %}
+                <p class="mb-0 small">{{ item.description|truncatewords:25 }}</p>
+              {% endif %}
+            </div>
+          </li>
+        {% endwith %}
+      {% endfor %}
+    </ul>
+
+    {% if page.has_other_pages %}
+      <nav aria-label="{% trans 'Pages' %}">
+        <ul class="pagination justify-content-center">
+          {% if page.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number }}">{% trans "Previous page" %}</a></li>
+          {% endif %}
+          <li class="page-item active" aria-current="page"><span class="page-link">
+            {% blocktranslate trimmed with n=page.number total=page.paginator.num_pages %}Page {{ n }} of {{ total }}{% endblocktranslate %}
+          </span></li>
+          {% if page.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page.next_page_number }}">{% trans "Next page" %}</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% else %}
+    <p>{% trans "Nothing here yet." %}</p>
+    <p>{% trans "What you count or report will be listed here, including what others can’t see yet." %}</p>
+    <div class="d-grid gap-2">
+      <a href="{% url 'counts_new' %}" class="btn btn-contribute">{% trans "Count what goes by" %}</a>
+      <a href="{% url 'reports_new' %}" class="btn btn-contribute">{% trans "Report a street feature" %}</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

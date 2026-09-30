@@ -1,0 +1,57 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+{% comment %}
+Tags offered for the confirmed spot's country (§20.7). `tags` is
+None until a location is confirmed; `checked_tags` holds the ids
+(as strings) already ticked.
+{% endcomment %}
+{% if tags is None %}
+  <p class="text-body-secondary mb-0">
+    {% trans "Confirm the location to see the tags that apply there." %}
+  </p>
+{% else %}
+  <p class="form-text mt-0">{% trans "Tick any that fit." %}</p>
+  <div class="mobilito-tags">
+    {% regroup tags by family as families %}
+    {% for family in families %}
+      <div{% if families|length > 1 and family.grouper %} role="group" aria-labelledby="tag-family-{{ forloop.counter }}"{% endif %}>
+      {% if families|length > 1 and family.grouper %}
+        <p class="fw-semibold small text-uppercase text-body-secondary mt-2 mb-1" id="tag-family-{{ forloop.counter }}">{{ family.grouper|capfirst }}</p>
+      {% endif %}
+      {% for tag in family.list %}
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="tags"
+                 value="{{ tag.pk }}" id="tag-{{ tag.pk }}"
+                 {% if tag.pk|stringformat:"d" in checked_tags %}checked{% endif %}>
+          <label class="form-check-label" for="tag-{{ tag.pk }}">
+            {{ tag.label }}
+            {% if tag.description %}<span class="d-block small text-body-secondary">{{ tag.description }}</span>{% endif %}
+          </label>
+        </div>
+      {% endfor %}
+      </div>
+    {% empty %}
+      <p class="text-body-secondary mb-0">{% trans "No tags for this area yet." %}</p>
+    {% endfor %}
+  </div>
+{% endif %}

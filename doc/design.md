@@ -106,7 +106,7 @@ We'll (probably) implement password in the user preferences / profile section.  
 | State | Description |
 |---|---|
 | Unauthenticated | No identity known. Can browse; cannot submit observations. |
-| Authenticated, unvalidated | Email known but not yet confirmed. Can submit; observations hidden from others and excluded from aggregates. |
+| Authenticated, unvalidated ("probably signed in") | Email given in this browser but not yet confirmed. Can submit; observations hidden from others and excluded from aggregates. Provisional: tracked as a sign-in attempt that is reminded and then dropped if never confirmed (§5.4). |
 | Authenticated, validated | Email confirmed. Observations are eligible for publication after moderation. |
 
 ### 5.4 Identity validation
@@ -115,7 +115,18 @@ We'll (probably) implement password in the user preferences / profile section.  
 - Observations from unvalidated users are recorded but **not visible to other users, and excluded from aggregate statistics and map data**. Only the author and admins can see them.
 - The user sees a plain note that their observation is not yet visible to others.
 - Admins see a prominent banner showing: time since first interaction, number of observations, and a brief summary of when they were submitted.
-- Validation can be deferred: the user can complete an observation session first and validate via the confirmation email afterwards. If validation is never completed, the observation is retained but remains permanently hidden.
+- Validation can be deferred: the user can complete an observation session first and validate via the confirmation email afterwards.
+
+#### Provisional ("probably signed in") mode
+
+Entering an email address signs the user in straight away, in a provisional state, so that a volunteer standing at the kerb can start counting without first going to their inbox. The confirmation email (the magic link) is sent at the same moment. This mode has to be tracked explicitly, because an unconfirmed attempt may be a typo, someone else's address, or a bot:
+
+- **Every provisional sign-in is recorded as a sign-in attempt**: the email address, when it started, when reminders were sent, and when (if ever) it was confirmed; the browser session holds a reference to its attempt. The confirmation link is specific to one attempt, so confirming it never confirms other attempts made with the same address. Everything created during the attempt (observations, count events, photos and other media, location evidence, me-toos, preference changes) is linked to the attempt, so that it can be found and removed as a unit.
+- **Scope.** A provisional session sees and acts only on what that attempt itself created. It never exposes anything belonging to an existing identity with the same email address (their observations, history or preferences), and it cannot change that identity's stored preferences; choices made during the attempt stay in the session until confirmation. Otherwise, typing someone else's address would reveal their data.
+- **Confirmation** (clicking the magic link, in any browser) validates the email and attaches the attempt's data to that identity, which then follows the normal lifecycle (§14). Confirming in another browser (often an email app's own) doesn't sign in the browser that made the attempt, but for a limited time (configurable, e.g. 24 hours) what it records still goes to the confirmed identity, so a count in progress isn't stranded; after that, it has to sign in. This is an accepted, bounded risk: if someone tricks the owner of an address into confirming, the trickster's browser can post as them only within that window.
+- **Reminder.** If the attempt is still unconfirmed after a configurable delay, a reminder email is sent (e.g. after 24 hours; the number and timing of reminders is configurable).
+- **Drop.** If it is still unconfirmed after a further configurable period (e.g. 7 days after the last reminder), all data related to the attempt is deleted, including stored photos, and the identity record itself if it has nothing else (never confirmed, no other data). Nothing from an unconfirmed attempt is ever published, aggregated or retained beyond this period.
+- The UI never calls this state "provisional" or "account". It says plainly that the observation will count once the email address is confirmed, and offers to resend the link.
 
 ### 5.5 User deletion (GDPR right to erasure)
 
@@ -171,7 +182,7 @@ Some readers will later become contributors; unauthenticated browsing must there
 5. **A JSON API only where a component genuinely exchanges data rather than rendered UI** — e.g. the observations GeoJSON endpoint consumed by the Leaflet map, and modal-share tap events (§20.4). Anywhere the response is meant to be displayed, prefer an HTMX-rendered HTML fragment over a JSON payload plus client-side DOM manipulation.
 
 - **Bootstrap 5** provides a mature, well-known component library with strong mobile support, responsive grids, and large tap targets out of the box. It is familiar to most Django developers and avoids framework lock-in.
-- **HTMX version:** pin to **htmx 2.x** (the current stable/"latest" release line) for the initial build-out. htmx 4.0 was released 2026-08-28 as a parallel "next" line (XHR replaced by fetch, attribute inheritance explicit by default, some event names renamed); the htmx project does not expect 2.x to be superseded as "latest" before roughly early 2027. Re-evaluate at Phase 4 of the roadmap (Map component — the first phase that actually wires up HTMX): since no HTMX code exists yet, there is nothing to migrate, and if 4.0 has a stable track record by then, adopt it directly instead of starting on 2.x. The htmx project characterises the 2→4 behavioural differences as small, so deferring the choice costs little either way — the only real risk today is building on a release that is one day old.
+- **HTMX version:** pin to **htmx 2.x** (the current stable/"latest" release line) for the initial build-out. htmx 4.0 was released 2026-08-28 as a parallel "next" line (XHR replaced by fetch, attribute inheritance explicit by default, some event names renamed); the htmx project does not expect 2.x to be superseded as "latest" before roughly early 2027. Re-evaluate at Phase 4 of the roadmap (Map component — the first phase that actually wires up HTMX): since no HTMX code exists yet, there is nothing to migrate, and if 4.0 has a stable track record by then, adopt it directly instead of starting on 2.x. The htmx project characterises the 2→4 behavioural differences as small, so deferring the choice costs little either way — the only real risk today is building on a release that is one day old. **Re-evaluated at Phase 4 (2026-09-25): stay on 2.x.** Four weeks after release, 4.0.0 had no follow-up patch releases and remained npm `next`, while 2.x remained `latest` with a fresh maintenance release (2.0.11). Revisit when 4.x becomes `latest`.
 
 A full SPA framework (React, Vue, etc.) is not warranted: the interactive surface is narrow, and the overhead in tooling, build pipeline, and developer specialisation outweighs the benefit. HTMX satisfies the AJAX requirements; jQuery is not needed.
 
@@ -181,9 +192,26 @@ A full SPA framework (React, Vue, etc.) is not warranted: the interactive surfac
 
 ### 9.1 Modal share counting
 
-**Purpose:** Count how many individuals of each transport mode pass a fixed observation point over a time window.
+**Purpose:** Count the things on the road that pass a fixed observation point over a time window, by mode.
 
 **Modes tracked:** pedestrian, cyclist, car, TC.
+
+#### What counts as what
+
+We count *things on the road* rather than people: this is not quite the usual definition of modal share (which is usually a share of trips or of people travelling). Each thing that passes counts once, in the mode whose road behaviour it has. The rough rule: **things that behave like a bike are a bike, things that behave like a pedestrian are a pedestrian, things that behave like a car are a car.**
+
+- **Bike:** bicycles, e-bikes, tricycles, monowheels, skateboards, stand-up scooters (electric or not). A passenger doesn't add one.
+- **Pedestrian:** people walking, including people walking a bike, and wheelchairs (unless motorised enough to behave like a vehicle, a subtlety counters can judge). An infant in a pram doesn't count; a child toddling beside a parent does. A child on a toy bike riding beside a walking parent is a bike *and* a pedestrian.
+- **Car:** cars, and also lorries, vans and motorcycles. Mopeds and motor scooters too. Beware the word "scooter": in French a *scooter* is a motor scooter (a car here), while a stand-up *trottinette* is a bike.
+- **TC (public transit):** by the same principle, each bus or tram is one thing on the road; its passengers don't add to the count.
+
+This needs explaining to users from several angles, because most people won't read a tutorial:
+
+- **A short text guide** where a count starts (the rule, plus the common edge cases).
+- **A visual tutorial:** for each mode, a rapidly changing image (2–3 per second) labelled with the mode ("Bike") and showing clearly identifiable examples of things that count as that mode. Quick to absorb, no reading required.
+- **An explainer article** (blog-like) on why we count things on the road, and how that differs from the usual definition of modal share, for people who want the reasoning and for anyone citing the data.
+
+These rules and the behaviour-based principle came from a discussion with the project owner during Phase 5 of the roadmap (2026-09-25).
 
 #### UI
 
@@ -231,7 +259,7 @@ The map uses the **crosshair/centre-of-map pattern**:
 - A fixed crosshair is overlaid at the centre of the screen. The reported observation location is always the crosshair = the map centre.
 - To set location: pan the map until the crosshair is over the correct spot, then tap **Confirm location**. No long-press, no separate mode.
 - Existing observation pins are distinct coloured markers. Tapping a pin opens a **bottom sheet** (a panel sliding up from the bottom of the screen, leaving the map visible behind it) showing the observation summary. This is handled by the pin's touch target, not the map canvas, so it does not conflict with panning or crosshair positioning.
-- A floating bullseye/target icon anchored to the top-right of the map snaps back to the device's current GPS position.
+- A floating "my location" button (arrow icon, deliberately unlike the crosshair so the two aren't confused) anchored to the top-right of the map snaps back to the device's current GPS position.
 
 #### Selecting an existing observation
 
@@ -543,7 +571,7 @@ Photos and text in observations describe physical-world infrastructure. The user
 ### 19.3 GDPR requirements before public launch
 
 - Formal privacy policy in French and English.
-- Data retention periods and automated deletion schedule.
+- Data retention periods and automated deletion schedule, including the drop of unconfirmed sign-in attempts and their data (§5.4).
 - Record of processing activities (ROPA, GDPR Art. 30).
 - Legal review of the lawful basis for each data category above.
 - The right-to-erasure workflow (§5.5) must be operational.
@@ -674,12 +702,12 @@ S3-compatible object storage (AWS S3 or Cloudflare R2; to be decided). All media
 
 ### 21.2 Authenticated user — home screen
 
-- Two large side-by-side buttons at the top: *Count modal share* and *Report an aménagement* (final copy TBD; French: *Compter les modes* and *Signaler un aménagement*).
+- Two large side-by-side buttons at the top: *Count modal share* and *Report an aménagement* (final copy TBD; French: *Compter les modes* and *Signaler un aménagement*). Candidates to user-test, in plainer language: *Count what goes by* / *Compter les passages* (not "who": we count things on the road, not people), and *Report a street feature* / *Signaler un aménagement* (with "good or bad" as a subtitle, since reports can be positive). The current UI uses these candidates until testing says otherwise.
 - Below: links to own past observations and to the public map/browse view.
 
 ### 21.3 Authenticated user — modal share (Scenario A/MS)
 
-1. Show map centred on device location. Fixed crosshair marks the observation point. User pans to adjust; a bullseye button re-reads GPS.
+1. Show map centred on device location. Fixed crosshair marks the observation point. User pans to adjust; a "my location" button re-reads GPS.
 2. Reverse-geocode pinned location; display editable address.
 3. Display four counting buttons (ped / bike / car / TC).
 4. User taps buttons; each tap is timestamped.

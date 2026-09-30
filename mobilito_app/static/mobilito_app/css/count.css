@@ -1,0 +1,305 @@
+/*
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>, based in part on the Mobilito
+proof of concept in transport-nantes/tn_web.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+*/
+
+/* Counting screen (§9.1): proportions from the Mobilito proof of
+   concept (transport-nantes/tn_web): square buttons of 45vw, capped,
+   big icon, bold count, finish at the top, dark background.
+   Colours: brand tokens from core/css/mobilitains.css. */
+
+.mobilito-count-main {
+  min-height: 100vh;
+  min-height: 100svh;
+  background: var(--mbl-marine-dark);
+  color: #fff;
+  /* No pull-to-refresh or bounce while tapping fast. */
+  overscroll-behavior: contain;
+  padding: 0.75rem 0;
+}
+
+.mobilito-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: calc(100svh - 1.5rem);
+}
+
+.mobilito-count-top {
+  width: 100%;
+  max-width: 520px;
+  padding: 0 0.75rem;
+}
+
+/* Bootstrap's own .btn state rules beat plain properties (and
+   touch screens keep :hover after a tap), so set its variables.
+   Pale grey, not orange: orange is "Discard" (danger), and
+   finishing keeps the count. Dark text on it reads 11:1. */
+.mobilito-finish {
+  /* No white edge, so the white focus ring shows as a new one. */
+  --bs-btn-bg: var(--mbl-gris);
+  --bs-btn-border-color: var(--mbl-gris);
+  --bs-btn-color: var(--mbl-fonce-dark);
+  --bs-btn-hover-bg: var(--mbl-gris);
+  --bs-btn-hover-border-color: var(--mbl-gris);
+  --bs-btn-hover-color: var(--mbl-fonce-dark);
+  --bs-btn-active-bg: #fff;
+  --bs-btn-active-border-color: #fff;
+  --bs-btn-active-color: var(--mbl-fonce-dark);
+  --bs-btn-disabled-bg: var(--mbl-gris);
+  --bs-btn-disabled-border-color: var(--mbl-gris);
+  --bs-btn-disabled-color: var(--mbl-fonce);
+  font-weight: 700;
+  min-height: 3.25rem;
+}
+
+.mobilito-count-timer {
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 4.5rem;
+  text-align: right;
+}
+
+/* Room for the longest message (in French too), so that messages
+   coming and going never shift the buttons under a finger. */
+.mobilito-count-status {
+  min-height: 4.5em;
+  margin-top: 0.35rem;
+  text-align: center;
+}
+
+.mobilito-count-grid {
+  display: grid;
+  grid-template-columns: repeat(2, min(45vw, 250px));
+  gap: 0.9rem;
+  /* Bottom of the screen, within thumb reach (§9.1, §17). */
+  margin-top: auto;
+  margin-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.mobilito-count-button {
+  width: min(45vw, 250px);
+  height: min(45vw, 250px);
+  /* Short, wide screens: keep all four on screen. */
+  max-height: calc((100svh - 9rem) / 2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 15px;
+  /* The call-to-action blue; white on it is unreadable, so dark. */
+  background: var(--mbl-bleu);
+  color: var(--mbl-fonce-dark);
+  font-weight: 600;
+  /* No double-tap zoom or text selection on rapid taps. */
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.2s ease-out;
+}
+
+.mobilito-count-button i {
+  font-size: clamp(3rem, 18vw, 5rem);
+  line-height: 1;
+}
+
+.mobilito-count-label {
+  font-size: clamp(0.8rem, 3.6vw, 1rem);
+  font-weight: 500;
+  margin-top: 0.15rem;
+}
+
+.mobilito-count-number {
+  /* Montserrat's digits vary in width: keep tallies from shifting. */
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(1.5rem, 8vw, 2rem);
+  line-height: 1.1;
+}
+
+.mobilito-count-button:focus-visible {
+  /* Not a .btn, so no ring from the theme; the browser's default
+     outline is lost on the navy. Keyboard only: taps don't match. */
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+.mobilito-count-button:disabled {
+  opacity: 0.45;
+}
+
+.mobilito-count-button:active,
+.mobilito-count-button.is-tapped {
+  background: #fff;
+  color: var(--mbl-marine);
+  transition: none;
+}
+
+/* Over the buttons, not in the layout: opening it must not move
+   anything under a finger. */
+.mobilito-count-short-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.mobilito-count-short-backdrop[hidden] {
+  display: none;
+}
+
+.mobilito-count-short {
+  width: 100%;
+  max-width: 520px;
+  color: var(--bs-body-color);
+}
+
+/* Results bars (HTML/CSS, no chart library at this scale). */
+
+.mobilito-bar-row {
+  display: grid;
+  /* Fixed value column, so every track is the same length and bars
+     compare by length. */
+  grid-template-columns: 8.5rem 1fr 6.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.mobilito-bar-track {
+  display: block;
+  height: 1.5rem;
+  background: var(--bs-body-bg);
+  /* An edge (3.4:1), so a short, pale bar still has a visible end. */
+  border: 1px solid var(--mbl-bleu-gris);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.mobilito-bar {
+  display: block;
+  height: 100%;
+}
+
+/* Mode colours (--mbl-mode-*: brand hues, checked for colour-blind
+   separation in this order). Never used alone: every bar has its
+   mode's name beside it, or a legend and a table. */
+.mobilito-bar-ped {
+  background: var(--mbl-mode-ped);
+  /* The pale blue alone is 2:1 on white: outline it. */
+  box-shadow: inset 0 0 0 1px var(--mbl-bleu-text);
+}
+.mobilito-bar-bike { background: var(--mbl-mode-bike); }
+.mobilito-bar-car { background: var(--mbl-mode-car); }
+.mobilito-bar-tc { background: var(--mbl-mode-tc); }
+
+/* A spot's counts over time: one 100% bar per count. */
+
+.mobilito-history-row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr 6.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.mobilito-history-bar {
+  display: flex;
+  /* 2px of page between segments, so neighbouring modes stay apart. */
+  gap: 2px;
+  height: 1.5rem;
+}
+
+.mobilito-history-bar > span {
+  flex-basis: 0;
+  /* A tiny share still shows. */
+  min-width: 2px;
+}
+
+.mobilito-history-bar > span:first-child {
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.mobilito-history-bar > span:last-child {
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.mobilito-history-bar > span:only-child {
+  border-radius: 0.25rem;
+}
+
+.mobilito-history-this .mobilito-history-bar {
+  outline: 2px solid var(--bs-body-color);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.mobilito-history-total {
+  font-size: 0.875rem;
+  text-align: right;
+}
+
+.mobilito-swatch {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 0.2rem;
+  margin-right: 0.3rem;
+  vertical-align: -0.1rem;
+}
+
+@media (max-width: 380px) {
+  .mobilito-bar-row {
+    grid-template-columns: 1fr auto;
+  }
+  .mobilito-bar-track {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+.mobilito-count-help {
+  width: 3.25rem;
+  height: 3.25rem;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+/* The "what counts as what" overlay: scrolls within itself on short
+   screens, so "Back to counting" is always reachable. */
+.mobilito-count-guide {
+  max-height: calc(100svh - 1.5rem);
+  overflow-y: auto;
+}
+
+/* Always reachable, even while the guide scrolls on small screens. */
+.mobilito-count-guide-close {
+  position: sticky;
+  /* Clear of the card's edge, so its focus ring isn't cut off. */
+  bottom: 0.5rem;
+  box-shadow: 0 -0.5rem 0.75rem var(--bs-body-bg);
+}

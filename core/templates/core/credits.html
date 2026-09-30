@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+
+{% block title %}{% trans "Credits" %} · Mobilito{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-3">{% trans "Credits" %}</h1>
+
+<h2 class="h5 mt-4">{% trans "Maps and addresses" %}</h2>
+<ul>
+  <li>{% trans "Map:" %} {{ tile_attribution }}</li>
+  <li>{% trans "Addresses:" %} <a href="{{ address_credit_url }}">{{ address_credit }}</a></li>
+</ul>
+<p>
+  {% blocktranslate trimmed %}
+    OpenStreetMap is a map of the world made by volunteers. Its data
+    is available under the
+    <a href="https://opendatacommons.org/licenses/odbl/">Open Database License</a>.
+  {% endblocktranslate %}
+</p>
+
+<h2 class="h5 mt-4">Mobilito</h2>
+<p>
+  {% blocktranslate trimmed %}
+    Mobilito’s traffic counts grew out of a first prototype by
+    Benjamin Mourgues, whose field trials shaped the counting screen.
+  {% endblocktranslate %}
+</p>
+<p>
+  {% blocktranslate trimmed %}
+    Mobilito is free software: you may use, study, share and improve
+    it under the
+    <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU Affero General Public License</a>,
+    version 3 or later. © Français pour une Meilleure Mobilité.
+  {% endblocktranslate %}
+  <a href="{{ source_code_url }}">{% trans "Get the source code." %}</a>
+</p>
+<p>
+  {% blocktranslate trimmed %}
+    Built with <a href="https://www.djangoproject.com/">Django</a>,
+    <a href="https://leafletjs.com/">Leaflet</a>,
+    <a href="https://getbootstrap.com/">Bootstrap</a>,
+    <a href="https://icons.getbootstrap.com/">Bootstrap Icons</a> and
+    <a href="https://htmx.org/">htmx</a>.
+  {% endblocktranslate %}
+</p>
+{% endblock %}

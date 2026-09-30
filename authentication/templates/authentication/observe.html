@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+
+{% block title %}{% trans "Your email address" %} · Mobilito{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 32rem;">
+  {% if changing %}
+    <h1 class="h3 mb-3">{% trans "Change your email address" %}</h1>
+    <p>
+      {% blocktranslate trimmed %}
+        Correct your address and we'll send the link there instead.
+        What you've recorded so far is kept.
+      {% endblocktranslate %}
+    </p>
+  {% else %}
+    <h1 class="h3 mb-3">{% trans "Before you start" %}</h1>
+    <p>
+      {% blocktranslate trimmed %}
+        What's your email address? You can start straight away. We'll
+        email you a link: open it within a week so that what you
+        record counts.
+      {% endblocktranslate %}
+    </p>
+  {% endif %}
+  <form method="post" action="{% url 'auth_observe' %}" novalidate>
+    {% csrf_token %}
+    {% for error in form.non_field_errors %}
+      <div class="alert alert-warning" role="alert">{{ error }}</div>
+    {% endfor %}
+    <div class="mb-3">
+      <label for="{{ form.email.id_for_label }}" class="form-label">
+        {{ form.email.label }}
+      </label>
+      {{ form.email }}
+      {% if form.email.errors %}
+        <div id="{{ form.email.id_for_label }}-errors" class="invalid-feedback d-block">
+          {{ form.email.errors|join:" " }}
+        </div>
+      {% endif %}
+    </div>
+    {{ form.next }}
+    {% if changing %}<input type="hidden" name="change" value="1">{% endif %}
+    {% include "includes/honeypot.html" with field=form.hp_field %}
+    <button type="submit" class="btn btn-primary btn-lg w-100">
+      {% trans "Continue" %}
+    </button>
+  </form>
+  <p class="text-body-secondary mt-3">
+    {% blocktranslate trimmed %}
+      We only use your address to send you this link and news about
+      your observations. It's never shown to anyone. If you don't
+      confirm it within a week, what you record is deleted.
+    {% endblocktranslate %}
+  </p>
+  {% if not changing %}
+    <p class="mt-3">
+      {% trans "Already used Mobilito?" %}
+      <a href="{% url 'auth_start' %}{% if form.next.value %}?next={{ form.next.value|urlencode }}{% endif %}">{% trans "Sign in instead" %}</a>
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

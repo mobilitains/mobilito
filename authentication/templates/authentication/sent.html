@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+
+{% block title %}{% trans "Check your email" %} · Mobilito{% endblock %}
+
+{% block content %}
+<div class="mx-auto text-center" style="max-width: 32rem;">
+  <i class="bi bi-envelope-check display-3 text-primary" aria-hidden="true"></i>
+  <h1 class="h3 my-3">{% trans "Check your email" %}</h1>
+  {% if email %}
+    <p>
+      {% blocktranslate trimmed %}
+        We've sent a sign-in link to <strong>{{ email }}</strong>.
+      {% endblocktranslate %}
+      <a href="{% url 'auth_start' %}{% if next %}?next={{ next|urlencode }}{% endif %}">{% trans "Wrong address?" %}</a>
+    </p>
+  {% else %}
+    <p>{% trans "We've sent you a sign-in link." %}</p>
+  {% endif %}
+  <p>
+    {% blocktranslate trimmed count minutes=max_age_minutes %}
+      The link works once, for {{ minutes }} minute.
+    {% plural %}
+      The link works once, for {{ minutes }} minutes.
+    {% endblocktranslate %}
+  </p>
+  <p>
+    {% blocktranslate trimmed %}
+      To sign in on this phone or computer, open the email here
+      too. The link signs in whichever device you open it on.
+    {% endblocktranslate %}
+  </p>
+  <p>
+    {% blocktranslate trimmed %}
+      Nothing arrived after a few minutes? Check your spam folder.
+    {% endblocktranslate %}
+    <a href="{% url 'auth_start' %}?{% if next %}next={{ next|urlencode }}&amp;{% endif %}email={{ email|urlencode }}">{% trans "Ask for a new link" %}</a>
+  </p>
+</div>
+{% endblock %}

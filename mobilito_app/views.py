@@ -17,6 +17,23 @@ You should have received a copy of the GNU Affero General Public License
 along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-# from django.shortcuts import render
+from django.shortcuts import render
 
-# Create your views here.
+from authentication.provisional import get_observer
+from mobilito_app.counts import open_session
+
+
+def home(request):
+    """Landing page (§21.1) / authenticated home screen (§21.2).
+
+    One URL, one template: the template itself branches on
+    whether anyone is observing (signed in, or "probably signed in",
+    §5.4) to swap the visitor CTAs for the two
+    observation-entry buttons.
+    """
+    observer = get_observer(request)
+    return render(
+        request,
+        "mobilito_app/home.html",
+        {"observer": observer, "open_session": open_session(observer)},
+    )

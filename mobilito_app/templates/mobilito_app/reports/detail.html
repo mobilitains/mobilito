@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+{% block title %}{% trans "Street feature report" %} · Mobilito{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'mobilito_app/css/report.css' %}">
+  {% if is_owner %}
+    {# Clears the form's saved draft: this report is safely stored. #}
+    <script src="{% static 'mobilito_app/js/report_form.js' %}" defer></script>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 40rem;"{% if is_owner %} data-report-sent{% endif %}>
+  <h1 class="h3 mb-1">
+    {% with location=report.location %}
+      {% if location.user_entered_address or location.reverse_geocoded_address %}
+        {% firstof location.user_entered_address location.reverse_geocoded_address %}
+      {% else %}
+        {% trans "Street feature" %}
+        <small class="d-block fs-6 fw-normal text-body-secondary">
+          {% include "core/partials/place_name.html" %}
+        </small>
+      {% endif %}
+    {% endwith %}
+  </h1>
+  <p class="text-body-secondary">
+    {{ report.created_at|date:"DATETIME_FORMAT" }}
+    &middot;
+    {% if report.observer_perspective == "ped" %}{% trans "Seen on foot" %}
+    {% elif report.observer_perspective == "bike" %}{% trans "Seen by bike" %}
+    {% else %}{% trans "Seen on foot and by bike" %}{% endif %}
+  </p>
+
+  {% include "mobilito_app/moderation/state_notes.html" with what="report" %}
+
+  <div class="mobilito-report-photos mb-3">
+    {% for item in media %}
+      <div>
+        <a href="{% url 'reports_photo' report.pk item.pk %}" target="_blank" rel="noopener">
+          <img src="{% url 'reports_photo' report.pk item.pk %}"
+               alt="{% blocktranslate with n=forloop.counter %}Photo {{ n }}{% endblocktranslate %}"
+               loading="lazy">
+          <span class="visually-hidden">{% trans "(opens in a new tab)" %}</span>
+        </a>
+        {% if is_moderator and not item.published %}
+          <span class="badge text-bg-warning">{% trans "Hidden from the public" %}</span>
+        {% endif %}
+        {% if can_flag %}
+          {% trans "Report a problem" as flag_label %}
+          {% blocktranslate asvar flag_hidden with n=forloop.counter %}with photo {{ n }}{% endblocktranslate %}
+          {% include "mobilito_app/moderation/flag_link.html" with kind="photo" pk=item.pk label=flag_label hidden_label=flag_hidden slot="flag-photos" %}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  {% if can_flag and media %}
+    {% include "mobilito_app/moderation/flag_slot.html" with slot_id="flag-photos" %}
+  {% endif %}
+
+  {% if report.description %}
+    <p class="mobilito-report-description">{{ report.description|linebreaksbr }}</p>
+  {% endif %}
+  {% if can_flag %}
+    {% if report.description and report.location.user_entered_address %}
+      {% trans "Report a problem with this text or place name" as flag_label %}
+      {% include "mobilito_app/moderation/flag_link.html" with kind="report" pk=report.pk label=flag_label %}
+    {% elif report.description %}
+      {% trans "Report a problem with this text" as flag_label %}
+      {% include "mobilito_app/moderation/flag_link.html" with kind="report" pk=report.pk label=flag_label %}
+    {% elif report.location.user_entered_address %}
+      {% trans "Report a problem with this place name" as flag_label %}
+      {% include "mobilito_app/moderation/flag_link.html" with kind="report" pk=report.pk label=flag_label %}
+    {% endif %}
+  {% endif %}
+
+  {% if tags %}
+    <ul class="list-inline mb-3">
+      {% for tag in tags %}
+        <li class="list-inline-item"><span class="badge text-bg-light border">{{ tag.label }}</span></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <div class="d-grid gap-2 mb-3">
+    <a href="{% url 'reports_new' %}" class="btn btn-contribute btn-lg">
+      {% trans "Report something else" %}
+    </a>
+    <a href="{% url 'home' %}" class="btn btn-link">{% trans "Back to the start" %}</a>
+  </div>
+
+  {% if published %}
+    <p class="small">
+      {% trans "Link to share this report:" %}<br>
+      <a href="{{ share_url }}" class="text-break">{{ share_url }}</a>
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -8,16 +8,16 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-26.04
     strategy:
       max-parallel: 4
       matrix:
-        # Ubuntu 22.04 LTS (production target) uses Python 3.10.
-        python-version: ["3.10", "3.12"]
+        # Ubuntu 26.04 LTS (production target) uses Python 3.14.
+        python-version: ["3.14"]
 
     services:
       postgres:
-        image: postgis/postgis:15-3.4
+        image: postgis/postgis:18-3.6
         env:
           POSTGRES_DB: mobilito_test
           POSTGRES_USER: mobilito
@@ -31,17 +31,17 @@ jobs:
           - 5432:5432
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install system dependencies (GeoDjango)
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential binutils libproj-dev gdal-bin libgdal-dev
+          sudo apt-get install -y build-essential binutils libproj-dev gdal-bin libgdal-dev gettext
 
       - name: Install Python dependencies
         run: |
@@ -59,6 +59,7 @@ jobs:
           POSTGRES_PORT: "5432"
         run: |
           python manage.py makemigrations --check
+          python manage.py compilemessages -l fr
           python manage.py migrate
           coverage run --source='.' manage.py test
           coverage report
