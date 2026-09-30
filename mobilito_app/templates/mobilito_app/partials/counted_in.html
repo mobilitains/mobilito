@@ -19,4 +19,4 @@ You should have received a copy of the GNU Affero General Public
 License along with mobilito.  If not, see
 <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n %}{% comment %}"N counted in M min" for a history row (`row`).{% endcomment %}{% if row.minutes < 1 %}{% blocktranslate trimmed with total=row.total %}{{ total }} counted in under a minute{% endblocktranslate %}{% else %}{% blocktranslate trimmed with total=row.total minutes=row.minutes %}{{ total }} counted in {{ minutes }} min{% endblocktranslate %}{% endif %}
+{% load i18n %}{% comment %}"N counted in M min" for a history row (`row`).{% endcomment %}{% if row.minutes < 1 %}{% blocktranslate trimmed count total=row.total %}{{ total }} counted in under a minute{% plural %}{{ total }} counted in under a minute{% endblocktranslate %}{% else %}{% blocktranslate trimmed count total=row.total with minutes=row.minutes %}{{ total }} counted in {{ minutes }} min{% plural %}{{ total }} counted in {{ minutes }} min{% endblocktranslate %}{% endif %}

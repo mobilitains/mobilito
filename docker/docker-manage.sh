@@ -49,6 +49,7 @@ case "$action" in
 	        --extend-exclude '(migrations|venv)' . &&
 	    flake8 --exclude=__pycache__,migrations,venv &&
 	    python manage.py makemigrations --check &&
+	    python manage.py compilemessages -l fr --ignore=venv &&
 	    python manage.py migrate &&
 	    coverage run --source='.' manage.py test &&
 	    coverage report

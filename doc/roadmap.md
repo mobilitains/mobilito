@@ -233,7 +233,7 @@ Minimal for v1-preview (admin-accessible only); full dashboard in v1 (§13).
 
 Before opening to test users:
 
-- [ ] All user-facing strings have French translations (`compilemessages` passes)
+- [x] All user-facing strings have French translations (`compilemessages` passes) — machine-drafted 2026-09-30; a native speaker still needs to read them (TODO-jeff.md)
 - [ ] Cloudflare in front of the deployment — §16 names it the first line of bot defence and §11.1/§11.2 assume edge geo-tag data is captured on every request from day one; v1-preview is a "limited public preview" per §22.1, not an unexposed internal build, so this shouldn't wait for public launch
 - [ ] Rate limiting on auth and submission endpoints (Django middleware or Cloudflare rules) — app-level limits done for sign-in, counts, reports and flags; Cloudflare rules still to add
 - [x] Honeypot fields on all forms

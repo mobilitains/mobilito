@@ -32,5 +32,6 @@ flake8 \
 npm run test-js
 
 python3 manage.py makemigrations --check
+python3 manage.py compilemessages -l fr --ignore=venv --ignore=venv.vagrant
 python3 manage.py migrate
 python3 -Wa manage.py test

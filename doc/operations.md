@@ -19,10 +19,16 @@ This runs, in order:
 1. `black --check` and `flake8` (79-character lines);
 2. `makemigrations --check` (fails if a model change has no
    migration);
-3. the Django tests under `coverage`, against PostGIS in Docker;
-4. the Jest tests for the JavaScript (`**/static/tests/js/**`).
+3. `compilemessages` for French;
+4. the Django tests under `coverage`, against PostGIS in Docker;
+5. the Jest tests for the JavaScript (`**/static/tests/js/**`).
 
-Steps 1–3 run in the `web` container. Step 4 runs `npm install &&
+The Django tests run in English (`web_infra/test_runner.py`), since
+they assert on English copy and the site defaults to French; one
+smoke test (`mobilito_app.tests.FrenchSmokeTests`) checks that key
+pages render in French.
+
+Steps 1–4 run in the `web` container. Step 5 runs `npm install &&
 npm run test-js` **on the host**, so the host needs Node.js and npm;
 the rest needs only Docker.
 
@@ -34,8 +40,8 @@ One Django test, or one module:
     authentication.tests.MobilitoUserManagerTests.test_create_user_idempotent
 ```
 
-CI (`.github/workflows/django.yml`) runs the migration check and the
-Django tests on Python 3.10 and 3.12 for pushes and pull requests to
+CI (`.github/workflows/django.yml`) runs the migration check,
+`compilemessages` and the Django tests on Python 3.10 and 3.12 for pushes and pull requests to
 `main`. It doesn't run the linters or the JS tests yet.
 
 Project policy (see [CLAUDE.md](../CLAUDE.md)): run the full suite

@@ -18,8 +18,9 @@ along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from django.contrib.gis.geos import Point
+from django.core.cache import cache
 from django.core.management import call_command
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -188,3 +189,41 @@ class HomeViewTests(TestCase):
         self.assertNotIn("Copyright", content)
         self.assertNotIn("{#", content)
         self.assertNotIn("{%", content)
+
+
+@override_settings(LANGUAGE_CODE="fr")
+class FrenchSmokeTests(TestCase):
+    """Key pages render in French (the site's default language).
+
+    Other tests run in English (web_infra.test_runner), which would
+    hide a broken French catalogue. Needs compilemessages first, as
+    docker-manage.sh test and CI do.
+    """
+
+    def setUp(self):
+        from mobilito_app.tests_browse import count_at, report_at
+
+        cache.clear()
+        self.count = count_at(47.21, -1.55, total_car=1)
+        count_at(47.21, -1.55, total_car=2, total_cyclist=1)
+        self.report = report_at(47.21, -1.55, description="Trou")
+
+    def test_pages_render_in_french(self):
+        pages = {
+            reverse("home"): "Faire une observation",
+            reverse("map"): "Ce que les gens ont vu",
+            reverse("observations"): "au total",
+            reverse("counts_detail", args=[self.count.pk]): ("passage compté"),
+            reverse("reports_detail", args=[self.report.pk]): (
+                "Signaler un problème avec ce texte"
+            ),
+            reverse("flag", args=["report", self.report.pk]): (
+                "Quel est le problème ?"
+            ),
+            reverse("auth_start"): "M'envoyer un lien de connexion",
+        }
+        for url, french in pages.items():
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertContains(response, french)
+                self.assertContains(response, '<html lang="fr">')

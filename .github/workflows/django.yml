@@ -41,7 +41,7 @@ jobs:
       - name: Install system dependencies (GeoDjango)
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential binutils libproj-dev gdal-bin libgdal-dev
+          sudo apt-get install -y build-essential binutils libproj-dev gdal-bin libgdal-dev gettext
 
       - name: Install Python dependencies
         run: |
@@ -59,6 +59,7 @@ jobs:
           POSTGRES_PORT: "5432"
         run: |
           python manage.py makemigrations --check
+          python manage.py compilemessages -l fr
           python manage.py migrate
           coverage run --source='.' manage.py test
           coverage report
