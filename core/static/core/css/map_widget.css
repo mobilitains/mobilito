@@ -35,7 +35,7 @@ License along with mobilito.  If not, see
 }
 
 .mobilito-map-fallback {
-  color: var(--mbl-marron);
+  color: var(--bs-secondary-color);
 }
 
 /* Leaflet's zoom buttons default to 30px; make them finger-sized

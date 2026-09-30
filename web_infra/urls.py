@@ -25,6 +25,7 @@ from core.views import (
     location_confirm,
     set_device_location,
     set_language,
+    set_theme,
 )
 from mobilito_app.views import home
 
@@ -32,6 +33,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("authentication.urls")),
     path("language/", set_language, name="set_language"),
+    path("theme/", set_theme, name="set_theme"),
     path(
         "preferences/device-location/",
         set_device_location,

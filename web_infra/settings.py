@@ -88,6 +88,11 @@ SIGN_IN_ATTEMPT_CONFIRMED_SESSION_HOURS = 24
 # Where people can write to us, shown e.g. to an author whose
 # observation was hidden. Blank shows nothing.
 CONTACT_EMAIL = os.environ.get("DJANGO_CONTACT_EMAIL", "")
+# Light or dark mode (doc/colours.md): chosen per device, so kept in
+# a cookie rather than on the user record.
+THEME_COOKIE_NAME = "mobilito_theme"
+THEME_COOKIE_AGE = 365 * 24 * 3600
+
 # AGPL §13: people using Mobilito over the network must be offered
 # its source. Point this at the code actually deployed.
 SOURCE_CODE_URL = os.environ.get(
@@ -164,6 +169,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.i18n",
+                "core.context_processors.theme",
             ],
         },
     },

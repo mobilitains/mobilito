@@ -126,9 +126,16 @@ License along with mobilito.  If not, see
   --mbl-mode-bike: var(--mbl-chart-2);
   --mbl-mode-car: var(--mbl-chart-3);
   --mbl-mode-tc: var(--mbl-chart-4);
-  /* Map pins, and the icons that stand for each kind in lists. */
+  /* Map pins (on the light map in both themes), and the icons that
+     stand for each kind in lists (on the page). */
   --mbl-kind-count: var(--mbl-chart-2);
   --mbl-kind-report: var(--mbl-orange);
+  --mbl-kind-count-text: var(--mbl-chart-2);
+  --mbl-kind-report-text: var(--mbl-orange-dark);
+  /* A solid focus ring, for outlines Bootstrap doesn't draw. */
+  --mbl-ring: var(--mbl-marine);
+  /* Ticked boxes and radios (white tick on it). */
+  --mbl-check: var(--mbl-marine);
 
   /* Bootstrap 5.3, themed. */
   --bs-body-color: var(--mbl-fonce);
@@ -182,7 +189,7 @@ License along with mobilito.  If not, see
 .form-control:focus,
 .form-select:focus,
 .form-check-input:focus {
-  border-color: var(--mbl-marine);
+  border-color: var(--mbl-ring);
   box-shadow: 0 0 0 0.25rem var(--bs-focus-ring-color);
 }
 
@@ -207,8 +214,8 @@ License along with mobilito.  If not, see
 }
 
 .form-check-input:checked {
-  background-color: var(--mbl-marine);
-  border-color: var(--mbl-marine);
+  background-color: var(--mbl-check);
+  border-color: var(--mbl-check);
 }
 
 /* Header (as in the proof of concept): the logo, white with its
@@ -254,7 +261,7 @@ License along with mobilito.  If not, see
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: var(--mbl-marine-light);
   --bs-btn-disabled-border-color: var(--mbl-marine-light);
-  --bs-btn-focus-box-shadow: 0 0 0 0.15rem #fff,
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
     0 0 0 0.4rem rgba(67, 82, 110, 0.9);
 }
 
@@ -269,7 +276,7 @@ License along with mobilito.  If not, see
   --bs-btn-active-border-color: var(--mbl-marine-dark);
   --bs-btn-disabled-color: var(--mbl-marine-light);
   --bs-btn-disabled-border-color: var(--mbl-marine-light);
-  --bs-btn-focus-box-shadow: 0 0 0 0.15rem #fff,
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
     0 0 0 0.4rem rgba(67, 82, 110, 0.9);
 }
 
@@ -288,7 +295,7 @@ License along with mobilito.  If not, see
   --bs-btn-disabled-color: var(--mbl-fonce);
   --bs-btn-disabled-bg: var(--mbl-bleu-light);
   --bs-btn-disabled-border-color: var(--mbl-bleu-light);
-  --bs-btn-focus-box-shadow: 0 0 0 0.15rem #fff,
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
     0 0 0 0.4rem rgba(16, 121, 152, 0.9);
   font-weight: 600;
 }
@@ -306,7 +313,7 @@ License along with mobilito.  If not, see
   --bs-btn-active-border-color: var(--mbl-bleu-text);
   --bs-btn-disabled-color: var(--mbl-marron);
   --bs-btn-disabled-border-color: var(--mbl-gris-dark);
-  --bs-btn-focus-box-shadow: 0 0 0 0.15rem #fff,
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
     0 0 0 0.4rem rgba(16, 121, 152, 0.9);
   font-weight: 600;
 }
@@ -321,7 +328,7 @@ License along with mobilito.  If not, see
   --bs-btn-active-color: #fff;
   --bs-btn-active-bg: var(--mbl-orange-darker);
   --bs-btn-active-border-color: var(--mbl-orange-darker);
-  --bs-btn-focus-box-shadow: 0 0 0 0.15rem #fff,
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
     0 0 0 0.4rem rgba(210, 52, 4, 0.9);
 }
 
@@ -334,7 +341,7 @@ License along with mobilito.  If not, see
   --bs-btn-active-color: #fff;
   --bs-btn-active-bg: var(--mbl-orange-darker);
   --bs-btn-active-border-color: var(--mbl-orange-darker);
-  --bs-btn-focus-box-shadow: 0 0 0 0.15rem #fff,
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
     0 0 0 0.4rem rgba(210, 52, 4, 0.9);
 }
 
@@ -345,23 +352,23 @@ License along with mobilito.  If not, see
   --bs-btn-color: var(--mbl-marine);
   --bs-btn-hover-color: var(--mbl-marine-dark);
   --bs-btn-active-color: var(--mbl-marine-dark);
-  --bs-btn-focus-box-shadow: 0 0 0 0.15rem #fff,
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
     0 0 0 0.4rem rgba(67, 82, 110, 0.9);
 }
 
 .btn-light {
-  --bs-btn-focus-box-shadow: 0 0 0 0.15rem #fff,
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
     0 0 0 0.4rem rgba(67, 82, 110, 0.9);
 }
 
 .btn-warning {
-  --bs-btn-focus-box-shadow: 0 0 0 0.15rem #fff,
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
     0 0 0 0.4rem rgba(51, 63, 72, 0.9);
 }
 
 /* Bootstrap's close (X) button has its own faint blue ring. */
 .btn-close {
-  --bs-btn-close-focus-shadow: 0 0 0 0.15rem #fff,
+  --bs-btn-close-focus-shadow: 0 0 0 0.15rem var(--bs-body-bg),
     0 0 0 0.4rem rgba(67, 82, 110, 0.9);
 }
 
@@ -383,11 +390,194 @@ License along with mobilito.  If not, see
 /* What kind of observation an item is, matching its map pin. The
    report orange is darkened to read on white (3:1 for icons). */
 .mbl-text-count {
-  color: var(--mbl-kind-count);
+  color: var(--mbl-kind-count-text);
 }
 
 .mbl-text-report {
-  color: var(--mbl-orange-dark);
+  color: var(--mbl-kind-report-text);
+}
+
+/* Dark mode: opt-in, per device (the switch in the footer sets
+   data-bs-theme="dark" on <html>). Its own steps, chosen and checked
+   against the dark page, not an inversion: see doc/colours.md. The
+   header and counting screen are dark in both modes; the map stays
+   light (OpenStreetMap tiles), so pins keep their light colours. */
+[data-bs-theme="dark"] {
+  --mbl-page-dark: #1f2b33;     /* = foncé dark */
+  --mbl-surface-dark: #2e3a43;  /* raised: hover, subtle boxes */
+  --mbl-surface-dark-2: #3d4a53; /* pressed rows */
+  --mbl-marron-text-dark: #b69f9b; /* muted text 5.8 (4.7 raised) */
+  /* On pressed rows (surface 2), a step lighter: 4.6. */
+  --mbl-marron-text-dark-2: #cbb3af;
+  --mbl-orange-text-dark: #fd7e61; /* errors 5.7 (4.6 raised) */
+  --mbl-marine-text-dark: #7497d8; /* count icons 4.9 (3.1+ raised) */
+  --mbl-check-dark: #2e86ab;    /* white tick 4.1, vs page 3.5 */
+  --mbl-bleu-tint-dark: #133b49;
+  --mbl-orange-tint-dark: #502920;
+
+  --bs-body-bg: var(--mbl-page-dark);
+  --bs-body-bg-rgb: 31, 43, 51;
+  --bs-body-color: var(--mbl-gris);         /* 11.2 */
+  --bs-body-color-rgb: 219, 227, 235;
+  --bs-emphasis-color: #fff;
+  --bs-emphasis-color-rgb: 255, 255, 255;
+  --bs-heading-color: var(--mbl-bleu);      /* 7.1 */
+  --bs-secondary-color: var(--mbl-marron-text-dark);
+  --bs-secondary-color-rgb: 182, 159, 155;
+  --bs-secondary-bg: var(--mbl-surface-dark-2);
+  --bs-tertiary-bg: var(--mbl-surface-dark);
+  --bs-link-color: var(--mbl-bleu-light);   /* 9.2 */
+  --bs-link-color-rgb: 150, 216, 242;
+  --bs-link-hover-color: #fff;
+  --bs-link-hover-color-rgb: 255, 255, 255;
+  --bs-border-color: var(--mbl-bleu-gris);  /* 4.3 */
+  --bs-border-color-translucent: rgba(219, 227, 235, 0.2);
+  --bs-focus-ring-color: rgba(150, 216, 242, 0.75);
+
+  --bs-primary: var(--mbl-bleu-light);
+  --bs-primary-rgb: 150, 216, 242;
+  --bs-primary-text-emphasis: var(--mbl-bleu-light);
+  --bs-primary-bg-subtle: var(--mbl-surface-dark);
+  --bs-primary-border-subtle: var(--mbl-bleu-gris);
+  --bs-info-text-emphasis: var(--mbl-gris);
+  --bs-info-bg-subtle: var(--mbl-bleu-tint-dark);
+  --bs-info-border-subtle: var(--mbl-bleu);
+  --bs-secondary-text-emphasis: var(--mbl-gris);
+  --bs-secondary-bg-subtle: var(--mbl-surface-dark);
+  --bs-secondary-border-subtle: var(--mbl-bleu-gris);
+  --bs-danger: var(--mbl-orange-text-dark);
+  --bs-danger-rgb: 253, 126, 97;
+  --bs-danger-text-emphasis: var(--mbl-gris);
+  --bs-danger-bg-subtle: var(--mbl-orange-tint-dark);
+  --bs-danger-border-subtle: var(--mbl-orange);
+  --bs-form-invalid-color: var(--mbl-orange-text-dark);
+  --bs-form-invalid-border-color: var(--mbl-orange-text-dark);
+
+  --mbl-ring: var(--mbl-bleu-light);
+  --mbl-check: var(--mbl-check-dark);
+  --mbl-kind-count-text: var(--mbl-marine-text-dark);
+  --mbl-kind-report-text: var(--mbl-orange-text-dark);
+  /* Charts on the dark page, checked the same way (dataviz
+     validator, dark surface #1f2b33). */
+  --mbl-mode-ped: #33a0c4;
+  --mbl-mode-bike: #3463c4;
+  --mbl-mode-car: var(--mbl-orange);
+  --mbl-mode-tc: #a1564e;
+}
+
+[data-bs-theme="dark"] .alert {
+  --bs-secondary-color: var(--mbl-marron-text-dark);
+  --bs-secondary-color-rgb: 182, 159, 155;
+  --bs-danger-rgb: 253, 126, 97;
+}
+
+[data-bs-theme="dark"] .list-group-item-action:active {
+  --bs-secondary-color: var(--mbl-marron-text-dark-2);
+  --bs-secondary-color-rgb: 203, 179, 175;
+  --bs-danger-rgb: 253, 126, 97;
+}
+
+[data-bs-theme="dark"] .pagination {
+  --bs-pagination-color: var(--mbl-bleu-light);
+  --bs-pagination-hover-color: #fff;
+  --bs-pagination-focus-color: #fff;
+  --bs-pagination-active-bg: var(--mbl-marine);
+  --bs-pagination-active-border-color: var(--mbl-bleu-gris);
+}
+
+/* Navy buttons get a bleu-gris edge: navy alone barely shows on the
+   dark page. */
+[data-bs-theme="dark"] .btn-primary {
+  --bs-btn-border-color: var(--mbl-bleu-gris);
+  --bs-btn-hover-bg: var(--mbl-marine-light);
+  --bs-btn-hover-border-color: var(--mbl-bleu-gris);
+  --bs-btn-active-bg: var(--mbl-marine-light);
+  --bs-btn-active-border-color: var(--mbl-bleu-gris);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(150, 216, 242, 0.9);
+}
+
+/* Navigation outlines read neutral (grey on a bleu-gris edge), so
+   they stay distinct from contributing, which reads blue. The
+   header is navy in both modes, so its buttons (the current
+   language is .btn-light) keep their light-mode look; the GPS
+   button has its own rule below. */
+[data-bs-theme="dark"] .btn-outline-primary,
+[data-bs-theme="dark"] .btn-light:not(.mbl-navbar .btn, .mobilito-gps-button) {
+  --bs-btn-color: var(--mbl-gris);
+  --bs-btn-border-color: var(--mbl-bleu-gris);
+  --bs-btn-hover-color: var(--mbl-fonce-dark);
+  --bs-btn-hover-bg: var(--mbl-bleu-light);
+  --bs-btn-hover-border-color: var(--mbl-bleu-light);
+  --bs-btn-active-color: var(--mbl-fonce-dark);
+  --bs-btn-active-bg: var(--mbl-bleu-light);
+  --bs-btn-active-border-color: var(--mbl-bleu-light);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(150, 216, 242, 0.9);
+}
+
+[data-bs-theme="dark"] .btn-light:not(.mbl-navbar .btn, .mobilito-gps-button) {
+  --bs-btn-bg: var(--mbl-surface-dark);
+}
+
+/* Controls over the map stay light, like the map and Leaflet's own
+   zoom buttons. */
+[data-bs-theme="dark"] .mobilito-gps-button {
+  --bs-btn-color: var(--mbl-marine);
+  --bs-btn-bg: #fff;
+  --bs-btn-border-color: var(--mbl-bleu-gris);
+  --bs-btn-hover-color: var(--mbl-marine-dark);
+  --bs-btn-hover-bg: var(--mbl-gris-light);
+  --bs-btn-hover-border-color: var(--mbl-bleu-gris);
+  --bs-btn-active-color: var(--mbl-marine-dark);
+  --bs-btn-active-bg: var(--mbl-gris);
+  --bs-btn-active-border-color: var(--mbl-bleu-gris);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem #fff,
+    0 0 0 0.4rem rgba(67, 82, 110, 0.9);
+}
+
+[data-bs-theme="dark"] .btn-contribute,
+[data-bs-theme="dark"] .btn-outline-contribute {
+  --bs-btn-border-color: var(--mbl-bleu);
+  --bs-btn-hover-border-color: var(--mbl-bleu-light);
+  --bs-btn-active-border-color: var(--mbl-bleu-light);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(91, 194, 231, 0.9);
+}
+
+[data-bs-theme="dark"] .btn-outline-contribute {
+  --bs-btn-color: var(--mbl-gris);
+  --bs-btn-disabled-color: var(--mbl-marron-text-dark);
+}
+
+[data-bs-theme="dark"] .btn-outline-danger {
+  --bs-btn-color: var(--mbl-orange-text-dark);
+  --bs-btn-border-color: var(--mbl-orange-text-dark);
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(253, 126, 97, 0.9);
+}
+
+[data-bs-theme="dark"] .btn-danger {
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(253, 126, 97, 0.9);
+}
+
+[data-bs-theme="dark"] .btn-link {
+  --bs-btn-color: var(--mbl-bleu-light);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-color: #fff;
+  --bs-btn-focus-box-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(150, 216, 242, 0.9);
+}
+
+[data-bs-theme="dark"] .btn-close {
+  --bs-btn-close-focus-shadow: 0 0 0 0.15rem var(--bs-body-bg),
+    0 0 0 0.4rem rgba(150, 216, 242, 0.9);
+}
+
+[data-bs-theme="dark"] .form-control.is-invalid,
+[data-bs-theme="dark"] .was-validated .form-control:invalid {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23fd7e61'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23fd7e61' stroke='none'/%3e%3c/svg%3e");
 }
 
 /* On the dark backgrounds (header, counting screen) a dark ring
@@ -457,4 +647,22 @@ License along with mobilito.  If not, see
     white-space: nowrap;
     border: 0;
   }
+}
+
+/* The footer's dark mode switch: a button that reads like the
+   footer's links, with a toggle icon showing its state. */
+.mbl-footer-switch {
+  --bs-btn-padding-x: 0;
+  --bs-btn-padding-y: 0.5rem;
+  min-height: 2.75rem;
+  --bs-btn-font-size: inherit;
+  --bs-btn-line-height: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  vertical-align: baseline;
+}
+
+.mbl-footer-switch .bi {
+  font-size: 1.25em;
 }

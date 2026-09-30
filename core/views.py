@@ -36,6 +36,22 @@ from core.maps import (
 from core.ratelimit import client_ip, is_rate_limited
 
 
+def _back_to_next(request):
+    """Redirect to the POSTed "next" if it's on this site, else home."""
+    requested_next = request.POST.get("next", "")
+    if url_has_allowed_host_and_scheme(
+        requested_next,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        next_url = requested_next
+    else:
+        next_url = "/"
+    if request.htmx:
+        return HttpResponseClientRedirect(next_url)
+    return HttpResponseRedirect(next_url)
+
+
 @require_POST
 def set_language(request):
     """Set the user's language preference (§7).
@@ -54,21 +70,7 @@ def set_language(request):
         None,
     )
 
-    requested_next = request.POST.get("next", "")
-    if url_has_allowed_host_and_scheme(
-        requested_next,
-        allowed_hosts={request.get_host()},
-        require_https=request.is_secure(),
-    ):
-        next_url = requested_next
-    else:
-        next_url = "/"
-
-    if request.htmx:
-        response = HttpResponseClientRedirect(next_url)
-    else:
-        response = HttpResponseRedirect(next_url)
-
+    response = _back_to_next(request)
     if language is not None:
         if request.user.is_authenticated:
             request.user.preferred_language = language
@@ -84,6 +86,27 @@ def set_language(request):
             samesite=settings.LANGUAGE_COOKIE_SAMESITE,
         )
 
+    return response
+
+
+@require_POST
+def set_theme(request):
+    """Switch between light and dark mode (doc/colours.md).
+
+    Per device: someone may want dark on a laptop at night and light
+    on a phone in the sun, so it's a cookie, not a user setting.
+    """
+    response = _back_to_next(request)
+    theme = request.POST.get("theme")
+    if theme in ("light", "dark"):
+        response.set_cookie(
+            settings.THEME_COOKIE_NAME,
+            theme,
+            max_age=settings.THEME_COOKIE_AGE,
+            secure=request.is_secure(),
+            httponly=True,
+            samesite="Lax",
+        )
     return response
 
 

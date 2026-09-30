@@ -22,13 +22,26 @@ License along with mobilito.  If not, see
 {% load i18n %}
 {% comment %}
 Site footer (see the site_footer tag): credit for the addresses we
-show, which come from OpenStreetMap (ODbL), and the source-code
-offer the AGPL asks of a network service.
+show, which come from OpenStreetMap (ODbL), the source-code offer
+the AGPL asks of a network service, and the dark mode switch (a
+per-device choice; it may move to a settings page one day). Like the
+language buttons, a real form that htmx enhances.
 {% endcomment %}
 <footer class="container small text-body-secondary py-2 border-top">
-  <ul class="list-unstyled d-flex flex-wrap column-gap-3 m-0">
+  <ul class="list-unstyled d-flex flex-wrap align-items-center column-gap-3 m-0">
     <li>{% trans "Addresses:" %} <a href="{{ address_credit_url }}" class="d-inline-block py-2">{{ address_credit }}</a></li>
     <li><a href="{% url 'credits' %}" class="d-inline-block py-2">{% trans "Credits" %}</a></li>
     <li><a href="{{ source_code_url }}" class="d-inline-block py-2">{% trans "Source code" %}</a></li>
+    <li>
+      <form method="post" action="{% url 'set_theme' %}" hx-post="{% url 'set_theme' %}" class="m-0" data-mbl-theme-switch>
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <button type="submit" name="theme" value="{% if dark %}light{% else %}dark{% endif %}"
+                class="btn btn-link mbl-footer-switch" role="switch" aria-checked="{% if dark %}true{% else %}false{% endif %}">
+          <i class="bi {% if dark %}bi-toggle-on{% else %}bi-toggle-off{% endif %}" aria-hidden="true"></i>
+          {% trans "Dark mode" %}
+        </button>
+      </form>
+    </li>
   </ul>
 </footer>

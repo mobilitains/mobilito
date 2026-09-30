@@ -175,7 +175,7 @@ License along with mobilito.  If not, see
 .mobilito-count-short {
   width: 100%;
   max-width: 520px;
-  color: var(--mbl-fonce);
+  color: var(--bs-body-color);
 }
 
 /* Results bars (HTML/CSS, no chart library at this scale). */
@@ -193,7 +193,7 @@ License along with mobilito.  If not, see
 .mobilito-bar-track {
   display: block;
   height: 1.5rem;
-  background: #fff;
+  background: var(--bs-body-bg);
   /* An edge (3.4:1), so a short, pale bar still has a visible end. */
   border: 1px solid var(--mbl-bleu-gris);
   border-radius: 0.25rem;
@@ -253,7 +253,7 @@ License along with mobilito.  If not, see
 }
 
 .mobilito-history-this .mobilito-history-bar {
-  outline: 2px solid var(--mbl-fonce);
+  outline: 2px solid var(--bs-body-color);
   outline-offset: 2px;
   border-radius: 0.25rem;
 }
@@ -301,5 +301,5 @@ License along with mobilito.  If not, see
   position: sticky;
   /* Clear of the card's edge, so its focus ring isn't cut off. */
   bottom: 0.5rem;
-  box-shadow: 0 -0.5rem 0.75rem #fff;
+  box-shadow: 0 -0.5rem 0.75rem var(--bs-body-bg);
 }

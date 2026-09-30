@@ -77,9 +77,10 @@ def unvalidated_banner(context):
     return empty
 
 
-@register.inclusion_tag("includes/footer.html")
-def site_footer():
-    """Attribution for the addresses we show (ODbL), and our source.
+@register.inclusion_tag("includes/footer.html", takes_context=True)
+def site_footer(context):
+    """Attribution for the addresses we show (ODbL), our source, and
+    the dark mode switch.
 
     Addresses appear on many pages (lists, details), so their credit
     goes on every page rather than beside each one.
@@ -87,8 +88,12 @@ def site_footer():
     from core.geocoding import get_geocoder
 
     geocoder = get_geocoder()
+    request = context.get("request")
     return {
         "address_credit": geocoder.credit,
         "address_credit_url": geocoder.credit_url,
         "source_code_url": settings.SOURCE_CODE_URL,
+        "dark": context.get("theme") == "dark",
+        "next": request.get_full_path() if request else "/",
+        "csrf_token": context.get("csrf_token"),
     }

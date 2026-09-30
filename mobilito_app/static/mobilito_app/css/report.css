@@ -98,7 +98,7 @@ License along with mobilito.  If not, see
 }
 
 .mobilito-photo-input:focus-visible + label {
-  outline: 3px solid var(--mbl-marine);
+  outline: 3px solid var(--mbl-ring);
   outline-offset: 2px;
 }
 

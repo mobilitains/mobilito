@@ -710,18 +710,35 @@ def _hex_colours(path):
         )
 
 
-def _css_tokens():
+def _css_tokens(theme="light"):
+    """The --mbl-* colours for a theme, read from mobilitains.css.
+
+    Light: the :root block. Dark: the same, overridden by the
+    [data-bs-theme="dark"] block. var() aliases are resolved.
+    """
     import re
 
     path = settings.BASE_DIR / "core/static/core/css/mobilitains.css"
     with open(path, encoding="utf-8") as f:
         text = f.read()
-    tokens = dict(re.findall(r"--(mbl-[a-z0-9-]+):\s*(#[0-9a-f]{6});", text))
-    # Aliases (--mbl-kind-count: var(--mbl-chart-2)) resolve too.
-    for name, target in re.findall(
-        r"--(mbl-[a-z0-9-]+):\s*var\(--(mbl-[a-z0-9-]+)\);", text
-    ):
-        tokens[name] = tokens[target]
+
+    def block(selector):
+        start = text.index(selector + " {")
+        end = text.index("\n}", start)
+        return text[start:end]
+
+    blocks = [block(":root")]
+    if theme == "dark":
+        blocks.append(block('[data-bs-theme="dark"]'))
+    tokens = {}
+    for body in blocks:
+        tokens.update(
+            re.findall(r"--(mbl-[a-z0-9-]+):\s*(#[0-9a-f]{6});", body)
+        )
+        for name, target in re.findall(
+            r"--(mbl-[a-z0-9-]+):\s*var\(--(mbl-[a-z0-9-]+)\);", body
+        ):
+            tokens[name] = tokens[target]
     return tokens
 
 
@@ -813,6 +830,55 @@ class BrandColourTests(TestCase):
         ]
         self.assertEqual(failures, [])
 
+    def test_dark_pairs_meet_wcag_aa(self):
+        tokens = _css_tokens("dark")
+        tokens["white"] = "#ffffff"
+        # Raised: hover, subtle boxes, light buttons. Pressed: rows.
+        page, card = "mbl-page-dark", "mbl-surface-dark"
+        pressed = "mbl-surface-dark-2"
+        text = [  # 4.5:1
+            ("mbl-gris", page),
+            ("mbl-gris", card),
+            ("mbl-bleu", page),  # headings
+            ("mbl-bleu-light", page),  # links
+            ("mbl-bleu-light", card),
+            ("mbl-marron-text-dark", page),
+            ("mbl-marron-text-dark", card),
+            ("mbl-marron-text-dark", "mbl-bleu-tint-dark"),
+            ("mbl-marron-text-dark", "mbl-orange-tint-dark"),
+            ("mbl-orange-text-dark", page),
+            ("mbl-orange-text-dark", card),
+            ("mbl-orange-text-dark", "mbl-orange-tint-dark"),
+            ("mbl-gris", "mbl-bleu-tint-dark"),
+            ("mbl-gris", "mbl-orange-tint-dark"),
+            ("white", "mbl-marine"),  # navy buttons
+            ("white", "mbl-marine-light"),
+            ("mbl-fonce-dark", "mbl-bleu"),  # contribute
+            ("mbl-fonce-dark", "mbl-bleu-light"),  # outline hover
+            ("white", "mbl-orange-dark"),  # danger
+            ("mbl-gris", pressed),
+            ("mbl-marron-text-dark-2", pressed),
+        ]
+        ui = [  # 3:1
+            ("mbl-bleu-gris", page),  # field edges, navy buttons
+            ("mbl-bleu-light", page),  # outline buttons
+            ("mbl-kind-count-text", page),
+            ("mbl-kind-count-text", card),
+            ("mbl-kind-count-text", pressed),
+            ("mbl-kind-report-text", page),
+            ("mbl-kind-report-text", card),
+            ("mbl-kind-report-text", pressed),
+            ("mbl-check-dark", page),
+            ("white", "mbl-check-dark"),  # the tick
+        ]
+        failures = [
+            (fg, bg, round(_contrast(tokens[fg], tokens[bg]), 2))
+            for pairs, floor in ((text, 4.5), (ui, 3.0))
+            for fg, bg in pairs
+            if _contrast(tokens[fg], tokens[bg]) < floor
+        ]
+        self.assertEqual(failures, [])
+
     def test_literal_colours_match_their_tokens(self):
         # Where a value has to be written out (see the exceptions
         # above), it must still be a brand token's value.
@@ -838,6 +904,61 @@ class BrandColourTests(TestCase):
         pins = dict(re.findall(r"(count|report): '(#[0-9a-f]{6})'", js))
         self.assertEqual(pins["count"], tokens["mbl-kind-count"])
         self.assertEqual(pins["report"], tokens["mbl-kind-report"])
+
+
+class ThemeTests(TestCase):
+    """Dark mode: opt-in, per device (doc/colours.md)."""
+
+    def test_light_by_default(self):
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, 'data-bs-theme="light"')
+        self.assertContains(response, 'name="theme" value="dark"')
+        self.assertContains(response, 'aria-checked="false"')
+
+    def test_switching_to_dark_sets_a_cookie_and_goes_back(self):
+        response = self.client.post(
+            reverse("set_theme"), {"theme": "dark", "next": "/map/"}
+        )
+        self.assertRedirects(response, "/map/", fetch_redirect_response=False)
+        cookie = response.cookies[settings.THEME_COOKIE_NAME]
+        self.assertEqual(cookie.value, "dark")
+        self.assertTrue(cookie["httponly"])
+        page = self.client.get(reverse("home"))
+        self.assertContains(page, 'data-bs-theme="dark"')
+        self.assertContains(page, 'name="theme" value="light"')
+        self.assertContains(page, 'aria-checked="true"')
+
+    def test_switching_back_to_light(self):
+        self.client.cookies[settings.THEME_COOKIE_NAME] = "dark"
+        self.client.post(reverse("set_theme"), {"theme": "light"})
+        page = self.client.get(reverse("home"))
+        self.assertContains(page, 'data-bs-theme="light"')
+
+    def test_unknown_theme_and_foreign_next_are_ignored(self):
+        response = self.client.post(
+            reverse("set_theme"),
+            {"theme": "neon", "next": "https://evil.example/"},
+        )
+        self.assertRedirects(response, "/", fetch_redirect_response=False)
+        self.assertNotIn(settings.THEME_COOKIE_NAME, response.cookies)
+
+    def test_a_forged_cookie_value_falls_back_to_light(self):
+        self.client.cookies[settings.THEME_COOKIE_NAME] = '"><script>'
+        page = self.client.get(reverse("home"))
+        self.assertContains(page, 'data-bs-theme="light"')
+
+    def test_htmx_gets_a_client_redirect(self):
+        response = self.client.post(
+            reverse("set_theme"),
+            {"theme": "dark", "next": "/map/"},
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response["HX-Redirect"], "/map/")
+
+    def test_get_is_refused(self):
+        self.assertEqual(
+            self.client.get(reverse("set_theme")).status_code, 405
+        )
 
 
 class BaseTemplateCsrfTests(TestCase):

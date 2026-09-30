@@ -202,6 +202,52 @@ legend and a table. Bar tracks are white with a bleu-gris edge, and
 the pale blue bar has a thin darker outline, so a short bar still
 shows where it ends.
 
+## Dark mode
+
+Opt-in, never the default. The "Dark mode" switch in the footer
+(`set_theme`, like the language buttons) sets a cookie,
+`mobilito_theme`, and the server renders `data-bs-theme="dark"` on
+`<html>`, so there's no flash of light colours. It's a per-device
+choice, not a user setting: someone may want dark on a laptop at night
+and light on a phone in the sun. When there's a settings page, the
+switch can move there.
+
+Dark mode has its own steps, chosen and checked against the dark
+page, not an inversion of the light ones. They're in the
+`[data-bs-theme="dark"]` block of `mobilitains.css`.
+
+| Role | Colour | Contrast |
+|---|---|---|
+| Page | foncé dark `#1F2B33` | |
+| Raised (hover, subtle boxes) / pressed rows | `#2E3A43` / `#3D4A53` | |
+| Text | gris `#DBE3EB` | 11.2 (7.0 or more elsewhere) |
+| Headings | bleu `#5BC2E7` | 7.1 |
+| Links | bleu light `#96D8F2` | 9.2 |
+| Navigation outline buttons | gris on a bleu-gris edge | 11.2 |
+| Secondary text | light marron `#B69F9B`; `#CBB3AF` on pressed rows | 5.8 (4.6 or more elsewhere) |
+| Errors, danger outlines | light orange `#FD7E61` | 5.7 (4.6 raised) |
+| Field and button edges | bleu-gris `#78909C` | 4.3 |
+| Count icons | light marine `#7497D8` | 4.9 (3.1 or more raised or pressed) |
+| Ticked boxes | `#2E86AB` | white tick 4.1; 3.5 against the page |
+| Info / error boxes | `#133B49` / `#502920` | gris text 9.3 / 9.7 |
+
+Unchanged: the contribute buttons (emblem blue with dark text), danger
+buttons (dark orange with white text), navy buttons (with a bleu-gris
+edge added, since navy alone barely shows on the dark page), the
+header and the counting screen (dark in both modes, buttons
+included), and the map, whose OpenStreetMap tiles stay light, so its
+pins keep their colours and the GPS button stays light (navy icon on
+white). Outline buttons for navigation read neutral
+(grey on a bleu-gris edge) and those for contributing read blue, so
+the two stay distinct in the dark.
+
+Charts on the dark page use their own steps of the same hues,
+checked with the dataviz validator against `#1F2B33`: pedestrians
+`#33A0C4`, bikes `#3463C4`, cars `#FA4616`, public transport
+`#A1564E`. Bikes and public transport are under 3:1 against the page,
+which the validator accepts because every bar has its label and value
+beside it and its track has an edge.
+
 ## The logo
 
 Files in `core/static/core/img/`, made from the association's logo kit
@@ -251,9 +297,9 @@ spare: check it if you add anything there.
 - **Tests** (`BrandColourTests` in `core/tests.py`) enforce this: no
   hex colours outside the tokens file and those exceptions; the
   exceptions use token values only; the map pins match the legend;
-  and every text/background pair listed there meets WCAG AA. Add new
-  pairs to that list when you use them. (The scan only looks for hex
-  values; shadows in `rgba()` are allowed.)
+  and every text/background pair listed there meets WCAG AA, in both
+  themes. Add new pairs to those lists when you use them. (The scan
+  only looks for hex values; shadows in `rgba()` are allowed.)
 - **Adding a colour:** don't, if one of these will do. If you must, add
   it to `mobilitains.css` and this page, with its contrast against
   what it will sit on.
@@ -264,8 +310,6 @@ spare: check it if you add anything there.
 
 - **The guide's secondary font** ("Source code", a monospace for
   minor text) isn't used; nothing on the site calls for it yet.
-- **Dark mode.** The site has none; if it gets one, its colours need
-  choosing and checking separately, not inverting.
 - **Orange's meaning.** The *charte couleur* reserves orange for
   membership and donations. Mobilito asks for neither, so we use the
   dark orange for errors. If a "join" or "donate" link is added, it

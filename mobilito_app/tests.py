@@ -226,4 +226,4 @@ class FrenchSmokeTests(TestCase):
             with self.subTest(url=url):
                 response = self.client.get(url)
                 self.assertContains(response, french)
-                self.assertContains(response, '<html lang="fr">')
+                self.assertContains(response, '<html lang="fr" ')

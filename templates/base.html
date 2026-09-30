@@ -19,7 +19,7 @@ License along with mobilito.  If not, see
 {% endcomment %}
 {% load i18n static mobilito_tags %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}" data-bs-theme="{{ theme|default:'light' }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -67,6 +67,7 @@ the map widget's buttons) still need Django's CSRF token.
     src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js"
     integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
     crossorigin="anonymous"></script>
+  <script src="{% static 'core/js/theme_switch.js' %}"></script>
   {% block extra_scripts %}{% endblock %}
 </body>
 </html>

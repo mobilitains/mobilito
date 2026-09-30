@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mobilito\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-30 11:06+0200\n"
+"POT-Creation-Date: 2026-09-30 17:52+0200\n"
 "PO-Revision-Date: 2026-09-30 09:30+0200\n"
 "Last-Translator: Claude (machine draft, needs native review)\n"
 "Language-Team: French\n"
@@ -42,12 +42,12 @@ msgstr ""
 "Votre adresse e-mail n'a pas été confirmée à temps : ce que vous aviez "
 "enregistré a donc été supprimé."
 
-#: authentication/templates/authentication/email/magic_link.html:25
+#: authentication/templates/authentication/email/magic_link.html:29
 #: authentication/templates/authentication/email/magic_link.txt:22
 msgid "Hello,"
 msgstr "Bonjour,"
 
-#: authentication/templates/authentication/email/magic_link.html:27
+#: authentication/templates/authentication/email/magic_link.html:31
 msgid ""
 "You recorded an observation on Mobilito, but haven't confirmed your email "
 "address yet. Confirm it's you so that what you recorded counts:"
@@ -56,7 +56,7 @@ msgstr ""
 "encore confirmé votre adresse e-mail. Confirmez que c'est bien vous pour que "
 "votre observation soit prise en compte :"
 
-#: authentication/templates/authentication/email/magic_link.html:29
+#: authentication/templates/authentication/email/magic_link.html:33
 msgid ""
 "You gave this email address on Mobilito. Confirm it's you so that what you "
 "record counts:"
@@ -64,25 +64,25 @@ msgstr ""
 "Vous avez donné cette adresse e-mail sur Mobilito. Confirmez que c'est bien "
 "vous pour que vos observations soient prises en compte :"
 
-#: authentication/templates/authentication/email/magic_link.html:31
+#: authentication/templates/authentication/email/magic_link.html:35
 msgid "Use the button below to sign in to Mobilito:"
 msgstr "Utilisez le bouton ci-dessous pour vous connecter à Mobilito :"
 
-#: authentication/templates/authentication/email/magic_link.html:34
+#: authentication/templates/authentication/email/magic_link.html:38
 #: authentication/templates/authentication/verify.html:54
 msgid "Confirm my email address"
 msgstr "Confirmer mon adresse e-mail"
 
-#: authentication/templates/authentication/email/magic_link.html:34
+#: authentication/templates/authentication/email/magic_link.html:38
 #: authentication/templates/authentication/start.html:25
 #: authentication/templates/authentication/start.html:29
 #: authentication/templates/authentication/verify.html:25
 #: authentication/templates/authentication/verify.html:54
-#: templates/includes/nav.html:64
+#: templates/includes/nav.html:73
 msgid "Sign in"
 msgstr "Se connecter"
 
-#: authentication/templates/authentication/email/magic_link.html:38
+#: authentication/templates/authentication/email/magic_link.html:42
 #: authentication/templates/authentication/email/magic_link.txt:28
 #, python-format
 msgid ""
@@ -92,17 +92,17 @@ msgstr ""
 "Si vous ne confirmez pas votre adresse e-mail d'ici le %(date)s, ce que vous "
 "avez enregistré sera supprimé."
 
-#: authentication/templates/authentication/email/magic_link.html:43
+#: authentication/templates/authentication/email/magic_link.html:47
 #: authentication/templates/authentication/email/magic_link.txt:32
 msgid "No hurry: you can finish what you're doing first."
 msgstr "Rien ne presse : vous pouvez d'abord terminer ce que vous faites."
 
-#: authentication/templates/authentication/email/magic_link.html:45
+#: authentication/templates/authentication/email/magic_link.html:49
 #: authentication/templates/authentication/email/magic_link.txt:34
 msgid "You'll be taken back to what you were doing."
 msgstr "Vous reviendrez là où vous en étiez."
 
-#: authentication/templates/authentication/email/magic_link.html:49
+#: authentication/templates/authentication/email/magic_link.html:53
 #: authentication/templates/authentication/email/magic_link.txt:36
 #, python-format
 msgid "The link works once, for %(days)s day."
@@ -110,7 +110,7 @@ msgid_plural "The link works once, for %(days)s days."
 msgstr[0] "Le lien ne fonctionne qu'une fois, pendant %(days)s jour."
 msgstr[1] "Le lien ne fonctionne qu'une fois, pendant %(days)s jours."
 
-#: authentication/templates/authentication/email/magic_link.html:55
+#: authentication/templates/authentication/email/magic_link.html:59
 #: authentication/templates/authentication/email/magic_link.txt:40
 #: authentication/templates/authentication/sent.html:42
 #, python-format
@@ -119,12 +119,12 @@ msgid_plural "The link works once, for %(minutes)s minutes."
 msgstr[0] "Le lien ne fonctionne qu'une fois, pendant %(minutes)s minute."
 msgstr[1] "Le lien ne fonctionne qu'une fois, pendant %(minutes)s minutes."
 
-#: authentication/templates/authentication/email/magic_link.html:63
+#: authentication/templates/authentication/email/magic_link.html:67
 msgid "If the button doesn't work, copy this address into your browser:"
 msgstr ""
 "Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur :"
 
-#: authentication/templates/authentication/email/magic_link.html:68
+#: authentication/templates/authentication/email/magic_link.html:72
 #: authentication/templates/authentication/email/magic_link.txt:46
 msgid ""
 "If you didn't ask for this, you can ignore this email: nothing will be kept."
@@ -132,7 +132,7 @@ msgstr ""
 "Si vous n'avez rien demandé, vous pouvez ignorer cet e-mail : rien ne sera "
 "conservé."
 
-#: authentication/templates/authentication/email/magic_link.html:70
+#: authentication/templates/authentication/email/magic_link.html:74
 #: authentication/templates/authentication/email/magic_link.txt:46
 msgid "If you didn't ask for this, you can ignore this email."
 msgstr "Si vous n'avez rien demandé, vous pouvez ignorer cet e-mail."
@@ -499,7 +499,7 @@ msgid "Flagged for review"
 msgstr "Alerte à examiner"
 
 #: core/templates/core/credits.html:25 core/templates/core/credits.html:28
-#: templates/includes/footer.html:31
+#: templates/includes/footer.html:33
 msgid "Credits"
 msgstr "Crédits"
 
@@ -511,7 +511,7 @@ msgstr "Cartes et adresses"
 msgid "Map:"
 msgstr "Carte :"
 
-#: core/templates/core/credits.html:33 templates/includes/footer.html:30
+#: core/templates/core/credits.html:33 templates/includes/footer.html:32
 msgid "Addresses:"
 msgstr "Adresses :"
 
@@ -2104,19 +2104,23 @@ msgstr ""
 msgid "Decision:"
 msgstr "Décision :"
 
-#: templates/includes/footer.html:32
+#: templates/includes/footer.html:34
 msgid "Source code"
 msgstr "Code source"
 
-#: templates/includes/nav.html:38
+#: templates/includes/footer.html:42
+msgid "Dark mode"
+msgstr "Mode sombre"
+
+#: templates/includes/nav.html:47
 msgid "Change language"
 msgstr "Changer de langue"
 
-#: templates/includes/nav.html:55
+#: templates/includes/nav.html:64
 msgid "Signed in"
 msgstr "Connexion active"
 
-#: templates/includes/nav.html:59
+#: templates/includes/nav.html:68
 msgid "Sign out"
 msgstr "Se déconnecter"
 
