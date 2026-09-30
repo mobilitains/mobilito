@@ -743,9 +743,10 @@ def _contrast(a, b):
 class BrandColourTests(TestCase):
     """doc/colours.md: brand tokens only, and contrast first."""
 
-    def test_header_and_brand_stylesheet(self):
+    def test_header_has_logo_and_brand_stylesheet(self):
         response = self.client.get(reverse("home"))
         self.assertContains(response, "core/css/mobilitains.css")
+        self.assertContains(response, 'alt="Les Mobilitains"', count=2)
         self.assertContains(response, "mbl-navbar")
 
     def test_no_raw_colours_outside_the_tokens(self):

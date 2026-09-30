@@ -133,8 +133,12 @@ text on anything but white, and then only the dark step.
 
 - **Page:** white background, foncé text, marine headings; secondary
   text (`.text-body-secondary`) in marron.
-- **Header:** marine background with white text and outline
-  buttons, as in the proof of concept.
+- **Header:** marine background, the logo in its version for dark
+  backgrounds (white path and wordmark, coloured dots), as in the
+  proof of concept. Phones show the logo's mark alone, then
+  "Mobilito", with narrower buttons, so the language and sign-in
+  buttons fit on one line at 360px even in French; below 360px the
+  word "Mobilito" is hidden on screen (screen readers still read it).
 - **Links:** marine, underlined; darker on hover.
 - **Buttons.** The guide has two kinds of call to action, and so do
   we:
@@ -153,7 +157,7 @@ text on anything but white, and then only the dark step.
   step for contributing, dark orange for danger, dark blue for the
   yellow warning button. On the dark header and the counting
   screen's top bar the ring is white (but not in the counting
-  screen's white pop-ups); so is the outline of the home link and of
+  screen's white pop-ups); so is the outline of the logo link and of
   the four count buttons. The close (X) button's ring is marine. A
   field with an error gets a dark orange ring, and Bootstrap's red
   error icon is redrawn in dark orange (text fields only: a
@@ -197,6 +201,30 @@ relies on colour alone: every bar has its mode's name beside it, or a
 legend and a table. Bar tracks are white with a bleu-gris edge, and
 the pale blue bar has a thin darker outline, so a short bar still
 shows where it ends.
+
+## The logo
+
+Files in `core/static/core/img/`, made from the association's logo kit
+(design Simon Papon, 2020) with the white background card removed and
+cropped to the drawing:
+
+| File | For |
+|---|---|
+| `mobilitains-logo.svg` | light backgrounds: rouge-gris path, marine wordmark |
+| `mobilitains-logo-on-dark.svg` | dark backgrounds (the header): white path and wordmark |
+| `mobilitains-mark.svg` | the mark alone, light backgrounds; the favicon |
+| `mobilitains-mark-on-dark.svg` | the mark alone, dark backgrounds (the header on phones) |
+
+From the guide and the *charte couleur*:
+
+- Rouge-gris is the association's main colour and the heart of the
+  logo; the logo appears in colour, or in white, or in black. If
+  either the path or the wordmark is white (or black), the other must
+  be too.
+- Keep the clear space around the logo that the guide shows; don't
+  squeeze it against other elements.
+- The logo goes at the top (left, or right when needed), never only at
+  the bottom of a page.
 
 ## In the code
 

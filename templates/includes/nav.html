@@ -17,13 +17,21 @@ You should have received a copy of the GNU Affero General Public
 License along with mobilito.  If not, see
 <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n %}
-{# On the brand's navy, as in the proof of concept (doc/colours.md). #}
+{% load i18n static %}
+{% comment %}
+The header follows the Mobilitains proof of concept: the logo, white
+with its coloured dots, on the brand's navy (doc/colours.md). Phones
+get the logo's mark alone, so the controls still fit.
+{% endcomment %}
 <nav class="navbar navbar-expand navbar-dark mbl-navbar">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'home' %}">Mobilito</a>
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <img src="{% static 'core/img/mobilitains-logo-on-dark.svg' %}" alt="Les Mobilitains" class="mbl-logo d-none d-sm-block">
+      <img src="{% static 'core/img/mobilitains-mark-on-dark.svg' %}" alt="Les Mobilitains" class="mbl-logo d-sm-none">
+      <span class="mbl-product">Mobilito</span>
+    </a>
 
-    <div class="d-flex align-items-center gap-3">
+    <div class="d-flex align-items-center gap-2 gap-sm-3">
       {% comment %}
       Real form + submit buttons: works with no JS; htmx (below)
       intercepts and the server replies with a full-page redirect
@@ -55,12 +63,12 @@ License along with mobilito.  If not, see
         <span class="navbar-text text-light small d-none d-sm-inline">{% trans "Signed in" %}</span>
         <form method="post" action="{% url 'auth_logout' %}" class="m-0">
           {% csrf_token %}
-          <button type="submit" class="btn btn-outline-light">
+          <button type="submit" class="btn btn-outline-light text-nowrap">
             {% trans "Sign out" %}
           </button>
         </form>
       {% else %}
-        <a href="{% url 'auth_start' %}" class="btn btn-outline-light">
+        <a href="{% url 'auth_start' %}" class="btn btn-outline-light text-nowrap">
           {% trans "Sign in" %}
         </a>
       {% endif %}

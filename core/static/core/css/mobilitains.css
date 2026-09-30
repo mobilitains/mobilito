@@ -155,9 +155,28 @@ License along with mobilito.  If not, see
   border-color: var(--mbl-marine);
 }
 
-/* Header: the brand's navy, as in the proof of concept. */
+/* Header (as in the proof of concept): the logo, white with its
+   coloured dots, on the brand's navy. */
 .mbl-navbar {
   background-color: var(--mbl-marine);
+}
+
+.mbl-logo {
+  display: block;
+  height: 1.75rem;
+  width: auto;
+}
+
+.mbl-navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+}
+
+.mbl-navbar .mbl-product {
+  padding-left: 0.75rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 /* Buttons. Bootstrap's own state rules beat plain properties, so
@@ -328,10 +347,49 @@ License along with mobilito.  If not, see
     0 0 0 0.4rem rgba(255, 255, 255, 0.9);
 }
 
-/* Plain links there (the home link) too: browsers' default blue outline
+/* Plain links there (the logo) too: browsers' default blue outline
    hardly shows on navy. */
 .mbl-navbar a:not(.btn):focus-visible {
   outline: 2px solid #fff;
   outline-offset: 3px;
   border-radius: 0.25rem;
+}
+
+/* Phones: the mark, "Mobilito" and the controls on one line, even
+   in French ("Se déconnecter"). */
+@media (max-width: 575.98px) {
+  .mbl-logo {
+    height: 1.5rem;
+  }
+
+  .mbl-navbar .navbar-brand {
+    gap: 0.4rem;
+    margin-right: 0.5rem;
+  }
+
+  .mbl-navbar .mbl-product {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  /* Narrower, not shorter: taps keep their height. */
+  .mbl-navbar .btn {
+    --bs-btn-padding-x: 0.5rem;
+  }
+}
+
+/* The narrowest phones (320px): the mark alone on screen; screen
+   readers still hear "Mobilito" (as .visually-hidden). */
+@media (max-width: 359.98px) {
+  .mbl-navbar .mbl-product {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
 }
