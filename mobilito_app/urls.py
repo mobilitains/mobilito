@@ -22,7 +22,7 @@ License along with mobilito.  If not, see
 
 from django.urls import path
 
-from mobilito_app import browse, counts, mine, reports
+from mobilito_app import browse, counts, mine, moderation, reports
 
 urlpatterns = [
     path("map/", browse.map_page, name="map"),
@@ -59,4 +59,5 @@ urlpatterns = [
         reports.photo,
         name="reports_photo",
     ),
+    path("flag/<str:kind>/<int:pk>/", moderation.flag, name="flag"),
 ]

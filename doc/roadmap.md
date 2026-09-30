@@ -7,11 +7,11 @@ References are to `design.md` sections.
 
 ## Current state
 
-Phases 1–7 are done (see the **[COMPLETED]** marks below): data
+Phases 1–8 are done (see the **[COMPLETED]** marks below): data
 models, UI shell, magic-link and provisional sign-in, the map
 component, modal share counting, infrastructure reports and public
-browsing. Phase 8 (moderation) is next; after it, the v1-preview
-checklist.
+browsing. Phase 8 (moderation) is done too; what remains for v1-preview is
+the checklist below it, mostly deployment and testing.
 
 ---
 
@@ -210,6 +210,8 @@ Public, requires no authentication (§9.3, §21.1).
 
 ## Phase 8 — Moderation and publication lifecycle
 
+[COMPLETED] — as built: transitions in `core/lifecycle.py` (`moderate()`; publish *and* light hold both refuse an unvalidated or ownerless author, since light hold is link-visible), admin actions plus per-observation decision buttons, photos hidden individually from the report's admin page, `/flag/<kind>/<id>/` (report text, photo, or a count's typed place name; works without JS, inline with htmx). Repeated flags from confirmed users auto-hide a photo or light-hold an observation (`MODERATION_FLAG_AUTO_HOLD_REPORTERS`). Public lists, map and history also require a confirmed author. See doc/operations.md "Moderation".
+
 Minimal for v1-preview (admin-accessible only); full dashboard in v1 (§13).
 
 **Publication state machine** — transitions:
@@ -233,13 +235,13 @@ Before opening to test users:
 
 - [ ] All user-facing strings have French translations (`compilemessages` passes)
 - [ ] Cloudflare in front of the deployment — §16 names it the first line of bot defence and §11.1/§11.2 assume edge geo-tag data is captured on every request from day one; v1-preview is a "limited public preview" per §22.1, not an unexposed internal build, so this shouldn't wait for public launch
-- [ ] Rate limiting on auth and submission endpoints (Django middleware or Cloudflare rules)
-- [ ] Honeypot fields on all forms
+- [ ] Rate limiting on auth and submission endpoints (Django middleware or Cloudflare rules) — app-level limits done for sign-in, counts, reports and flags; Cloudflare rules still to add
+- [x] Honeypot fields on all forms
 - [ ] Email sending confirmed working end-to-end
 - [ ] Photo upload to S3 confirmed working
 - [ ] Mobile QA: iPhone Safari, Android Chrome, Android Firefox
-- [ ] Admin can view and moderate all observations
-- [ ] No observations from unvalidated users appear in the public map or GeoJSON endpoint
+- [x] Admin can view and moderate all observations
+- [x] No observations from unvalidated users appear in the public map or GeoJSON endpoint
 
 ---
 

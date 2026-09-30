@@ -54,29 +54,46 @@ License along with mobilito.  If not, see
     {% else %}{% trans "Seen on foot and by bike" %}{% endif %}
   </p>
 
-  {% if is_owner and not published %}
-    <div class="alert alert-secondary">
-      {% if pending_validation %}
-        {% trans "Once you've opened the link we sent you by email, we'll check your report and then show it to others." %}
-      {% else %}
-        {% trans "Your report will be visible to others once it has been reviewed." %}
-      {% endif %}
-    </div>
-  {% endif %}
+  {% include "mobilito_app/moderation/state_notes.html" with what="report" %}
 
   <div class="mobilito-report-photos mb-3">
     {% for item in media %}
-      <a href="{% url 'reports_photo' report.pk item.pk %}" target="_blank" rel="noopener">
-        <img src="{% url 'reports_photo' report.pk item.pk %}"
-             alt="{% blocktranslate with n=forloop.counter %}Photo {{ n }}{% endblocktranslate %}"
-             loading="lazy">
-        <span class="visually-hidden">{% trans "(opens in a new tab)" %}</span>
-      </a>
+      <div>
+        <a href="{% url 'reports_photo' report.pk item.pk %}" target="_blank" rel="noopener">
+          <img src="{% url 'reports_photo' report.pk item.pk %}"
+               alt="{% blocktranslate with n=forloop.counter %}Photo {{ n }}{% endblocktranslate %}"
+               loading="lazy">
+          <span class="visually-hidden">{% trans "(opens in a new tab)" %}</span>
+        </a>
+        {% if is_moderator and not item.published %}
+          <span class="badge text-bg-warning">{% trans "Hidden from the public" %}</span>
+        {% endif %}
+        {% if can_flag %}
+          {% trans "Report a problem" as flag_label %}
+          {% blocktranslate asvar flag_hidden with n=forloop.counter %}with photo {{ n }}{% endblocktranslate %}
+          {% include "mobilito_app/moderation/flag_link.html" with kind="photo" pk=item.pk label=flag_label hidden_label=flag_hidden slot="flag-photos" %}
+        {% endif %}
+      </div>
     {% endfor %}
   </div>
+  {% if can_flag and media %}
+    {% include "mobilito_app/moderation/flag_slot.html" with slot_id="flag-photos" %}
+  {% endif %}
 
   {% if report.description %}
     <p class="mobilito-report-description">{{ report.description|linebreaksbr }}</p>
+  {% endif %}
+  {% if can_flag %}
+    {% if report.description and report.location.user_entered_address %}
+      {% trans "Report a problem with this text or place name" as flag_label %}
+      {% include "mobilito_app/moderation/flag_link.html" with kind="report" pk=report.pk label=flag_label %}
+    {% elif report.description %}
+      {% trans "Report a problem with this text" as flag_label %}
+      {% include "mobilito_app/moderation/flag_link.html" with kind="report" pk=report.pk label=flag_label %}
+    {% elif report.location.user_entered_address %}
+      {% trans "Report a problem with this place name" as flag_label %}
+      {% include "mobilito_app/moderation/flag_link.html" with kind="report" pk=report.pk label=flag_label %}
+    {% endif %}
   {% endif %}
 
   {% if tags %}

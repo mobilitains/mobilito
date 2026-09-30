@@ -38,16 +38,20 @@ from django.views.decorators.http import require_GET
 
 from authentication.provisional import get_observer
 from core.models import PublicationState as State
-from mobilito_app.browse import describe_count
+from mobilito_app.browse import (
+    describe_count,
+    published_counts,
+    published_reports,
+)
 from mobilito_app.counts import is_stale
 from mobilito_app.models import InfrastructureObservation, ModalShareSession
 
 PAGE_SIZE = 20
 
 # What each state means for the author: a short badge, a sentence
-# saying what happens next, and a colour. Light hold is meant to be
-# reachable by direct link (§14); until Phase 8 serves it that way,
-# it is honestly "not visible". Sandboxed says nothing about why.
+# saying what happens next, and a colour. Light hold is reachable by
+# its link but off the map and list (§13.2). Sandboxed says nothing
+# about why.
 CHECKING = (
     _("Waiting to be checked"),
     _("Others will see it once it has been checked."),
@@ -64,7 +68,11 @@ PLAIN_STATES = {
     ),
     State.PENDING_MODERATION: CHECKING,
     State.PUBLISHED: (_("Visible to everyone"), "", "success"),
-    State.LIGHT_HOLD: HIDDEN,
+    State.LIGHT_HOLD: (
+        _("Being checked"),
+        _("People with the link can open it; it's off the map for now."),
+        "warning",
+    ),
     State.SANDBOXED: HIDDEN,
 }
 STILL_COUNTING = (
@@ -161,11 +169,8 @@ def my_observations(request):
             + "?"
             + urlencode({"next": request.get_full_path()}),
             "visible": (
-                counts.filter(
-                    publication_state=State.PUBLISHED,
-                    finished_at__isnull=False,
-                ).count()
-                + reports.filter(publication_state=State.PUBLISHED).count()
+                counts.filter(pk__in=published_counts()).count()
+                + reports.filter(pk__in=published_reports()).count()
             ),
         },
     )

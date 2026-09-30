@@ -19,6 +19,7 @@ along with mobilito.  If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.db import transaction
 
 from .models import MobilitoUser, SignInAttempt
 
@@ -60,6 +61,21 @@ class MobilitoUserAdmin(UserAdmin):
             {"fields": ("created_at", "updated_at")},
         ),
     )
+
+    def save_model(self, request, obj, form, change):
+        from core.lifecycle import promote, public_content_changed
+
+        super().save_model(request, obj, form, change)
+        if "email_validated" not in form.changed_data:
+            return
+        if obj.email_validated:
+            # As if they had opened their link: what they sent moves
+            # on to moderation (§14).
+            promote(obj)
+        # Withdrawn, their published observations drop off the map
+        # (browse.published_*): don't let cached pins keep them.
+        transaction.on_commit(public_content_changed)
+
     add_fieldsets = (
         (
             None,

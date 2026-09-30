@@ -25,6 +25,7 @@ from django.utils.translation import gettext_lazy as _
 
 from core.forms import HoneypotFormMixin
 from mobilito_app.models import (
+    FlagReason,
     InfrastructureTag,
     ObserverPerspective,
     TagStatus,
@@ -120,4 +121,49 @@ class ReportForm(HoneypotFormMixin, forms.Form):
             "invalid_choice": _("Choose tags from the list shown."),
             "invalid_pk_value": _("Choose tags from the list shown."),
         },
+    )
+
+
+class FlagForm(HoneypotFormMixin, forms.Form):
+    """ "Report a problem" with someone else's content (§13.4)."""
+
+    # Plain wording for the public; the model's labels are for admins.
+    REASONS = [
+        (FlagReason.INAPPROPRIATE, _("Offensive or inappropriate")),
+        (
+            FlagReason.PRIVACY,
+            _("Shows a face, a number plate or personal details"),
+        ),
+        (FlagReason.SPAM, _("Advertising or spam")),
+        (FlagReason.OFF_TOPIC, _("Nothing to do with streets or travel")),
+        (FlagReason.OTHER, _("Something else")),
+    ]
+
+    reason = forms.ChoiceField(
+        choices=REASONS,
+        widget=forms.RadioSelect(attrs={"class": "form-check-input mt-2"}),
+        error_messages={
+            "required": _("Choose what the problem is."),
+            "invalid_choice": _("Choose what the problem is."),
+        },
+    )
+
+    def __init__(self, *args, kind="photo", **kwargs):
+        super().__init__(*args, **kwargs)
+        if kind != "photo":
+            # Text can't show a face.
+            self.fields["reason"].choices = [
+                (
+                    (value, _("Gives someone's personal details"))
+                    if value == FlagReason.PRIVACY
+                    else (value, label)
+                )
+                for value, label in self.REASONS
+            ]
+
+    note = forms.CharField(
+        required=False,
+        max_length=1000,
+        strip=True,
+        widget=forms.Textarea(attrs={"rows": 3, "class": "form-control"}),
     )

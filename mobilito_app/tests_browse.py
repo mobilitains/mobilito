@@ -62,7 +62,17 @@ def place(lat, lon, address=""):
     )
 
 
+def author():
+    """A confirmed author: others only ever see such observations."""
+    user = MobilitoUser.objects.create_user("author@example.com")
+    if not user.email_validated:
+        user.email_validated = True
+        user.save()
+    return user
+
+
 def count_at(lat, lon, state=PUBLISHED, finished=True, **fields):
+    fields.setdefault("user", author())
     now = timezone.now()
     return ModalShareSession.objects.create(
         location=place(lat, lon, fields.pop("address", "")),
@@ -74,6 +84,7 @@ def count_at(lat, lon, state=PUBLISHED, finished=True, **fields):
 
 
 def report_at(lat, lon, state=PUBLISHED, **fields):
+    fields.setdefault("user", author())
     return InfrastructureObservation.objects.create(
         location=place(lat, lon, fields.pop("address", "")),
         observer_perspective="bike",
@@ -186,6 +197,7 @@ class GeoJSONTests(BrowseTestCase):
             started_at=first.started_at,
             finished_at=first.finished_at,
             publication_state=PUBLISHED,
+            user=first.user,
         )
         report = report_at(47.21, -1.55)
         features = self.pins()
@@ -400,6 +412,7 @@ class HereTests(BrowseTestCase):
                 location=first.location,
                 observer_perspective="ped",
                 publication_state=PUBLISHED,
+                user=first.user,
             )
         stack = self.pins()[0]["properties"]
         self.assertEqual(stack["count"], HERE_MAX + 5)
@@ -511,6 +524,7 @@ class ListTests(BrowseTestCase):
                 location=first.location,
                 observer_perspective="ped",
                 publication_state=PUBLISHED,
+                user=first.user,
             )
         InfrastructureObservation.objects.update(created_at=first.created_at)
         seen = []

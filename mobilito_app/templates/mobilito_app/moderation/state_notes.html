@@ -1,0 +1,65 @@
+{% comment %}
+Copyright 2024  Francais pour une Meilleure Mobilité
+
+Author(s): Jeff Abrahamson <jeff@p27.eu>.
+
+This file is part of the mobilito web application.
+
+Mobilito is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Mobilito is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public
+License along with mobilito.  If not, see
+<http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+{% comment %}
+Where an observation stands, for whoever is looking (§13.2, §14).
+Authors get plain language; moderators the admin state name. Usage:
+  {% include "mobilito_app/moderation/state_notes.html" with what="report" %}
+{% endcomment %}
+{% if is_moderator %}
+  <div class="alert alert-info">
+    <strong>{% trans "Moderator view:" %}</strong> {{ state_label }}.
+    <a href="{{ admin_url }}">{% trans "Open in the admin" %}</a>
+  </div>
+{% elif on_hold %}
+  <div class="alert alert-warning">
+    {% if is_owner %}
+      {% trans "This is being checked. People who have the link can still open it, but it isn't on the map or in the list for now." %}
+    {% elif what == "count" %}
+      {% trans "This count is being checked. It isn't on the map or in the list for now." %}
+    {% else %}
+      {% trans "This report is being checked. It isn't on the map or in the list for now." %}
+    {% endif %}
+  </div>
+{% elif is_owner and not published %}
+  <div class="alert alert-secondary">
+    {% if sandboxed %}
+      {% trans "This isn't visible to others." %}
+      {% if contact_email %}
+        {% blocktranslate trimmed %}
+          If you think this is a mistake, write to us at
+          <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>.
+        {% endblocktranslate %}
+      {% endif %}
+    {% elif pending_validation %}
+      {% if what == "count" %}
+        {% trans "Once you've opened the link we sent you by email, we'll check your count and then show it to others." %}
+      {% else %}
+        {% trans "Once you've opened the link we sent you by email, we'll check your report and then show it to others." %}
+      {% endif %}
+    {% elif what == "count" %}
+      {% trans "Thank you! Your count will be visible to others once it has been reviewed." %}
+    {% else %}
+      {% trans "Your report will be visible to others once it has been reviewed." %}
+    {% endif %}
+  </div>
+{% endif %}

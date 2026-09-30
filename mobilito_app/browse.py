@@ -57,6 +57,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_GET
 
 from core.geo import edge_point, make_point
+from core.lifecycle import public_generation
 from core.maps import map_widget_config
 from core.models import PublicationState
 from mobilito_app.models import InfrastructureObservation, ModalShareSession
@@ -92,16 +93,22 @@ def unmercator(x: float, y: float) -> tuple[float, float]:
     )
 
 
+# Published, and by an author who has confirmed their email: never
+# show others anything else, even if an author's confirmation is
+# withdrawn or they are deleted after publication (the detail pages
+# check the same, in moderation.viewer_role).
 def published_counts():
     return ModalShareSession.objects.filter(
         publication_state=PublicationState.PUBLISHED,
         finished_at__isnull=False,
+        user__email_validated=True,
     )
 
 
 def published_reports():
     return InfrastructureObservation.objects.filter(
-        publication_state=PublicationState.PUBLISHED
+        publication_state=PublicationState.PUBLISHED,
+        user__email_validated=True,
     )
 
 
@@ -198,7 +205,8 @@ class Viewport:
         )
 
     def cache_key(self) -> str:
-        return "pins:v2:%d:%d,%d,%d,%d" % (
+        return "pins:v3:%s:%d:%d,%d,%d,%d" % (
+            public_generation(),
             self.zoom,
             self.x0,
             self.y0,

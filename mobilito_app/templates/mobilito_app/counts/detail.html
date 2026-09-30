@@ -46,11 +46,12 @@ License along with mobilito.  If not, see
     {% endif %}
   </p>
 
-  {% if is_owner and not published %}
-    <div class="alert alert-secondary">
-      {% trans "Thank you! Your count will be visible to others once it has been reviewed." %}
-    </div>
+  {% if can_flag and session.location.user_entered_address %}
+    {% trans "Report a problem with this place name" as flag_label %}
+    {% include "mobilito_app/moderation/flag_link.html" with kind="count" pk=session.pk label=flag_label %}
   {% endif %}
+
+  {% include "mobilito_app/moderation/state_notes.html" with what="count" %}
 
   {% if not total %}
     <p class="lead">{% trans "Nothing was counted this time." %}</p>

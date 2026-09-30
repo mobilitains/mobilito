@@ -49,15 +49,17 @@ from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy
 from django.views.decorators.http import require_GET, require_POST
 
-from authentication.provisional import get_observer, observer_required
+from authentication.provisional import observer_required
 from core.geo import distance_meters, edge_point, make_point
 from core.locations import new_location_fields
 from core.lifecycle import submission_state
 from core.maps import map_widget_config, uses_device_location
 from core.models import Location, LocationEvidence, PublicationState
 from core.ratelimit import client_ip, is_rate_limited
+from mobilito_app.browse import published_counts
 from mobilito_app.forms import CountStartForm
 from mobilito_app.models import Mode, ModalShareCountEvent, ModalShareSession
+from mobilito_app.moderation import OWNER, state_context, visible_or_404
 
 logger = logging.getLogger(__name__)
 
@@ -124,19 +126,8 @@ def open_session(observer):
 
 
 def _visible_session(request, pk):
-    """A session this request may see: its own, or a published one.
-
-    TODO(Phase 8): "light hold" observations are reachable by direct
-    URL too (§14).
-    """
-    session = get_object_or_404(
-        ModalShareSession.objects.select_related("location"), pk=pk
-    )
-    if get_observer(request).owns(session):
-        return session
-    if session.publication_state == PublicationState.PUBLISHED:
-        return session
-    raise Http404
+    """(session, viewer role) if this request may see it (§13.2)."""
+    return visible_or_404(request, ModalShareSession.objects, pk)
 
 
 def _own_session(request, pk):
@@ -166,7 +157,7 @@ def _origin(request, value):
     if not value or not str(value).isdigit():
         return None
     try:
-        return _visible_session(request, int(value))
+        return _visible_session(request, int(value))[0]
     except Http404:
         return None
 
@@ -618,11 +609,8 @@ def history(session) -> list:
     """
     radius = D(m=settings.LOCATION_EQUIVALENCE_RADIUS_MODAL_SHARE_METERS)
     others = (
-        ModalShareSession.objects.filter(
-            publication_state=PublicationState.PUBLISHED,
-            finished_at__isnull=False,
-            location__point__dwithin=(session.location.point, radius),
-        )
+        published_counts()
+        .filter(location__point__dwithin=(session.location.point, radius))
         .exclude(pk=session.pk)
         # Nothing counted: no shares to compare.
         .exclude(total_pedestrian=0, total_cyclist=0, total_car=0, total_tc=0)
@@ -663,11 +651,12 @@ def history(session) -> list:
 @require_GET
 def detail(request, pk):
     """Results of a count (§9.1 "On finish")."""
-    session = _visible_session(request, pk)
-    observer = get_observer(request)
-    is_owner = observer.owns(session)
-    if is_owner and session.is_open:
-        return redirect("counts_count", pk=session.pk)
+    session, role = _visible_session(request, pk)
+    if session.is_open:
+        # Still counting: nothing to show anyone but its counter.
+        if role == OWNER:
+            return redirect("counts_count", pk=session.pk)
+        raise Http404
     return render(
         request,
         "mobilito_app/counts/detail.html",
@@ -677,9 +666,7 @@ def detail(request, pk):
             "history": history(session),
             "now_year": timezone.now().year,
             "mode_labels": [(mode, MODE_LABELS[mode]) for mode in MODES],
-            "is_owner": is_owner,
-            "published": session.publication_state
-            == PublicationState.PUBLISHED,
+            **state_context(session, role),
             "duration_minutes": round(
                 (session.finished_at - session.started_at).total_seconds() / 60
             ),
@@ -691,7 +678,7 @@ def detail(request, pk):
 @require_GET
 def summary(request, pk):
     """A count in the map's bottom sheet (§9.2 "Selecting ...")."""
-    session = _visible_session(request, pk)
+    session, _role = _visible_session(request, pk)
     if session.is_open:
         raise Http404
     return render(

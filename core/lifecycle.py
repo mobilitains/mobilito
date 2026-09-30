@@ -20,13 +20,19 @@ License along with mobilito.  If not, see
 <http://www.gnu.org/licenses/>.
 """
 
-# Publication lifecycle helpers shared by both observation types
-# (§14). Phase 8 adds moderation transitions; this covers what
-# submission and email validation need.
+# Publication lifecycle shared by both observation types (§14):
+# where a submission goes, promotion on email validation, and the
+# moderation transitions (roadmap Phase 8; admin actions for now,
+# the moderation dashboard in Phase 13).
+
+import uuid
 
 from django.apps import apps
+from django.core.cache import cache
+from django.db import transaction
+from django.utils.translation import gettext_lazy as _
 
-from core.models import PublicationState
+from core.models import ModerationState, PublicationState
 
 OBSERVATION_MODELS = (
     "mobilito_app.ModalShareSession",
@@ -66,3 +72,93 @@ def promote(user) -> None:
             user=user,
             publication_state=PublicationState.PENDING_VALIDATION,
         ).update(publication_state=PublicationState.PENDING_MODERATION)
+
+
+# Reachable by anyone with the link (§13.2): published, or on light
+# hold (then with a note that it is being reviewed, and off the map
+# and list). Everything else only its author and moderators see.
+LINK_VISIBLE_STATES = (
+    PublicationState.PUBLISHED,
+    PublicationState.LIGHT_HOLD,
+)
+
+# What a moderator can move an observation to.
+MODERATION_TARGETS = (
+    PublicationState.PUBLISHED,
+    PublicationState.LIGHT_HOLD,
+    PublicationState.SANDBOXED,
+)
+
+
+class TransitionError(ValueError):
+    """A moderation transition that isn't allowed; str() says why."""
+
+
+def publish_blocker(observation):
+    """Why this observation can't be published, or None if it can.
+
+    Never publish what its author hasn't validated (CLAUDE.md: "must
+    not be shown to others"), nor what isn't finished.
+    """
+    if observation.publication_state == PublicationState.DRAFT:
+        return _("It hasn't been sent yet.")
+    if getattr(observation, "finished_at", True) is None:
+        return _("The count isn't finished.")
+    user = observation.user
+    if user is None or not user.email_validated:
+        return _("Its author hasn't confirmed their email address yet.")
+    return None
+
+
+def moderate(observation, target: str) -> bool:
+    """Move an observation to a moderation outcome (§13.2, §14).
+
+    Returns False if it was already there. Raises TransitionError if
+    the move isn't allowed. Published and light hold are both seen
+    by others (light hold by link), so both need what publishing
+    needs; sandboxing hides, so it's allowed from any sent state.
+    Drafts (counts still going) aren't moderated: nobody else can
+    see them, and finishing one would overwrite the outcome.
+    """
+    if target not in MODERATION_TARGETS:
+        raise TransitionError(_("Not a moderation outcome."))
+    if observation.publication_state == target:
+        return False
+    if target in LINK_VISIBLE_STATES:
+        reason = publish_blocker(observation)
+        if reason is not None:
+            raise TransitionError(reason)
+    elif observation.publication_state == PublicationState.DRAFT:
+        raise TransitionError(_("It hasn't been sent yet."))
+    observation.publication_state = target
+    fields = ["publication_state", "updated_at"]
+    if hasattr(observation, "moderation_state"):
+        observation.moderation_state = (
+            ModerationState.CLEARED
+            if target == PublicationState.PUBLISHED
+            else ModerationState.FLAGGED
+        )
+        fields.append("moderation_state")
+    observation.save(update_fields=fields)
+    transaction.on_commit(public_content_changed)
+    return True
+
+
+PUBLIC_GENERATION_KEY = "public:generation"
+
+
+def public_generation() -> str:
+    """Changes whenever what the public sees changes by moderation.
+
+    Part of cache keys for public data (map pins), so publishing or
+    hiding something shows at once rather than when entries expire.
+    Random rather than a counter, so an evicted key can't bring back
+    old entries. Needs a cache shared by all workers (core.W001).
+    """
+    return cache.get_or_set(
+        PUBLIC_GENERATION_KEY, lambda: uuid.uuid4().hex[:12], timeout=None
+    )
+
+
+def public_content_changed() -> None:
+    cache.set(PUBLIC_GENERATION_KEY, uuid.uuid4().hex[:12], timeout=None)

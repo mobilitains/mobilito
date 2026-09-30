@@ -28,6 +28,7 @@ from django.contrib.contenttypes.fields import (
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models as gis_models
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from core.models import ModerationState, Observation
@@ -56,6 +57,9 @@ class ModalShareSession(Observation):
 
     def __str__(self) -> str:
         return f"Modal share session {self.pk} at {self.location}"
+
+    def get_absolute_url(self) -> str:
+        return reverse("counts_detail", args=[self.pk])
 
     TOTAL_FIELDS = {
         Mode.PEDESTRIAN: "total_pedestrian",
@@ -164,6 +168,9 @@ class InfrastructureObservation(Observation):
 
     def __str__(self) -> str:
         return f"Infrastructure observation {self.pk} at {self.location}"
+
+    def get_absolute_url(self) -> str:
+        return reverse("reports_detail", args=[self.pk])
 
 
 class MediaType(models.TextChoices):
@@ -323,6 +330,8 @@ class ContactMethod(models.Model):
 
 class FlagReason(models.TextChoices):
     INAPPROPRIATE = "inappropriate", _("Inappropriate")
+    # Faces, number plates, personal details (§13.1).
+    PRIVACY = "privacy", _("Personal information")
     SPAM = "spam", _("Spam")
     OFF_TOPIC = "off_topic", _("Off-topic")
     OTHER = "other", _("Other")
@@ -351,6 +360,16 @@ class ModerationFlag(models.Model):
     )
     note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    # Set when a moderator has dealt with it. Flags are kept, not
+    # deleted, as the audit trail (§13.1).
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    resolved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="resolved_moderation_flags",
+    )
 
     def __str__(self) -> str:
         return f"Flag ({self.get_reason_display()}) on {self.target}"

@@ -49,7 +49,7 @@ from django.views.decorators.http import (
     require_POST,
 )
 
-from authentication.provisional import get_observer, observer_required
+from authentication.provisional import observer_required
 from core.forms import LocationConfirmForm
 from core.geo import edge_point, make_point
 from core.geocoding import GeocodeResult
@@ -57,7 +57,7 @@ from core.images import process_photo
 from core.lifecycle import submission_state
 from core.locations import new_location_fields
 from core.maps import map_widget_config
-from core.models import Location, LocationEvidence, PublicationState
+from core.models import Location, LocationEvidence
 from core.ratelimit import client_ip, is_rate_limited
 from core.views import confirm_location_context
 from mobilito_app.forms import ReportForm
@@ -66,6 +66,11 @@ from mobilito_app.models import (
     InfrastructureObservation,
     InfrastructureTag,
     TagStatus,
+)
+from mobilito_app.moderation import (
+    state_context,
+    visible_media,
+    visible_or_404,
 )
 
 logger = logging.getLogger(__name__)
@@ -377,35 +382,21 @@ def _create_report(request, data, location_fields, processed, owner, key):
 
 
 def _visible_report(request, pk):
-    report = get_object_or_404(
-        InfrastructureObservation.objects.select_related("location"), pk=pk
-    )
-    observer = get_observer(request)
-    if observer.owns(report):
-        return report, True
-    if report.publication_state == PublicationState.PUBLISHED:
-        return report, False
-    raise Http404
+    """(report, viewer role) if this request may see it (§13.2)."""
+    return visible_or_404(request, InfrastructureObservation.objects, pk)
 
 
 @require_GET
 def detail(request, pk):
-    report, is_owner = _visible_report(request, pk)
-    media = report.media.all()
-    if not is_owner:
-        media = media.filter(published=True)
+    report, role = _visible_report(request, pk)
     return render(
         request,
         "mobilito_app/reports/detail.html",
         {
             "report": report,
-            "media": media,
+            "media": visible_media(report, role),
             "tags": report.tags.all(),
-            "is_owner": is_owner,
-            "published": report.publication_state
-            == PublicationState.PUBLISHED,
-            "pending_validation": report.publication_state
-            == PublicationState.PENDING_VALIDATION,
+            **state_context(report, role),
             "share_url": request.build_absolute_uri(),
         },
     )
@@ -418,12 +409,8 @@ def photo(request, pk, media_id):
     Photos have no public URL of their own (private storage): this
     is the only way to them.
     """
-    report, is_owner = _visible_report(request, pk)
-    item = get_object_or_404(
-        InfrastructureMedia, pk=media_id, observation=report
-    )
-    if not (is_owner or item.published):
-        raise Http404
+    report, role = _visible_report(request, pk)
+    item = get_object_or_404(visible_media(report, role), pk=media_id)
     try:
         handle = item.file.open("rb")
     except OSError:
@@ -440,16 +427,13 @@ def photo(request, pk, media_id):
 @require_GET
 def summary(request, pk):
     """A report in the map's bottom sheet (§9.2 "Selecting ...")."""
-    report, is_owner = _visible_report(request, pk)
-    media = report.media.all()
-    if not is_owner:
-        media = media.filter(published=True)
+    report, role = _visible_report(request, pk)
     return render(
         request,
         "mobilito_app/reports/summary.html",
         {
             "report": report,
-            "photo": media.first(),
+            "photo": visible_media(report, role).first(),
             "tags": report.tags.all(),
         },
     )

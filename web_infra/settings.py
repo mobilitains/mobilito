@@ -85,6 +85,9 @@ SIGN_IN_ATTEMPT_DROP_AFTER_DAYS = 7
 # long, then has to sign in properly. Bounds what a stranger's
 # browser can do if the address owner is tricked into confirming.
 SIGN_IN_ATTEMPT_CONFIRMED_SESSION_HOURS = 24
+# Where people can write to us, shown e.g. to an author whose
+# observation was hidden. Blank shows nothing.
+CONTACT_EMAIL = os.environ.get("DJANGO_CONTACT_EMAIL", "")
 # Absolute base for links in emails sent outside a request (cron).
 SITE_URL = os.environ.get("DJANGO_SITE_URL", "http://localhost:8000")
 
@@ -286,6 +289,14 @@ PHOTO_MAX_PER_REPORT = 6
 DATA_UPLOAD_MAX_NUMBER_FILES = PHOTO_MAX_PER_REPORT + 4
 # Infrastructure reports per IP (roadmap Phase 6, §16).
 RATE_LIMIT_REPORT_SUBMIT = (20, 3600)
+
+# User-initiated flags (§13.4, roadmap Phase 8), per IP. When this
+# many different people who confirmed their email have open flags on
+# the same photo, it is hidden; on a report's text or a count's place
+# name, the observation goes on light hold. Either way until a
+# moderator looks. 0 turns this off.
+RATE_LIMIT_FLAG = (30, 3600)
+MODERATION_FLAG_AUTO_HOLD_REPORTERS = 3
 
 # Media storage. Photos go to Cloudflare R2 (S3-compatible, §20.11)
 # when its bucket is configured, else to MEDIA_ROOT on local disk.
