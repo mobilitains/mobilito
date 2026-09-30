@@ -42,13 +42,22 @@ def set_language(request):
     sets the language cookie too, which is what LocaleMiddleware
     actually reads to pick a language per request.
     """
-    language = request.POST.get("language", "")
-    valid_codes = {code for code, _name in settings.LANGUAGES}
+    # Take the code from settings rather than echoing the request,
+    # so only a configured value ever reaches the cookie.
+    requested = request.POST.get("language", "")
+    language = next(
+        (code for code, _name in settings.LANGUAGES if code == requested),
+        None,
+    )
 
-    next_url = request.POST.get("next") or "/"
-    if not url_has_allowed_host_and_scheme(
-        next_url, allowed_hosts={request.get_host()}
+    requested_next = request.POST.get("next", "")
+    if url_has_allowed_host_and_scheme(
+        requested_next,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
     ):
+        next_url = requested_next
+    else:
         next_url = "/"
 
     if request.htmx:
@@ -56,7 +65,7 @@ def set_language(request):
     else:
         response = HttpResponseRedirect(next_url)
 
-    if language in valid_codes:
+    if language is not None:
         if request.user.is_authenticated:
             request.user.preferred_language = language
             request.user.save(update_fields=["preferred_language"])

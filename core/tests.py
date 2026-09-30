@@ -129,6 +129,30 @@ class SetLanguageViewTests(TestCase):
         )
         self.assertRedirects(response, "/")
 
+    def test_safe_next_is_kept(self):
+        response = self.client.post(
+            reverse("set_language"),
+            {"language": "en", "next": "/somewhere/?page=2"},
+        )
+        self.assertRedirects(
+            response, "/somewhere/?page=2", fetch_redirect_response=False
+        )
+
+    def test_missing_next_falls_back_to_home(self):
+        response = self.client.post(
+            reverse("set_language"), {"language": "en"}
+        )
+        self.assertRedirects(response, "/")
+
+    def test_http_next_rejected_on_secure_request(self):
+        response = self.client.post(
+            reverse("set_language"),
+            {"language": "en", "next": "http://testserver/"},
+            secure=True,
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"], "/")
+
     def test_htmx_request_gets_hx_redirect_header(self):
         response = self.client.post(
             reverse("set_language"),
